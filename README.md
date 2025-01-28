@@ -29,6 +29,10 @@ Personal CRM Accomplishes 3 main user stories:
 5. Visit the reminders page to see a calendar view of the upcoming events that will take place and any automated tasks.
 6. Visit the contact page to add new contacts and also view the status and quality of your relationships
 
+## Prototype
+Our prototype is on Figma and is a work in progress.
+https://www.figma.com/design/I9kl6N0QCoiMsL8oPgZ4lJ/Personal-CRM-Prototype?node-id=15-124&t=cHxJwuUV5iKU6mSk-1
+
 ## Deployment and Github Workflow​
 
 - Use main branch to act as an ongoing "develop" branch.
@@ -46,7 +50,6 @@ We will be using standard coding guidelines that adhere to the five pillars of c
 4. Reliability
 5. Reusability
 We will be using [black](https://black.readthedocs.io/en/stable/) for python to ensure consistent formatting.
-
 ​
- ## Licenses 
+## Licenses 
  - Not Applicable. There are no licenses involved in the project as of now.
