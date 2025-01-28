@@ -101,7 +101,7 @@ James - Frontend Developer & Backend Developer & Scrum Master. Some experience w
 
 Supriya - Backend Developer & Frontend Developer & Prototyping & Notetaking. Experience with frontend and backend from CSC309. I also learned a bit of JavaScript on my own. Experience working with Figma from CSC318. I enjoy being organized and keeping track of what is being said during meetings, so I signed up to be a notetaker for the team.
 
-Arifa - Frontend Developer & Backend Developer & AI & Notetaking. Experience with frontend and backend from CSC309. Experience with NLP from CSC485 and CSC311. I would like to take organized and clear notes to enhance collaboration and understanding of the technical aspects of the project. 
+Arifa - Frontend Developer & Backend Developer & AI & Notetaking. Experience with frontend and backend from CSC309. Experience with NLP from CSC485 and CSC311. I want to take organized and clear notes to keep track of our meetings. 
 
 Lisa - Backend Developer & DevOps & Project Manager. Experience with Postgres and databases from CSC343. Internship experience with DevOps/integration tools and quality assurance (unit testing). Experience working in SDLC (AGILE) and project management workflow from internship. OOP and design skills from CSC207.
 
@@ -169,7 +169,7 @@ Potential Project Risks:
 ---
 #### Q14. What are some potential mitigation strategies for the risks you identified?
 
-1. Begin by integrating a small subset of the APIs (e.g. LinkedIn) to simplify development and validate our process before scaling up. Furthermore, we will use robust API frameworks to streamline the process and plan for regular testing + debugging. 
+1. Begin by integrating a small subset of the APIs (e.g. LinkedIn) to simplify development and validate our process before scaling up. Furthermore, we will use API frameworks to streamline the process and plan for regular testing + debugging. 
 2. Research successful CRMs to adapt proven UI design practices. Also, we plan to create a detailed user-centred prototype to focus on the design early in the process. 
 3. Break down the MVP into smaller, achievable goals and prioritize essential features first. Communicate regularly with partners to align on deliverables and manage expectations.
 
