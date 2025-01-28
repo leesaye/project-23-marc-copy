@@ -11,15 +11,15 @@ Personal CRM is a web application and management/data aggregation system that ac
 
 Most busy adults suck at maintaining their relationships. Life moves fast; staying in contact and up to date on relationships is difficult—you forget about birthdays, and in the blink of an eye, it's been 6 months since you saw one of your longtime best friends or business partners. Personal CRM connects multiple platforms of contacts and data to keep up-to-date with everything on one hub. Use cases include inputting contacts/aggregating socials (LinkedIn, Whatsapp, etc.), scoring contacts, automating birthday and anniversary reminders, and AI-driven insights/analytics. The system as a whole will be mobile-first with the web app as a browser extension, but our project/MVP will focus on the web app portion with the potential for mobile app development.
 
-As such, Personal CRM targets two core problems: the greater loneliness epidemic, and the problem of humans only being able to properly maintain < 100 relationships at a time..
+As such, Personal CRM targets two core problems: the greater loneliness epidemic, and the problem of humans only being able to properly maintain less than 100 relationships at a time.
 
 ---
 #### Q2: Who are your target users?
 
-The target users are busy professionals in the age range of 22 to 45 that primarily work in the tech industry. These are people that value relationships but are too overwhelmed with the demands of their fast-paced careers to maintain the relationships that often got them where they are in the first place. Being tech-savvy young individuals they are seeking tools that automate the tedious task of keeping up with these connections as well as a way to quantify the value of relationships within their social circle. 
+The target users are busy professionals in the age range of 22 to 45 who primarily work in the tech industry. These are people who value relationships but are too overwhelmed with the demands of their fast-paced careers to maintain the relationships that often got them where they are in the first place. Being tech-savvy young individuals they are seeking tools that automate the tedious task of keeping up with these connections as well as a way to quantify the value of relationships within their social circle. 
 
 Persona: Busy Susan  
-Susan is a 40 year old Marketing Executive based in Berlin. She often travels to meet with many clients and partners throughout Europe. Due to having an extensive network, she struggles to maintain all these relationships as she is constantly on an airplane often without network connection and also has to balance her main job role of creating marketing campaigns and conducting market research. Susan is highly organized and loves tools that streamline her life. She’s looking for a personal CRM that automates the tedious manual task of keeping up with the things going on in her wide circle of connections as well as a tool that assesses the quality of her relationships so she can keep on top of the relationships that matter.
+Susan is a 40-year-old Marketing Executive based in Berlin. She often travels to meet with many clients and partners throughout Europe. Due to having an extensive network, she struggles to maintain all these relationships as she is often on an airplane without network connection and also has to balance her main job role of creating marketing campaigns and conducting market research. Susan is highly organized and loves tools that streamline her life. She’s looking for a personal CRM that automates the tedious manual task of keeping up with the things going on in her wide circle of connections as well as a tool that assesses the quality of her relationships so she can keep on top of the relationships that matter.
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdxy3egDpYwu-a6aYdJcLyZQsnm6C7areOE-rEpnT3TlnaPuC66XxxuhXO_u-LHuQHmiIwkx0cSXJr4bPYnxYGGMaMe_HhBz8CdRR4qsY-6rn5wUgdK_pB_OfprZvsypgJeoZwDzQ?key=IDnHbsF_JwSuty_r_71HsnVx)
 
@@ -28,12 +28,12 @@ Susan is a 40 year old Marketing Executive based in Berlin. She often travels to
 
 Users would choose our product because it simplifies the process of tracking relationships with others across different apps by acting as a centralized hub of information. It provides automated reminders and scheduling to track relationships within a simple and intuitive UI. Other personal CRM services today do not provide enough integration or simplicity, so our product exists to solve that need. 
 
-The benefits of our product include time saving, discovering new insights and increasing outreach efficiency. By having everything centralized to one platform, users can reduce time searching through several apps. It also makes contacting those who you are less familiar with quicker and easier. Instead of a cold outreach, you can reach out to your mutual connections for help based on the strength of their connections which increases efficiency and time. The CRM also plans to include additional information such as birthdays, anniversaries, and other milestones that can be seen across all apps.
+The benefits of our product include time-saving, discovering new insights and increasing outreach efficiency. By having everything centralized to one platform, users can reduce time searching through several apps. It also makes contacting those who you are less familiar with quicker and easier. Instead of a cold outreach, you can reach out to your mutual connections for help based on the strength of their connections which increases efficiency and time. The CRM also plans to include additional information such as birthdays, anniversaries, and other milestones that can be seen across all apps.
 
 ---
 #### Q4: What are the user stories that make up the Minumum Viable Product (MVP)?
 
-Our partner gave us approval of the following user stories through the form of a live Q&A document. This is where we asked what user stories the MVP should have and he gave us a list to use: [https://docs.google.com/document/d/1xaU61YvkZRlfcYB_95nwnXfTGu-DjYqWfkrKD8cHgRk/edit?usp=sharing](https://docs.google.com/document/d/1xaU61YvkZRlfcYB_95nwnXfTGu-DjYqWfkrKD8cHgRk/edit?usp=sharing) 
+Our partner gave us approval for the following user stories through the form of a live Q&A document. This is where we asked what user stories the MVP should have and he gave us a list to use: [https://docs.google.com/document/d/1xaU61YvkZRlfcYB_95nwnXfTGu-DjYqWfkrKD8cHgRk/edit?usp=sharing](https://docs.google.com/document/d/1xaU61YvkZRlfcYB_95nwnXfTGu-DjYqWfkrKD8cHgRk/edit?usp=sharing) 
 
 He also created a nice video of him walking through the document: [https://www.loom.com/share/d287baf818964f56a2b58b53b19e0835](https://www.loom.com/share/d287baf818964f56a2b58b53b19e0835) 
 
@@ -41,7 +41,7 @@ He also created a nice video of him walking through the document: [https://www.l
     
 2. As a user, I want to be able to easily action follow-ups or outstanding items and set due dates - that means I should be able to tap one button and the message sends.
     
-3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to next question."
+3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (Example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to the next question."
     
 4. As a user, I want to see a prioritized list of people I should follow up with based on relationship strength or recent activity so I can manage my time efficiently.
     
@@ -86,7 +86,7 @@ We met and did a team-building activity, and we have a form of communication thr
 
 - Fun facts: 
 	- Supriya plays flag football
-	- Lisa has a chihuahua who is inbred
+	- Lisa has a chihuahua
 	- Harvir likes to sleep
 	- Idris has a lifeguarding certification
 
@@ -112,19 +112,19 @@ Harvir - Backend Developer & Databases & Prototyping.  Course experience with D
 ---
 #### Q8: How will you work as a team?
 
-After our tutorial meeting with Omid on Tuesdays at 8:15 PM, we will have a mandatory scrum meeting in our Discord Server. This is where we will discuss what we have done the previous week if we haven’t already as well as discuss any suggestions given by Omid during the tutorials. This is also where we will create actionable tasks for every team member to work on for the next week. Our teams also agreed on meeting over Discord on Thursdays at 7 PM for a middle of the week check-in if needed. We have set up a recurring Zoom meeting with our partner on Thursdays at 12 PM where we will present our progress to our partner and clear up any questions we have. For code reviews and sessions, it will be on an ad hoc basis depending on if additional clarity is needed for pull-requests. We had our first meeting with our partner on January 22nd at 12PM to discuss project expectations and ideas. We have scheduled a follow up meeting to go over our deliverable on Monday at 9:30 AM. 
+After our tutorial meeting with Omid on Tuesdays at 8:15 PM, we will have a mandatory scrum meeting in our Discord Server. This is where we will discuss what we have done the previous week if we haven’t already as well as discuss any suggestions given by Omid during the tutorials. This is also where we will create actionable tasks for every team member to work on for the next week. Our teams also agreed on meeting over Discord on Thursdays at 7 PM for a middle of the week check-in if needed. We have set up a recurring Zoom meeting with our partner on Thursdays at 12 PM where we will present our progress to our partner and clear up any questions we have. For code reviews and sessions, it will be on an ad hoc basis depending on if additional clarity is needed for pull requests. We had our first meeting with our partner on January 22nd at 12PM to discuss project expectations and ideas. We have scheduled a follow-up meeting to go over our deliverable on Monday at 9:30 AM. 
 
 ---
 #### Q9: How will you organize your team?
 
-Our group's main organization method is through notion. This is where we keep track of all links, deadlines and resources related to the project. These are things such as meeting minutes for all of our meetings and To-Do list items to assign each of our team member’s tasks. Notion has a nice Kanban board functionality that allows us to set task status in terms of what is in the backlog, what should be done, what is in progress and what is completed. We prioritize tasks based on deadlines and how important they are in terms of course assignments and MVP. For course assignment related tasks we split questions up evenly throughout the teams but for more tech specific related items we will assign tasks to whoever is qualified for the role. Additionally, we use discord for communication. This is where we can talk about ideas. We also ping each other to notify individuals of task deadlines and if anything is incomplete. Github is where our source code resides.
+Our group's main organization method is through Notion. This is where we keep track of all links, deadlines and resources related to the project. These are things such as meeting minutes for all of our meetings and To-Do list items to assign each of our team member’s tasks. Notion has a nice Kanban board functionality that allows us to set task status in terms of what is in the backlog, what should be done, what is in progress and what is completed. We prioritize tasks based on deadlines and how important they are in terms of course assignments and MVP. For course assignment-related tasks we split questions up evenly throughout the teams but for more tech-specific related items we will assign tasks to whoever is qualified for the role. Additionally, we use Discord for communication. This is where we can talk about ideas. We also ping each other to notify individuals of task deadlines and if anything is incomplete. GitHub is where our source code resides.
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcW5f4oabMFRNBWrcPIvofo_qdS2uLFTEh4hCMSZzJqWKR-q4WFfWbWqs8hLlrJ7VcTC0MuAyLRMcBbaxf_R3kIarS16DWBNE8rqnAzCgOW0gydIn2grlcFxJ4YnO5KkWmK1FCIKA?key=IDnHbsF_JwSuty_r_71HsnVx)
 
 ---
 #### Q10: What are the rules regarding how your team works?
 
-Team meetings without the partner will be held once a week through our Discord server. We will be using Discord for all forms of communication and reminders. We also have a teamspace on Notion which we will be using to keep track of meeting minutes, todo lists and scheduling meetings. The teamspace has also been shared with our partner. As mentioned above, we will keep track of meeting minutes which will track participants at meetings to keep everyone accountable. The todo list will keep everyone on top of action items. It also allows us to assign tasks to our members to ensure that someone is responsible for it. We have assigned Humraj as our group leader. A part of his role is to ensure that everyone stays on track with their assigned tasks.  To communicate with our partner we will be using email per his request. We will be meeting with him weekly through Zoom with an optional in person meeting monthly.
+Team meetings without the partner will be held once a week through our Discord server. We will be using Discord for all forms of communication and reminders. We also have a teamspace on Notion which we will be using to keep track of meeting minutes, todo lists and scheduling meetings. The teamspace has also been shared with our partner. As mentioned above, we will keep track of meeting minutes which will track participants at meetings to keep everyone accountable. The todo list will keep everyone on top of action items. It also allows us to assign tasks to our members to ensure that someone is responsible for it. We have assigned Humraj as our group leader. A part of his role is to ensure that everyone stays on track with their assigned tasks.  To communicate with our partner we will be using email per his request. We will be meeting with him weekly through Zoom with an optional in-person meeting monthly.
 
 To prevent a lack of responsiveness or contribution, we have asked that all members communicate in advance with the team if they have circumstances that will prevent them from completing work. In the case where members are unresponsive, we will try to reach out to them through Discord and other means and see what we can do to create a better team environment for them. If they continue to be unresponsive, we will reach out to the TA for assistance.
 
@@ -139,7 +139,7 @@ James - My team members could tell that I am disengaged if I do not respond quic
 
 Arifa - If I were to disengage from the project, I would have reduced participation in discussions or extra tasks beyond my core responsibilities. I encourage my teammates to address it directly with me through a conversation or a message on Discord.
 
-Humraj - If I have disengaged from the project my teammates will notice that I have become very inconsistent when responding to text messages. If this happens then my teammates should try to set deadlines and come up with plans on how tasks should be completed. Additionally, my team should try to book 1-1 zoom/discord meetings to try to get me back on track and get me up to speed with what I have missed.
+Humraj - If I have disengaged from the project my teammates will notice that I have become very inconsistent when responding to text messages. If this happens then my teammates should try to set deadlines and come up with plans on how tasks should be completed. Additionally, my team should try to book 1-1 Zoom/Discord meetings to try to get me back on track and get me up to speed with what I have missed.
 
 ## Organisation Details
 
@@ -152,7 +152,7 @@ We are fit for this role because we can work on a fully self-enclosed project wi
 ---
 #### Q12. How does your project fit within the overall product from the partner?
 
-The project that we are working on is a web extension of the actual mobile-friendly CRM manager application. Based on our implementation/MVP, it can be converted into a mobile application later on. But in our case, we are just responsible for making the web version. Our MVP is the first prototype for the web version of the application, where we will build both the core front and back-end features. Also, our partner’s vision is to integrate two separate platforms into one later down the line. The products will consist of our Personal CRM applications and another more social media like product.
+The project that we are working on is a web extension of the actual mobile-friendly CRM manager application. Based on our implementation/MVP, it can be converted into a mobile application later on. But in our case, we are just responsible for making the web version. Our MVP is the first prototype for the web version of the application, where we will build both the core front and back-end features. Also, our partner’s vision is to integrate two separate platforms into one later down the line. The products will consist of our Personal CRM applications and another more social media-like product.
 
 ## Potential Risks
 
