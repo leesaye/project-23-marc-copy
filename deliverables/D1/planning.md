@@ -1,13 +1,10 @@
 # Personal CRM / Team 3:15 AM
 
-----
 ## Link to prototype on Figma
 
 [https://www.figma.com/design/I9kl6N0QCoiMsL8oPgZ4lJ/Personal-CRM-Prototype?node-id=15-124&t=F7IBOAgSHrvhpCZF-1](https://www.figma.com/design/I9kl6N0QCoiMsL8oPgZ4lJ/Personal-CRM-Prototype?node-id=15-124&t=F7IBOAgSHrvhpCZF-1)
 
-----
 ## Product Details
-----
 #### Q1: What is the product?
 
 Personal CRM is a web application and management/data aggregation system that actively enables busy users to stay on top of maintaining relationships so they can take action and directly engage with relationships while giving them an easy way to input information and better understand their personal and professional connections.
@@ -16,7 +13,7 @@ Most busy adults suck at maintaining their relationships. Life moves fast; stayi
 
 As such, Personal CRM targets two core problems: the greater loneliness epidemic, and the problem of humans only being able to properly maintain < 100 relationships at a time..
 
-----
+---
 #### Q2: Who are your target users?
 
 The target users are busy professionals in the age range of 22 to 45 that primarily work in the tech industry. These are people that value relationships but are too overwhelmed with the demands of their fast-paced careers to maintain the relationships that often got them where they are in the first place. Being tech-savvy young individuals they are seeking tools that automate the tedious task of keeping up with these connections as well as a way to quantify the value of relationships within their social circle. 
@@ -26,14 +23,14 @@ Susan is a 40 year old Marketing Executive based in Berlin. She often travels to
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdxy3egDpYwu-a6aYdJcLyZQsnm6C7areOE-rEpnT3TlnaPuC66XxxuhXO_u-LHuQHmiIwkx0cSXJr4bPYnxYGGMaMe_HhBz8CdRR4qsY-6rn5wUgdK_pB_OfprZvsypgJeoZwDzQ?key=IDnHbsF_JwSuty_r_71HsnVx)
 
-----
+---
 #### Q3: Why would your users choose your product? What are they using today to solve their problem/need?
 
 Users would choose our product because it simplifies the process of tracking relationships with others across different apps by acting as a centralized hub of information. It provides automated reminders and scheduling to track relationships within a simple and intuitive UI. Other personal CRM services today do not provide enough integration or simplicity, so our product exists to solve that need. 
 
 The benefits of our product include time saving, discovering new insights and increasing outreach efficiency. By having everything centralized to one platform, users can reduce time searching through several apps. It also makes contacting those who you are less familiar with quicker and easier. Instead of a cold outreach, you can reach out to your mutual connections for help based on the strength of their connections which increases efficiency and time. The CRM also plans to include additional information such as birthdays, anniversaries, and other milestones that can be seen across all apps.
 
-----
+---
 #### Q4: What are the user stories that make up the Minumum Viable Product (MVP)?
 
 Our partner gave us approval of the following user stories through the form of a live Q&A document. This is where we asked what user stories the MVP should have and he gave us a list to use: [https://docs.google.com/document/d/1xaU61YvkZRlfcYB_95nwnXfTGu-DjYqWfkrKD8cHgRk/edit?usp=sharing](https://docs.google.com/document/d/1xaU61YvkZRlfcYB_95nwnXfTGu-DjYqWfkrKD8cHgRk/edit?usp=sharing) 
@@ -56,7 +53,7 @@ He also created a nice video of him walking through the document: [https://www.l
     
 8. As a user, I want to automatically log my communication history (calls, emails, meetings) so I can easily track the progress of my relationships.
 
-----
+---
 #### Q5: Have you decided on how you will build it? Share what you know now or tell us the options you are considering.
 
 The architecture of the Personal CRM application will follow a client-server model, leveraging scalable and modular design principles. 
@@ -75,12 +72,12 @@ Third-Party Applications/APIs:
 - OpenAI API: For AI-driven message suggestions. 
 - Social Media APIs: To aggregate contacts from LinkedIn and sync data across platforms.
 
-----
+---
 ## Intellectual Property Confidentiality Agreement 
 
 We have agreed on option #2 - You can upload the code to GitHub or other similar publicly available domains. He owns the actual project but the code we worked on is on a private github repository in the CSC301 classroom.
 
-----
+---
 ## Teamwork Details
 
 #### Q6: Have you met with your team?
@@ -95,7 +92,7 @@ We met and did a team-building activity, and we have a form of communication thr
 	- Harvir likes to sleep
 	- Idris has a lifeguarding certification
 
-----
+---
 #### Q7: What are the roles & responsibilities on the team?
 
 The CSV document is in the GitHub repo. The roles and experiences are listed beside each member: 
@@ -114,19 +111,19 @@ Humraj - Backend Developer & Databases & Team Manager & Partner Liaison: Interns
 
 Harvir - Backend Developer & Databases & Prototyping.  Course experience with Database Systems from CSC343 and CSC443 (Includes a project associated with building an efficient LSM database). Course Experience with Backend development using Django in CSC309. I also have experience prototyping using Figma in CSC318 (Also taking CSC428). Looking forward to improving further on the fields I’m interested and experienced in.
 
-----
+---
 #### Q8: How will you work as a team?
 
 After our tutorial meeting with Omid on Tuesdays at 8:15 PM, we will have a mandatory scrum meeting in our Discord Server. This is where we will discuss what we have done the previous week if we haven’t already as well as discuss any suggestions given by Omid during the tutorials. This is also where we will create actionable tasks for every team member to work on for the next week. Our teams also agreed on meeting over Discord on Thursdays at 7 PM for a middle of the week check-in if needed. We have set up a recurring Zoom meeting with our partner on Thursdays at 12 PM where we will present our progress to our partner and clear up any questions we have. For code reviews and sessions, it will be on an ad hoc basis depending on if additional clarity is needed for pull-requests. We had our first meeting with our partner on January 22nd at 12PM to discuss project expectations and ideas. We have scheduled a follow up meeting to go over our deliverable on Monday at 9:30 AM. 
 
-----  
+---
 #### Q9: How will you organize your team?
 
 Our group's main organization method is through notion. This is where we keep track of all links, deadlines and resources related to the project. These are things such as meeting minutes for all of our meetings and To-Do list items to assign each of our team member’s tasks. Notion has a nice Kanban board functionality that allows us to set task status in terms of what is in the backlog, what should be done, what is in progress and what is completed. We prioritize tasks based on deadlines and how important they are in terms of course assignments and MVP. For course assignment related tasks we split questions up evenly throughout the teams but for more tech specific related items we will assign tasks to whoever is qualified for the role. Additionally, we use discord for communication. This is where we can talk about ideas. We also ping each other to notify individuals of task deadlines and if anything is incomplete. Github is where our source code resides.
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcW5f4oabMFRNBWrcPIvofo_qdS2uLFTEh4hCMSZzJqWKR-q4WFfWbWqs8hLlrJ7VcTC0MuAyLRMcBbaxf_R3kIarS16DWBNE8rqnAzCgOW0gydIn2grlcFxJ4YnO5KkWmK1FCIKA?key=IDnHbsF_JwSuty_r_71HsnVx)
 
-----
+---
 #### Q10: What are the rules regarding how your team works?
 
 Team meetings without the partner will be held once a week through our Discord server. We will be using Discord for all forms of communication and reminders. We also have a teamspace on Notion which we will be using to keep track of meeting minutes, todo lists and scheduling meetings. The teamspace has also been shared with our partner. As mentioned above, we will keep track of meeting minutes which will track participants at meetings to keep everyone accountable. The todo list will keep everyone on top of action items. It also allows us to assign tasks to our members to ensure that someone is responsible for it. We have assigned Humraj as our group leader. A part of his role is to ensure that everyone stays on track with their assigned tasks.  To communicate with our partner we will be using email per his request. We will be meeting with him weekly through Zoom with an optional in person meeting monthly.
@@ -146,25 +143,23 @@ Arifa - If I were to disengage from the project, I would have reduced participat
 
 Humraj - If I have disengaged from the project my teammates will notice that I have become very inconsistent when responding to text messages. If this happens then my teammates should try to set deadlines and come up with plans on how tasks should be completed. Additionally, my team should try to book 1-1 zoom/discord meetings to try to get me back on track and get me up to speed with what I have missed.
 
-----
+---
 ## Organisation Details
 
-----
 #### Q11. How does your team fit within the overall team organisation of the partner?
 
 Our partner is building this platform with more than just what we are doing. He has made it so that the section that we are working on, the personal relationship manager, is not dependent or connected to any of his team's work or the other team from the class that is working with him as well. Our team will take on the role of developers for a section of his bigger platform project. We will be developing the features needed for that portion such as messaging, notifications and integration with other platforms and more. 
 
 We are fit for this role because we can work on a fully self-enclosed project within a greater scale project so we don't have any effect on another part of his project if something goes badly. And if we do well, then this portion can be slotted into its place in the project easily through API integration. It also only uses technology that we are experienced in or interested in learning rather than the broader range of tools and skills needed to create the whole project or to collaborate on other parts of the project where we would need to read and understand the work their team has done with those other tools we would not have experience with.
 
-----
+---
 #### Q12. How does your project fit within the overall product from the partner?
 
 The project that we are working on is a web extension of the actual mobile-friendly CRM manager application. Based on our implementation/MVP, it can be converted into a mobile application later on. But in our case, we are just responsible for making the web version. Our MVP is the first prototype for the web version of the application, where we will build both the core front and back-end features. Also, our partner’s vision is to integrate two separate platforms into one later down the line. The products will consist of our Personal CRM applications and another more social media like product.
 
-----
+---
 ## Potential Risks
 
-----
 #### Q13. What are some potential risks to your project?
 
 Potential Project Risks:
@@ -175,11 +170,11 @@ Potential Project Risks:
 - Balancing MVP Scope to produce realistic Deliverables 
 	- Must focus on tasks within MVP scope to produce Deliverables on time to produce a functional product that can be further improved and iterated upon.
 
-----
+---
 #### Q14. What are some potential mitigation strategies for the risks you identified?
 
 1. Begin by integrating a small subset of the APIs (e.g. LinkedIn) to simplify development and validate our process before scaling up. Furthermore, we will use robust API frameworks to streamline the process and plan for regular testing + debugging. 
 2. Research successful CRMs to adapt proven UI design practices. Also, we plan to create a detailed user-centred prototype to focus on the design early in the process. 
 3. Break down the MVP into smaller, achievable goals and prioritize essential features first. Communicate regularly with partners to align on deliverables and manage expectations.
 
-----
+---
