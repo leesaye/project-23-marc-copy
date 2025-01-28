@@ -72,12 +72,10 @@ Third-Party Applications/APIs:
 - OpenAI API: For AI-driven message suggestions. 
 - Social Media APIs: To aggregate contacts from LinkedIn and sync data across platforms.
 
----
 ## Intellectual Property Confidentiality Agreement 
 
 We have agreed on option #2 - You can upload the code to GitHub or other similar publicly available domains. He owns the actual project but the code we worked on is on a private github repository in the CSC301 classroom.
 
----
 ## Teamwork Details
 
 #### Q6: Have you met with your team?
@@ -143,7 +141,6 @@ Arifa - If I were to disengage from the project, I would have reduced participat
 
 Humraj - If I have disengaged from the project my teammates will notice that I have become very inconsistent when responding to text messages. If this happens then my teammates should try to set deadlines and come up with plans on how tasks should be completed. Additionally, my team should try to book 1-1 zoom/discord meetings to try to get me back on track and get me up to speed with what I have missed.
 
----
 ## Organisation Details
 
 #### Q11. How does your team fit within the overall team organisation of the partner?
@@ -157,7 +154,6 @@ We are fit for this role because we can work on a fully self-enclosed project wi
 
 The project that we are working on is a web extension of the actual mobile-friendly CRM manager application. Based on our implementation/MVP, it can be converted into a mobile application later on. But in our case, we are just responsible for making the web version. Our MVP is the first prototype for the web version of the application, where we will build both the core front and back-end features. Also, our partner’s vision is to integrate two separate platforms into one later down the line. The products will consist of our Personal CRM applications and another more social media like product.
 
----
 ## Potential Risks
 
 #### Q13. What are some potential risks to your project?
