@@ -6,7 +6,7 @@ Marc Gaudett, mgaudett@gmail.com
 
 Marc helps B2B SaaS Startup companies scale their revenue. Currently he is running a boutique advisory firm for SaaS companies and helping the Founder replicate their success before bringing on a team to scale.
 
-## Description about the project
+## Description of the project
 
 The Personal CRM Web Application is designed to automate and simplify the process of maintaining relationships across personal and professional circles. For busy professionals, particularly those in fast-paced industries like tech, managing a growing network of contacts can be overwhelming. Life moves quickly, and it’s easy to forget birthdays, miss opportunities to reconnect, or let important relationships fall. Our application centralizes your contact information, aggregates data from platforms like LinkedIn and WhatsApp, and provides automated reminders for important milestones such as birthdays and anniversaries. It also offers AI-driven insights to help you understand the quality and strength of your connections, so you can prioritize relationships that matter most. By streamlining this process in a single, intuitive platform, users save time, enhance their outreach, and keep up-to-date on their social and professional circles without the burden of manual tracking.
 ​
@@ -18,14 +18,14 @@ Personal CRM Accomplishes 3 main user stories:
 
 2. As a user, I want to be able to easily action follow-ups or outstanding items and set due dates - that means I should be able to tap one button and the message sends.
     
-3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to next question."
+3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (Example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to the next question."
 
 ## Instructions
 
 1. Sign up and link your social media accounts (LinkedIn, WhatsApp) or upload a CSV to import contacts.
-2. Log in to access your dashboard which is aggregated view of all pages
+2. Log in to access your dashboard which is an aggregated view of all pages
 3. Visit the Feed page to view all the events of the people in your contacts
-4. The Feed page is also where you can get suggestions for improving relationships though automated tasks, like reconnecting with inactive contacts or congratulating someone on an upcoming event.
+4. The Feed page also offers suggestions for improving relationships through automated tasks, like reconnecting with inactive contacts or congratulating someone on an upcoming event.
 5. Visit the reminders page to see a calendar view of the upcoming events that will take place and any automated tasks.
 6. Visit the contact page to add new contacts and also view the status and quality of your relationships
 
@@ -46,7 +46,7 @@ We will be using standard coding guidelines that adhere to the five pillars of c
 4. Reliability
 5. Reusability
 
-We will be using [black](https://black.readthedocs.io/en/stable/) for python to ensure consistent formatting.
+We will be using [black](https://black.readthedocs.io/en/stable/) for Python to ensure consistent formatting.
 
 ​
  ## Licenses 
