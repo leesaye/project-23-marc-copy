@@ -141,6 +141,7 @@ Arifa - If I were to disengage from the project, I would have reduced participat
 
 Humraj - If I have disengaged from the project my teammates will notice that I have become very inconsistent when responding to text messages. If this happens then my teammates should try to set deadlines and come up with plans on how tasks should be completed. Additionally, my team should try to book 1-1 Zoom/Discord meetings to try to get me back on track and get me up to speed with what I have missed.
 
+Supriya - If I disengage from the project, my teammates will notice a lack of responses during meetings. If this happens, I think you should ask for my opinion so that I can reconnect. I also think a simple reminder would help.
 ## Organisation Details
 
 #### Q11. How does your team fit within the overall team organisation of the partner?
