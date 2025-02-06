@@ -3,7 +3,11 @@ First pull to the latest version and then cd into the personal-crm directory (wh
 Then run the following scripts:
 - npm install
 - npm start
+
 This will start a local development server that will pop up in your browser. Make changes to the code and save to see the changes reflected on the server.
+
+
+Below this is the auto-generated React information readme.
 
 
 # Getting Started with Create React App
