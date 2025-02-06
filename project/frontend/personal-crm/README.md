@@ -1,3 +1,11 @@
+## What to run to get a local react development server running:
+First pull to the latest version and then cd into the personal-crm directory (where this file is)
+Then run the following scripts:
+- npm install
+- npm start
+This will start a local development server that will pop up in your browser. Make changes to the code and save to see the changes reflected on the server.
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
