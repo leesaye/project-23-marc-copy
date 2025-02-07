@@ -1,0 +1,28 @@
+# Ignore virtual environments
+venv/
+env/
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore database files
+db.sqlite3
+*.sqlite3
+
+# Ignore environment variables and secrets
+.env
+.env.local
+.env.production
+
+# Ignore logs
+*.log
+
+# Ignore migrations cache
+**/migrations/*.pyc
+**/migrations/__pycache__/
+
+# Ignore system files (macOS, Windows, Linux)
+.DS_Store
+Thumbs.db
