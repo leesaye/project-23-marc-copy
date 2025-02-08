@@ -16,5 +16,5 @@
 		4. retype password = 123
 		5. override password restrictions = y
 4. Run the run.sh afterwards to start the backend server
-5. Here you can visit the admin page on port 8000 and user your superuser creds to login
+5. Here you can visit the admin page on port 8000 and use your superuser creds to login
 6. You can also use the api endpoints

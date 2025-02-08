@@ -2,17 +2,12 @@ from django.shortcuts import render
 from django.contrib.auth.models import User
 from .serializer import UserRegistrationSerializer
 
-#imports for function based view
-from rest_framework.decorators import api_view, permission_classes
-#from rest_framework.permissions import IsAuthenticated, AllowAny
-#from rest_framework.response import Response
-
 #imports for class based view
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-#stuff for part 2
+#stuff for adding token to cookie
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -82,28 +77,28 @@ class CustomRefreshTokenView(TokenRefreshView):
 
         except:
             return Response({'refreshed':False})
+
+class Logout(APIView):
+    def post(self, request):
+        try:
+            res = Response()
+            res.data = {'success':True}
+            res.delete_cookie('access_token', path='/', samesite='None')
+            res.delete_cookie('refresh_token', path='/',samesite='None')
+            return res
+        except:
+            return Response({'success':False})
         
-@api_view(['POST'])
-def logout(request):
-    try:
-        res = Response()
-        res.data = {'success':True}
-        res.delete_cookie('access_token', path='/', samesite='None')
-        res.delete_cookie('refresh_token', path='/', samesite='None')
-        return res
-    except:
-        return Response({'success':False})
+class IsAuthenticated(APIView):
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        return Response({'authenticated':True})
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def is_authenticated(request):
-    return Response({'authenticated':True})
-
-@api_view(['POST'])
-@permission_classes([AllowAny])
-def register(request):
-    serializer = UserRegistrationSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.error)
+class Register(APIView):
+    permission_classes = [AllowAny] 
+    def post(self, request):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors)
