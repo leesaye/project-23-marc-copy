@@ -1,10 +1,10 @@
-import { Fragment } from 'react';
+import Layout from "../components/Layout";
 
 function Home() {
     return (
-        <Fragment>
+        <Layout>
             <h1>Home</h1>
-        </Fragment>
+        </Layout>
     );
 }
 
