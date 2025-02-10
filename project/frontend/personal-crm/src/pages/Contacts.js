@@ -10,6 +10,7 @@ import axios from 'axios';
 function Contacts() {
     const [searchQuery, setSearchQuery] = useState("");
     const [contacts, setContacts] = useState([]);
+    const [sortValue, setSearchValue] = useState("Name (asc)");
 
     useEffect(() => {
         // Fetch contacts from the Django backend
@@ -21,6 +22,17 @@ function Contacts() {
                 console.error("Error fetching contacts", error);
             });
     }, []);
+
+    const filteredContacts = contacts.filter((contacts) => 
+        contacts.name.toLowerCase().search(searchQuery.toLowerCase()) !== -1
+    );
+
+    const sortedContacts = [...filteredContacts].sort((a, b) => {
+        if (sortValue === "Name (desc)") return b.name.localeCompare(a.name);
+        if (sortValue === "Relationship rating (asc)") return a.relationship_rating - b.relationship_rating;
+        if (sortValue === "Relationship rating (desc)") return b.relationship_rating - a.relationship_rating;
+        return a.name.localeCompare(b.name); // Default is Name (asc), including for any unknown values
+    });
 
 
     return (
@@ -43,10 +55,10 @@ function Contacts() {
                                 Sort by
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><button class="dropdown-item">Name (asc)</button></li>
-                                <li><button class="dropdown-item">Name (desc)</button></li>
-                                <li><button class="dropdown-item">Relationship rating (asc)</button></li>
-                                <li><button class="dropdown-item">Relationship rating (desc)</button></li>
+                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
+                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
+                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
+                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
                             </ul>
                         </div>
                     </div>
@@ -77,8 +89,7 @@ function Contacts() {
                     </div>
                 </div>
                 {!contacts ? <p>Loading...</p>:
-                contacts.filter((contacts) => contacts.name.toLowerCase().search(searchQuery.toLowerCase()) !== -1)
-                .map(contact =>
+                sortedContacts.map(contact =>
                     <Contact contact={contact} />
                 )}
                 
