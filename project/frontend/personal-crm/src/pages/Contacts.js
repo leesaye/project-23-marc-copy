@@ -4,8 +4,26 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import Contact from '../components/Contact';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function Contacts() {
+    const [inputText, setInputText] = useState("");
+    const [contacts, setContacts] = useState([]);
+
+    useEffect(() => {
+        // Fetch contacts from the Django backend
+        axios.get('http://127.0.0.1:8000/contacts/')
+            .then(response => {
+                setContacts(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching contacts", error);
+            });
+    }, []);
+
+
+
     return (
         <Layout>
             <div className="conatiner bg-primary-subtle rounded p-3">
@@ -59,10 +77,10 @@ function Contacts() {
                         <p>Relationship</p>
                     </div>
                 </div>
-                <Contact />
-                <Contact />
-                <Contact />
-                <Contact />
+                {!contacts ? <p>Loading...</p>:
+                contacts.map(contact =>
+                    <Contact contact={contact} />
+                )}
                 
             </div>
         </Layout>
