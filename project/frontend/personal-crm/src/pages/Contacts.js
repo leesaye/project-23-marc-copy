@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 function Contacts() {
-    const [inputText, setInputText] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
     const [contacts, setContacts] = useState([]);
 
     useEffect(() => {
@@ -23,7 +23,6 @@ function Contacts() {
     }, []);
 
 
-
     return (
         <Layout>
             <div className="conatiner bg-primary-subtle rounded p-3">
@@ -34,7 +33,7 @@ function Contacts() {
                     <div className="col-4 mt-2">
                         <Paper elevation={0} component="form" className="p-1 w-75">
                             <SearchIcon />
-                            <InputBase placeholder="Search contacts" inputProps={{ 'aria-label': 'search contacts' }} />
+                            <InputBase placeholder="Search contacts" inputProps={{ 'aria-label': 'search contacts' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value.toLowerCase())} />
                         </Paper>
                     </div>
                     <div className="col-2 mt-2">
@@ -78,7 +77,8 @@ function Contacts() {
                     </div>
                 </div>
                 {!contacts ? <p>Loading...</p>:
-                contacts.map(contact =>
+                contacts.filter((contacts) => contacts.name.toLowerCase().search(searchQuery) !== -1)
+                .map(contact =>
                     <Contact contact={contact} />
                 )}
                 
