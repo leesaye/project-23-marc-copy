@@ -4,6 +4,8 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import Contact from '../components/Contact';
+import AddIcon from '@mui/icons-material/Add';
+import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -39,16 +41,24 @@ function Contacts() {
         <Layout>
             <div className="conatiner bg-primary-subtle rounded p-3">
                 <div className="row">
-                    <div className="col-5">
+                    <div className="col-2">
                         <h2>Contacts</h2>
                     </div>
-                    <div className="col-4 mt-2">
+                    <div className="col-3 mt-1">
+                        <Link to="/contacts/add/">
+                            <button className="btn btn-success">
+                                <AddIcon />
+                                Add contact
+                            </button>
+                        </Link>
+                    </div>
+                    <div className="col-4 mt-1">
                         <Paper elevation={0} component="form" className="p-1 w-75">
                             <SearchIcon />
                             <InputBase placeholder="Search contacts" inputProps={{ 'aria-label': 'search contacts' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                         </Paper>
                     </div>
-                    <div className="col-2 mt-2">
+                    <div className="col-2 mt-1">
                         <div className="dropdown">
                             <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <SwapVertIcon />
@@ -62,7 +72,7 @@ function Contacts() {
                             </ul>
                         </div>
                     </div>
-                    <div className="col-1 mt-2">
+                    <div className="col-1 mt-1">
                         <div className="dropdown">
                             <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 Import

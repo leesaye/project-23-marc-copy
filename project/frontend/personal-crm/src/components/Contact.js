@@ -2,7 +2,7 @@ import React from 'react';
 
 function Contact({contact}) {
     return (
-        <div>
+        <div className="d-flex flex-column">
             <div className="row" key={contact.id}>
                 <hr />
                 <div className="col-4">
@@ -16,6 +16,9 @@ function Contact({contact}) {
                 </div>
                 <div className="col-2">
                     <p>{contact.relationship}</p>
+                </div>
+                <div className="col-1">
+                    <a className="link-primary link-underline-opacity-0" href="/contacts/">Edit</a>
                 </div>
             </div>
         </div>
