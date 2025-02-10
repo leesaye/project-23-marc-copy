@@ -14,6 +14,13 @@ class ContactView(APIView):
                    'relationship': contact.relationship} for contact in Contact.objects.all()]
         return Response(contacts)
 
+    def post(self, request):
+        serializer = ContactSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
 # Add a contact (post)
 
 # Edit a contact (get + post)
