@@ -1,17 +1,27 @@
+import './Login.css';
 import { useState } from "react";
 import { Link } from 'react-router-dom'
 // import { login } from "../endpoints/api";
+
 import { useAuth } from "../contexts/useAuth";
 
 const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState(false); //implement later
+    const [error, setError] = useState(false); 
     const { login_user } = useAuth();
 
-    const handleLogin = () => {
-        login_user(username, password)
+  const handleLogin = async () => {
+    try {
+      // Clears Errors
+      setError(false);
+      // Login Attempt
+      await login_user(username, password);
+    } catch (err) {
+      // Sets Errors
+      setError(true);
     }
+  };
 
     return (
         <div className="d-flex justify-content-center align-items-center min-vh-100">

@@ -19,7 +19,6 @@ const Register = () => {
         <div className="d-flex justify-content-center align-items-center min-vh-100">
         <div className="border bg-white shadow landing-box-area">
         <div className="title">Personal CRM</div>
-        <div className="mb-4 subtitle">Welcome back!</div>
         <div className="mb-3">
             <label htmlFor="usernameInput" className="form-label">Username</label>
             <input type="username" className={error?"form-control error-label": "form-control"} id="emailInput" name="email" value={username} required onChange={event=>setUsername(event.target.value)} />
@@ -42,8 +41,8 @@ const Register = () => {
             </button>
         </div>
         {error ? <p className='redlink'>Username/Password not found</p> : <></>}
-        <small>Don't have an account?  
-            <Link to="/login" className="redlink"> Sign Up</Link>
+        <small>Already have an account?  
+            <Link to="/login" className="redlink"> Log in</Link>
         </small>
         </div>
         </div>
