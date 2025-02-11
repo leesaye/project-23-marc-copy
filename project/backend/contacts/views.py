@@ -27,6 +27,32 @@ class AddContactView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# GET/POST
+class IndividualContactView(APIView):
+    def get(self, request, contact_id):
+        try:
+            contact = Contact.objects.get(id=contact_id)
+        except Contact.DoesNotExist:
+            raise NotFound(detail="Contact not found", code=status.HTTP_404_NOT_FOUND)
+
+        # Serialize
+        serializer = ContactSerializer(contact)
+        return Response(serializer.data)
+
+    def post(self, request, contact_id):
+        try:
+            contact = Contact.objects.get(id=contact_id)
+        except Contact.DoesNotExist:
+            raise NotFound(detail="Contact not found", code=status.HTTP_404_NOT_FOUND)
+
+        # Update contact fields and serialize
+        serializer = ContactSerializer(contact, data=request.data, partial=True)  # partial=True allows partial updates
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # Relationship quiz
 class RelationshipQuizView(APIView):
