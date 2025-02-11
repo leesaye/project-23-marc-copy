@@ -1,9 +1,9 @@
 import Layout from '../components/Layout';
 import Paper from '@mui/material/Paper';
+import Contact from '../components/Contact';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import Contact from '../components/Contact';
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';

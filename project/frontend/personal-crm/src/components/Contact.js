@@ -1,4 +1,5 @@
 import React from 'react';
+import { LinearProgress } from '@mui/material';
 
 function Contact({contact}) {
     return (
@@ -12,7 +13,11 @@ function Contact({contact}) {
                     <p>{contact.job}</p>
                 </div>
                 <div className="col-3">
-                    <p>{contact.relationship_rating}</p>
+                    <LinearProgress className="w-75"
+                        variant="determinate"
+                        value={contact.relationship_rating}
+                        sx={{ height: 10, borderRadius: 5 }}
+                    />
                 </div>
                 <div className="col-2">
                     <p>{contact.relationship}</p>
