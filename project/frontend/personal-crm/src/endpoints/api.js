@@ -80,7 +80,6 @@ export const is_authenticated = async () => {
 export const register = async (username, email, password) => {
     const response = axios.post(REGISTER_URL,
         {username, email, password},
-        {withCredentials: true}
     )
     return response.data
 }
