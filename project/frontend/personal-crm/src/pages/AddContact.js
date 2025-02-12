@@ -1,5 +1,5 @@
 import Layout from "../components/Layout";
-import { FormControl, InputLabel, OutlinedInput, Box } from "@mui/material";
+import { FormControl, InputLabel, OutlinedInput, Box, Select, Collapse, MenuItem } from "@mui/material";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -7,6 +7,13 @@ import axios from 'axios';
 function AddContact() {
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
     const imageInputRef = useRef();
+    const [quizVisible, setQuizVisible] = useState(false);
+    const [quizAnswers, setQuizAnswers] = useState({
+        knownLong: "",
+        trust: "",
+        communication: "",
+        enjoyment: "",
+    });
 
     const [formData, setFormData] = useState({
         name: "",
@@ -14,24 +21,40 @@ function AddContact() {
         phone: "",
         job: "",
         relationship: "",
-        notes: ""
+        notes: "",
+        relationship_rating: 0
     });
 
     const nav = useNavigate();
 
-    const handleChange = (e) => {
+    const handleContactFormChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    function handleUploadClick() {
+    function handleImageUploadClick() {
         imageInputRef.current.click();
+    }
+
+    const handleQuizChange = (e) => {
+        setQuizAnswers({ ...quizAnswers, [e.target.name]: e.target.value})
+    }
+
+    const calculateRelationshipValue = (e) => {
+        let value = 0;
+        if (quizAnswers.knownLong === "yes") value += 25;
+        if (quizAnswers.trust === "yes") value += 25;
+        if (quizAnswers.communication === "yes") value += 25;
+        if (quizAnswers.enjoyment === "yes") value += 25;
+        return value;
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent page reload
 
+        const updatedFormData = { ...formData, relationship_rating: quizVisible ? calculateRelationshipValue() : formData.relationship_rating };
+
         try {
-            const response = await axios.post("http://127.0.0.1:8000/contacts/add", formData);
+            const response = await axios.post("http://127.0.0.1:8000/contacts/add", updatedFormData);
             console.log("Contact added:", response.data);
             alert("Contact successfully added!");
             nav('/contacts/');
@@ -46,7 +69,14 @@ function AddContact() {
     return (
         <Layout>
             <div className="conatiner bg-primary-subtle rounded p-3 vh-100">
-                <h2>Create a new contact</h2>
+                <div className="row">
+                    <div className="col-5">
+                        <h2>Create a new contact</h2>
+                    </div>
+                    <div className="col-5">
+                        <button className="btn btn-primary mt-1" onClick={() => setQuizVisible(!quizVisible)}>Relationship rating quiz</button>
+                    </div>
+                </div>
                 <div className="row">
                     <Box className="col-8" component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
                         <div className="row my-4">
@@ -60,7 +90,7 @@ function AddContact() {
                                     placeholder="John Doe"
                                     label="Name"
                                     value={formData.name}
-                                    onChange={handleChange}
+                                    onChange={handleContactFormChange}
                                     />
                                 </FormControl>
                             </div>
@@ -74,13 +104,13 @@ function AddContact() {
                                     placeholder="johndoe@gmail.com"
                                     label="Email"
                                     value={formData.email}
-                                    onChange={handleChange}
+                                    onChange={handleContactFormChange}
                                     />
                                 </FormControl>
                             </div>
                         </div>
                         <div className="row my-4">
-                        <div className="col-4">
+                            <div className="col-4">
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="job">Phone</InputLabel>
                                     <OutlinedInput
@@ -90,7 +120,7 @@ function AddContact() {
                                     placeholder="111-222-3333"
                                     label="phone"
                                     value={formData.phone}
-                                    onChange={handleChange}
+                                    onChange={handleContactFormChange}
                                     />
                                 </FormControl>
                             </div>
@@ -104,7 +134,7 @@ function AddContact() {
                                     placeholder="Software engineer"
                                     label="Job"
                                     value={formData.job}
-                                    onChange={handleChange}
+                                    onChange={handleContactFormChange}
                                     />
                                 </FormControl>
                             </div>
@@ -118,7 +148,7 @@ function AddContact() {
                                     placeholder="Coworker"
                                     label="Relationship"
                                     value={formData.relationship}
-                                    onChange={handleChange}
+                                    onChange={handleContactFormChange}
                                     />
                                 </FormControl>
                             </div>
@@ -135,19 +165,78 @@ function AddContact() {
                                     name="notes"
                                     label="Notes"
                                     value={formData.notes}
-                                    onChange={handleChange}
+                                    onChange={handleContactFormChange}
                                     />
                                 </FormControl>
                             </div>
                         </div>
-                        <div className="row my-4">
-                            <div className="col-4">
-                                <button className="btn btn-info">Relationship rating quiz</button>
+                        <Collapse in={quizVisible} >
+                            <div className="row my-4">
+                                <div className="col-6">
+                                    <FormControl className="w-100">
+                                        <InputLabel htmlFor="knownLong">Have you known them for more than 10 years?</InputLabel>
+                                        <Select 
+                                            id="knownLong"
+                                            name="knownLong"
+                                            label="knownLong"
+                                            value={quizAnswers.knownLong}
+                                            onChange={handleQuizChange}
+                                        >
+                                            <MenuItem value="yes">Yes</MenuItem>
+                                            <MenuItem value="no">No</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                                <div className="col-6">
+                                    <FormControl className="w-100">
+                                        <InputLabel htmlFor="trust">Do you trust them?</InputLabel>
+                                        <Select 
+                                            id="trust"
+                                            name="trust"
+                                            label="trust"
+                                            value={quizAnswers.trust}
+                                            onChange={handleQuizChange}
+                                        >
+                                            <MenuItem value="yes">Yes</MenuItem>
+                                            <MenuItem value="no">No</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
                             </div>
-                            <div className="col-8">
-                                <button className="btn btn-success float-end">Submit</button>
+                            <div className="row my-4">
+                                <div className="col-6">
+                                    <FormControl className="w-100">
+                                        <InputLabel htmlFor="communication">Do you feel like you communicate well with them?</InputLabel>
+                                        <Select 
+                                            id="communication"
+                                            name="communication"
+                                            label="communication"
+                                            value={quizAnswers.communication}
+                                            onChange={handleQuizChange}
+                                        >
+                                            <MenuItem value="yes">Yes</MenuItem>
+                                            <MenuItem value="no">No</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
+                                <div className="col-6">
+                                    <FormControl className="w-100">
+                                        <InputLabel htmlFor="enjoyment">Do you enjoy being around them?</InputLabel>
+                                        <Select 
+                                            id="enjoyment"
+                                            name="enjoyment"
+                                            label="enjoyment"
+                                            value={quizAnswers.enjoyment}
+                                            onChange={handleQuizChange}
+                                        >
+                                            <MenuItem value="yes">Yes</MenuItem>
+                                            <MenuItem value="no">No</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </div>
                             </div>
-                        </div>
+                        </Collapse>
+                        <button className="btn btn-success float-end my-4">Submit</button>
                     </Box>
                     <div className="col-4">
                         <div className="row">
@@ -155,7 +244,7 @@ function AddContact() {
                         </div>
                         <br />
                         <div className="row">
-                            <button className="btn btn-primary w-50 mx-auto" onClick={handleUploadClick}>Upload image</button>
+                            <button className="btn btn-primary w-50 mx-auto" onClick={handleImageUploadClick}>Upload image</button>
                             {/* Hidden File Input */}
                             <input
                                 type="file"
