@@ -74,7 +74,6 @@ class CustomRefreshTokenView(TokenRefreshView):
 
             return res
 
-
         except:
             return Response({'refreshed':False})
 
