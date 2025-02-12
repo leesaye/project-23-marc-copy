@@ -1,41 +1,79 @@
 import Layout from "../components/Layout";
 import { FormControl, InputLabel, OutlinedInput, Box } from "@mui/material";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 function AddContact() {
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
     const imageInputRef = useRef();
 
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        job: "",
+        relationship: "",
+        notes: ""
+    });
+
+    const nav = useNavigate();
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
     function handleUploadClick() {
         imageInputRef.current.click();
     }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault(); // Prevent page reload
+
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/contacts/add", formData);
+            console.log("Contact added:", response.data);
+            alert("Contact successfully added!");
+            nav('/contacts/');
+        } catch (error) {
+            console.error("Error adding contact", error);
+            alert("Failed to add contact.");
+            // If we want to clear form fields, uncomment
+            // setFormData({ name: "", email: "", job: "", relationship: "", notes: "" });
+        }
+    };
 
     return (
         <Layout>
             <div className="conatiner bg-primary-subtle rounded p-3 vh-100">
                 <h2>Create a new contact</h2>
                 <div className="row">
-                    <Box className="col-8" component="form" noValidate autoComplete="off">
+                    <Box className="col-8" component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
                         <div className="row my-4">
                             <div className="col-6">
                                 <FormControl className="w-100">
-                                    <InputLabel htmlFor="component-outlined">Name</InputLabel>
+                                    <InputLabel htmlFor="name">Name</InputLabel>
                                     <OutlinedInput
                                     required
-                                    id="component-outlined"
+                                    id="name"
+                                    name="name"
                                     placeholder="John Doe"
                                     label="Name"
+                                    value={formData.name}
+                                    onChange={handleChange}
                                     />
                                 </FormControl>
                             </div>
                             <div className="col-6">
                                 <FormControl className="w-100">
-                                    <InputLabel htmlFor="component-outlined">Email</InputLabel>
+                                    <InputLabel htmlFor="email">Email</InputLabel>
                                     <OutlinedInput
                                     required
-                                    id="component-outlined"
+                                    id="email"
+                                    name="email"
                                     placeholder="johndoe@gmail.com"
                                     label="Email"
+                                    value={formData.email}
+                                    onChange={handleChange}
                                     />
                                 </FormControl>
                             </div>
@@ -43,23 +81,29 @@ function AddContact() {
                         <div className="row my-4">
                             <div className="col-6">
                                 <FormControl className="w-100">
-                                    <InputLabel htmlFor="component-outlined">Job</InputLabel>
+                                    <InputLabel htmlFor="job">Job</InputLabel>
                                     <OutlinedInput
                                     required
-                                    id="component-outlined"
+                                    id="job"
+                                    name="job"
                                     placeholder="Software engineer"
                                     label="Job"
+                                    value={formData.job}
+                                    onChange={handleChange}
                                     />
                                 </FormControl>
                             </div>
                             <div className="col-6">
                                 <FormControl className="w-100">
-                                    <InputLabel htmlFor="component-outlined">Relationship</InputLabel>
+                                    <InputLabel htmlFor="relationship">Relationship</InputLabel>
                                     <OutlinedInput
                                     required
-                                    id="component-outlined"
+                                    id="relationship"
+                                    name="relationship"
                                     placeholder="Coworker"
                                     label="Relationship"
+                                    value={formData.relationship}
+                                    onChange={handleChange}
                                     />
                                 </FormControl>
                             </div>
@@ -67,13 +111,16 @@ function AddContact() {
                         <div className="row">
                             <div className="col-12">
                                 <FormControl className="w-100">
-                                    <InputLabel htmlFor="component-outlined">Notes</InputLabel>
+                                    <InputLabel htmlFor="notes">Notes</InputLabel>
                                     <OutlinedInput
                                     required
                                     multiline
                                     rows={3}
-                                    id="component-outlined"
+                                    id="notes"
+                                    name="notes"
                                     label="Notes"
+                                    value={formData.notes}
+                                    onChange={handleChange}
                                     />
                                 </FormControl>
                             </div>
