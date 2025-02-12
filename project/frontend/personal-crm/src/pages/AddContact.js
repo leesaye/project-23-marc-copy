@@ -178,7 +178,7 @@ function AddContact() {
                                         <Select 
                                             id="knownLong"
                                             name="knownLong"
-                                            label="knownLong"
+                                            label="Have you known them for more than 10 years?"
                                             value={quizAnswers.knownLong}
                                             onChange={handleQuizChange}
                                         >
@@ -193,7 +193,7 @@ function AddContact() {
                                         <Select 
                                             id="trust"
                                             name="trust"
-                                            label="trust"
+                                            label="Do you trust them?"
                                             value={quizAnswers.trust}
                                             onChange={handleQuizChange}
                                         >
@@ -210,7 +210,7 @@ function AddContact() {
                                         <Select 
                                             id="communication"
                                             name="communication"
-                                            label="communication"
+                                            label="Do you feel like you communicate well with them?"
                                             value={quizAnswers.communication}
                                             onChange={handleQuizChange}
                                         >
@@ -225,7 +225,7 @@ function AddContact() {
                                         <Select 
                                             id="enjoyment"
                                             name="enjoyment"
-                                            label="enjoyment"
+                                            label="Do you enjoy being around them?"
                                             value={quizAnswers.enjoyment}
                                             onChange={handleQuizChange}
                                         >
