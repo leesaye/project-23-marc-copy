@@ -11,6 +11,7 @@ function AddContact() {
     const [formData, setFormData] = useState({
         name: "",
         email: "",
+        phone: "",
         job: "",
         relationship: "",
         notes: ""
@@ -79,7 +80,21 @@ function AddContact() {
                             </div>
                         </div>
                         <div className="row my-4">
-                            <div className="col-6">
+                        <div className="col-4">
+                                <FormControl className="w-100">
+                                    <InputLabel htmlFor="job">Phone</InputLabel>
+                                    <OutlinedInput
+                                    required
+                                    id="phone"
+                                    name="phone"
+                                    placeholder="111-222-3333"
+                                    label="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    />
+                                </FormControl>
+                            </div>
+                            <div className="col-4">
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="job">Job</InputLabel>
                                     <OutlinedInput
@@ -93,7 +108,7 @@ function AddContact() {
                                     />
                                 </FormControl>
                             </div>
-                            <div className="col-6">
+                            <div className="col-4">
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="relationship">Relationship</InputLabel>
                                     <OutlinedInput
