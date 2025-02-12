@@ -8,7 +8,21 @@ import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 
+import { useNavigate } from "react-router-dom"
+
+import { logout } from "../endpoints/api";
+
 function CRMSidebar() {
+
+    const nav = useNavigate();
+
+    const handleLogout = async () => {
+        const success = await logout();
+        if (success){
+            nav('/login')
+        }
+    }
+
     return (
         <Sidebar>
             <Menu>
@@ -24,7 +38,11 @@ function CRMSidebar() {
                 <hr className="mx-3" style={{borderWidth: "3px"}} />
                 <MenuItem component={<Link to="/profile/" />} icon={<PersonIcon />}> Profile </MenuItem>
                 <MenuItem component={<Link to="/settings/" />} icon={<SettingsIcon />}> Settings </MenuItem>
-
+                <MenuItem> 
+                    <button className="btn btn-primary w-100 fs-6" onClick={()=>handleLogout()}>
+                        Logout
+                    </button>
+                 </MenuItem>
             </Menu>
         </Sidebar>
     );
