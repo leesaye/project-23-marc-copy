@@ -17,22 +17,34 @@ const CalendarPage = () => {
     const [newTask, setNewTask] = useState({ title: '', date: '' });
 
     useEffect(() => {
-        axios.get('http://127.0.0.1:8000/api/events/')
-            .then(response => setEvents(response.data))
-            .catch(error => console.error('Error fetching events:', error));
+        const fetchEventsAndTasks = async () => {
+            try {
+                const [eventsResponse, tasksResponse] = await Promise.all([
+                    axios.get('http://127.0.0.1:8000/api/events/'),
+                    axios.get('http://127.0.0.1:8000/api/tasks/')
+                ]);
 
-        axios.get('http://127.0.0.1:8000/api/tasks/')
-            .then(response => {
-                setTasks(response.data);
-                const taskEvents = response.data.map(task => ({
+                const eventsData = eventsResponse.data;
+                const tasksData = tasksResponse.data;
+
+                console.log("Fetched tasks:", tasksData);  
+
+                const taskEvents = tasksData.map(task => ({
+                    id: task.id,  
                     title: `Task: ${task.title}`,
-                    start: moment(task.date).startOf('day').toDate(),
-                    end: moment(task.date).endOf('day').toDate(),
+                    start: moment.utc(task.date).local().startOf('day').toDate(),
+                    end: moment.utc(task.date).local().endOf('day').toDate(),
                     allDay: true
                 }));
-                setEvents(prevEvents => [...prevEvents, ...taskEvents]); // Merge tasks with events
-            })
-            .catch(error => console.error('Error fetching tasks:', error));
+
+                setEvents([...eventsData, ...taskEvents]);
+                setTasks(tasksData);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchEventsAndTasks();
     }, []);
 
     const handleInputChange = (e) => {
@@ -45,36 +57,41 @@ const CalendarPage = () => {
         }
     };
 
-    const handleAddEvent = (e) => {
+    const handleAddEvent = async (e) => {
         e.preventDefault();
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
-            axios.post('http://127.0.0.1:8000/api/events/', newEvent)
-                .then(response => setEvents([...events, response.data]))
-                .catch(error => console.error('Error adding event:', error));
-            setNewEvent({ title: '', start: '', end: '' });
-            setShowEventForm(false);
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/api/events/', newEvent);
+                setEvents(prevEvents => [...prevEvents, response.data]);
+                setNewEvent({ title: '', start: '', end: '' });
+                setShowEventForm(false);
+            } catch (error) {
+                console.error('Error adding event:', error);
+            }
         }
     };
 
-    const handleAddTask = (e) => {
+    const handleAddTask = async (e) => {
         e.preventDefault();
         if (newTask.title.trim() !== '' && newTask.date) {
-            const taskEvent = {
-                title: `Task: ${newTask.title}`,
-                start: moment(newTask.date).startOf('day').toDate(),
-                end: moment(newTask.date).endOf('day').toDate(),
-                allDay: true
-            };
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/api/tasks/', newTask);
+                
+                const newTaskEvent = {
+                    id: response.data.id,
+                    title: `Task: ${response.data.title}`,
+                    start: moment.utc(response.data.date).local().startOf('day').toDate(),
+                    end: moment.utc(response.data.date).local().endOf('day').toDate(),
+                    allDay: true
+                };
 
-            axios.post('http://127.0.0.1:8000/api/tasks/', newTask)
-                .then(response => {
-                    setTasks([...tasks, response.data]);
-                    setEvents([...events, taskEvent]); // Ensure the new task appears immediately
-                })
-                .catch(error => console.error('Error adding task:', error));
-
-            setNewTask({ title: '', date: '' });
-            setShowTaskForm(false);
+                setTasks(prevTasks => [...prevTasks, response.data]);
+                setEvents(prevEvents => [...prevEvents, newTaskEvent]); 
+                setNewTask({ title: '', date: '' });
+                setShowTaskForm(false);
+            } catch (error) {
+                console.error('Error adding task:', error);
+            }
         }
     };
 
@@ -93,8 +110,8 @@ const CalendarPage = () => {
                     <div className="task-list">
                         <h3>Tasks</h3>
                         <ul>
-                            {tasks.map((task, index) => (
-                                <li key={index}>
+                            {tasks.map((task) => (
+                                <li key={task.id}>
                                     <strong>{task.title}</strong> - {moment(task.date).format('MMM DD, YYYY')}
                                 </li>
                             ))}
