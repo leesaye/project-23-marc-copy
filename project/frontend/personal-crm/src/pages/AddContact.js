@@ -1,5 +1,5 @@
 import Layout from "../components/Layout";
-import { FormControl, InputLabel, OutlinedInput, Box, Select, Collapse, MenuItem } from "@mui/material";
+import { FormControl, InputLabel, OutlinedInput, Box, Select, Collapse, MenuItem, FormControlLabel, Checkbox } from "@mui/material";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -7,6 +7,7 @@ import axios from 'axios';
 function AddContact() {
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
     const imageInputRef = useRef();
+    const [consent, setConsent] = useState(false);
     const [quizVisible, setQuizVisible] = useState(false);
     const [quizAnswers, setQuizAnswers] = useState({
         knownLong: "",
@@ -39,6 +40,10 @@ function AddContact() {
         setQuizAnswers({ ...quizAnswers, [e.target.name]: e.target.value})
     }
 
+    const handleConsentChange = (e) => {
+        setConsent(!consent);
+    }
+
     const calculateRelationshipValue = (e) => {
         let value = 0;
         if (quizAnswers.knownLong === "yes") value += 25;
@@ -53,17 +58,22 @@ function AddContact() {
 
         const updatedFormData = { ...formData, relationship_rating: quizVisible ? calculateRelationshipValue() : formData.relationship_rating };
 
-        try {
-            const response = await axios.post("http://127.0.0.1:8000/contacts/add", updatedFormData);
-            console.log("Contact added:", response.data);
-            alert("Contact successfully added!");
-            nav('/contacts/');
-        } catch (error) {
-            console.error("Error adding contact", error);
-            alert("Failed to add contact.");
-            // If we want to clear form fields, uncomment
-            // setFormData({ name: "", email: "", job: "", relationship: "", notes: "" });
+        if (consent) {
+            try {
+                const response = await axios.post("http://127.0.0.1:8000/contacts/add", updatedFormData);
+                console.log("Contact added:", response.data);
+                alert("Contact successfully added!");
+                nav('/contacts/');
+            } catch (error) {
+                console.error("Error adding contact", error);
+                alert("Failed to add contact.");
+                // If we want to clear form fields, uncomment
+                // setFormData({ name: "", email: "", job: "", relationship: "", notes: "" });
+            }
+        } else {
+            alert("Consent required");
         }
+        
     };
 
     return (
@@ -84,7 +94,7 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="name">Name</InputLabel>
                                     <OutlinedInput
-                                    required
+                                    required="required"
                                     id="name"
                                     name="name"
                                     placeholder="John Doe"
@@ -98,7 +108,7 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="email">Email</InputLabel>
                                     <OutlinedInput
-                                    required
+                                    required="required"
                                     id="email"
                                     name="email"
                                     placeholder="johndoe@gmail.com"
@@ -114,7 +124,7 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="job">Phone</InputLabel>
                                     <OutlinedInput
-                                    required
+                                    required="required"
                                     id="phone"
                                     name="phone"
                                     placeholder="111-222-3333"
@@ -128,7 +138,7 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="job">Job</InputLabel>
                                     <OutlinedInput
-                                    required
+                                    required="required"
                                     id="job"
                                     name="job"
                                     placeholder="Software engineer"
@@ -142,7 +152,7 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="relationship">Relationship</InputLabel>
                                     <OutlinedInput
-                                    required
+                                    required="required"
                                     id="relationship"
                                     name="relationship"
                                     placeholder="Coworker"
@@ -158,7 +168,7 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="notes">Notes</InputLabel>
                                     <OutlinedInput
-                                    required
+                                    required="required"
                                     multiline
                                     rows={3}
                                     id="notes"
@@ -236,6 +246,7 @@ function AddContact() {
                                 </div>
                             </div>
                         </Collapse>
+                        <FormControlLabel control={<Checkbox />} label="Consent to add this contact" required="required" onChange={handleConsentChange} />
                         <button className="btn btn-success float-end my-4">Submit</button>
                     </Box>
                     <div className="col-4">
