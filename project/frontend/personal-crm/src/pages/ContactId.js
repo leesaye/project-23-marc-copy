@@ -34,6 +34,8 @@ function ContactId() {
             </div>
             }
 
+            <button className="btn btn-danger">Delete contact</button>
+
         </Layout>
     );
 }
