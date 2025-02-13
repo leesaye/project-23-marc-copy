@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -15,6 +16,25 @@ const CalendarPage = () => {
     const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '' });
     const [newTask, setNewTask] = useState({ title: '', date: '' });
 
+    useEffect(() => {
+        axios.get('http://127.0.0.1:8000/api/events/')
+            .then(response => setEvents(response.data))
+            .catch(error => console.error('Error fetching events:', error));
+
+        axios.get('http://127.0.0.1:8000/api/tasks/')
+            .then(response => {
+                setTasks(response.data);
+                const taskEvents = response.data.map(task => ({
+                    title: `Task: ${task.title}`,
+                    start: moment(task.date).startOf('day').toDate(),
+                    end: moment(task.date).endOf('day').toDate(),
+                    allDay: true
+                }));
+                setEvents(prevEvents => [...prevEvents, ...taskEvents]); // Merge tasks with events
+            })
+            .catch(error => console.error('Error fetching tasks:', error));
+    }, []);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
@@ -28,11 +48,9 @@ const CalendarPage = () => {
     const handleAddEvent = (e) => {
         e.preventDefault();
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
-            setEvents([...events, {
-                title: newEvent.title,
-                start: new Date(newEvent.start),
-                end: new Date(newEvent.end),
-            }]);
+            axios.post('http://127.0.0.1:8000/api/events/', newEvent)
+                .then(response => setEvents([...events, response.data]))
+                .catch(error => console.error('Error adding event:', error));
             setNewEvent({ title: '', start: '', end: '' });
             setShowEventForm(false);
         }
@@ -42,13 +60,19 @@ const CalendarPage = () => {
         e.preventDefault();
         if (newTask.title.trim() !== '' && newTask.date) {
             const taskEvent = {
-                title: newTask.title,
-                start: new Date(newTask.date),
-                end: new Date(newTask.date),
+                title: `Task: ${newTask.title}`,
+                start: moment(newTask.date).startOf('day').toDate(),
+                end: moment(newTask.date).endOf('day').toDate(),
                 allDay: true
             };
-            setTasks([...tasks, newTask]);
-            setEvents([...events, taskEvent]);
+
+            axios.post('http://127.0.0.1:8000/api/tasks/', newTask)
+                .then(response => {
+                    setTasks([...tasks, response.data]);
+                    setEvents([...events, taskEvent]); // Ensure the new task appears immediately
+                })
+                .catch(error => console.error('Error adding task:', error));
+
             setNewTask({ title: '', date: '' });
             setShowTaskForm(false);
         }

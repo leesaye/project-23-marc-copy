@@ -7,7 +7,7 @@
 }
 
 .blue-button {
-    background-color: #007bff;
+    background-color: rgb(18, 20, 149);
     color: white;
     border: none;
     padding: 10px 20px;
@@ -21,7 +21,7 @@
 }
 
 .cancel-button {
-    background-color: #dc3545;
+    background-color: #b52b37;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -31,7 +31,7 @@
 }
 
 .cancel-button:hover {
-    background-color: #b52b37;
+    background-color: #dc3545;
 }
 
 .modal-overlay {

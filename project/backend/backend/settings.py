@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'accounts',
-    'calendar_api',
+    'calendarapi',
 ]
 
 MIDDLEWARE = [
