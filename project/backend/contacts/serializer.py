@@ -8,4 +8,4 @@ class ContactSerializer(ModelSerializer):
     """Serializer for Contact model."""
     class Meta:
         model = Contact
-        fields = ['id', 'name', 'email', 'phone', 'job', 'relationship_rating', 'relationship', 'notes', 'created_at']
+        fields = ['id', 'user', 'name', 'email', 'phone', 'job', 'relationship_rating', 'relationship', 'notes', 'created_at']

@@ -5,21 +5,28 @@ from rest_framework.response import Response
 from rest_framework import status
 from . serializer import ContactSerializer
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import PermissionDenied
+
 
 # GET
 class ContactView(APIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = ContactSerializer
 
     def get(self, request):
-        contacts = Contact.objects.all()
+        contacts = Contact.objects.filter(user=request.user)
         serializer = ContactSerializer(contacts, many=True)
         return Response(serializer.data)
 
 
 # POST
 class AddContactView(APIView):
+    permission_classes = [IsAuthenticated]
     def post(self, request):
-        serializer = ContactSerializer(data=request.data)
+        data = request.data.copy()
+        data["user"] = request.user.id
+        serializer = ContactSerializer(data=data)
 
         if serializer.is_valid(raise_exception=True):
             serializer.save()
@@ -29,11 +36,15 @@ class AddContactView(APIView):
 
 # GET/POST
 class IndividualContactView(APIView):
+    permission_classes = [IsAuthenticated]
     def get(self, request, contact_id):
         try:
-            contact = Contact.objects.get(id=contact_id)
+            contact = Contact.objects.get(id=contact_id, user=request.user)
         except Contact.DoesNotExist:
             raise NotFound(detail="Contact not found", code=status.HTTP_404_NOT_FOUND)
+
+        if contact.user != request.user:
+            raise PermissionDenied("You do not have permission to view this contact.")
 
         # Serialize
         serializer = ContactSerializer(contact)
@@ -41,7 +52,7 @@ class IndividualContactView(APIView):
 
     def post(self, request, contact_id):
         try:
-            contact = Contact.objects.get(id=contact_id)
+            contact = Contact.objects.get(id=contact_id, user=request.user)
         except Contact.DoesNotExist:
             raise NotFound(detail="Contact not found", code=status.HTTP_404_NOT_FOUND)
 
@@ -55,6 +66,7 @@ class IndividualContactView(APIView):
 
 
 # Relationship quiz
+# TODO: integrate this with frontend in a separate page
 class RelationshipQuizView(APIView):
     def get(self, request, contact_id):
         # PLACEHOLDER: Just one random question for now

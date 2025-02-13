@@ -7,10 +7,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 # Basic contact model
 class Contact(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
-    phone = models.CharField(max_length=15, null=True, blank=True)
+    phone = models.CharField(max_length=15, blank=True, default="")
     job = models.CharField(max_length=100)
     relationship_rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(100)], default=0)
     relationship = models.CharField(max_length=100)
