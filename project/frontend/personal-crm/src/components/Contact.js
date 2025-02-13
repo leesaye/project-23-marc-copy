@@ -1,5 +1,6 @@
 import React from 'react';
 import { LinearProgress } from '@mui/material';
+import { Link } from 'react-router-dom';
 
 function Contact({contact}) {
     return (
@@ -23,7 +24,7 @@ function Contact({contact}) {
                     <p>{contact.relationship}</p>
                 </div>
                 <div className="col-1">
-                    <a className="link-primary link-underline-opacity-0" href="/contacts/">Edit</a>
+                    <Link className="link-primary link-underline-opacity-0" to={`/contacts/${contact.id}/`}>Edit</Link>
                 </div>
             </div>
         </div>
