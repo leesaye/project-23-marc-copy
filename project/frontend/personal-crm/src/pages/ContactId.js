@@ -1,5 +1,5 @@
 import Layout from "../components/Layout";
-import { FormControl, InputLabel, OutlinedInput, Box, Select, Collapse, MenuItem, FormControlLabel, Checkbox } from "@mui/material";
+import { FormControl, InputLabel, OutlinedInput, Box, Select, Collapse, MenuItem } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -17,6 +17,7 @@ function ContactId() {
         communication: "",
         enjoyment: "",
     });
+    const [errors, setErrors] = useState({});
 
     const [formData, setFormData] = useState({
         name: "",
@@ -60,12 +61,13 @@ function ContactId() {
             alert("Contact successfully updated!");
             nav('/contacts/');
         } catch (error) {
-            console.error("Error updating contact", error);
-            alert("Failed to update contact.");
-            // If we want to clear form fields, uncomment
-            // setFormData({ name: "", email: "", job: "", relationship: "", notes: "" });
+            if (error.response && error.response.data) {
+                setErrors(error.response.data);
+            } else {
+                console.error("Error updating contact", error);
+                alert("Failed to update contact.");
+            }
         }
-
     };
 
     useEffect(() => {
@@ -131,6 +133,7 @@ function ContactId() {
                                     value={formData.name}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.name && <p className="text-danger">{errors.name[0]}</p>}
                                 </FormControl>
                             </div>
                             <div className="col-6">
@@ -145,13 +148,14 @@ function ContactId() {
                                     value={formData.email}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.email && <p className="text-danger">{errors.email[0]}</p>}
                                 </FormControl>
                             </div>
                         </div>
                         <div className="row my-4">
                             <div className="col-4">
                                 <FormControl className="w-100">
-                                    <InputLabel htmlFor="job">Phone</InputLabel>
+                                    <InputLabel htmlFor="phone">Phone</InputLabel>
                                     <OutlinedInput
                                     required="required"
                                     id="phone"
@@ -161,6 +165,7 @@ function ContactId() {
                                     value={formData.phone}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.phone && <p className="text-danger">{errors.phone[0]}</p>}
                                 </FormControl>
                             </div>
                             <div className="col-4">
@@ -175,6 +180,7 @@ function ContactId() {
                                     value={formData.job}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.job && <p className="text-danger">{errors.job[0]}</p>}
                                 </FormControl>
                             </div>
                             <div className="col-4">
@@ -189,6 +195,7 @@ function ContactId() {
                                     value={formData.relationship}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.relationship && <p className="text-danger">{errors.relationship[0]}</p>}
                                 </FormControl>
                             </div>
                         </div>
@@ -207,6 +214,7 @@ function ContactId() {
                                     value={formData.notes}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.notes && <p className="text-danger">{errors.notes[0]}</p>}
                                 </FormControl>
                             </div>
                         </div>

@@ -16,6 +16,7 @@ function AddContact() {
         communication: "",
         enjoyment: "",
     });
+    const [errors, setErrors] = useState({});
 
     const [formData, setFormData] = useState({
         name: "",
@@ -57,22 +58,30 @@ function AddContact() {
 
         const updatedFormData = { ...formData, relationship_rating: quizVisible ? calculateRelationshipValue() : formData.relationship_rating };
 
-        if (consent) {
-            try {
-                const response = await axios.post("http://127.0.0.1:8000/contacts/add", updatedFormData);
-                console.log("Contact added:", response.data);
-                alert("Contact successfully added!");
-                nav('/contacts/');
-            } catch (error) {
-                console.error("Error adding contact", error);
-                alert("Failed to add contact.");
-                // If we want to clear form fields, uncomment
-                // setFormData({ name: "", email: "", job: "", relationship: "", notes: "" });
-            }
-        } else {
-            alert("Consent required");
+        setErrors({});
+
+        // Additional check for the checkbox being selected and its error message
+        if (!consent) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                consent: "Consent is required."
+            }));
+            return;
         }
 
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/contacts/add", updatedFormData);
+            console.log("Contact added:", response.data);
+            alert("Contact successfully added!");
+            nav('/contacts/');
+        } catch (error) {
+            if (error.response && error.response.data) {
+                setErrors(error.response.data);
+            } else {
+                console.error("Error adding contact", error);
+                alert("Failed to add contact.");
+            }
+        }
     };
 
     return (
@@ -101,6 +110,7 @@ function AddContact() {
                                     value={formData.name}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.name && <p className="text-danger">{errors.name[0]}</p>}
                                 </FormControl>
                             </div>
                             <div className="col-6">
@@ -115,13 +125,14 @@ function AddContact() {
                                     value={formData.email}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.email && <p className="text-danger">{errors.email[0]}</p>}
                                 </FormControl>
                             </div>
                         </div>
                         <div className="row my-4">
                             <div className="col-4">
                                 <FormControl className="w-100">
-                                    <InputLabel htmlFor="job">Phone</InputLabel>
+                                    <InputLabel htmlFor="phone">Phone</InputLabel>
                                     <OutlinedInput
                                     required="required"
                                     id="phone"
@@ -131,6 +142,7 @@ function AddContact() {
                                     value={formData.phone}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.phone && <p className="text-danger">{errors.phone[0]}</p>}
                                 </FormControl>
                             </div>
                             <div className="col-4">
@@ -145,6 +157,7 @@ function AddContact() {
                                     value={formData.job}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.job && <p className="text-danger">{errors.job[0]}</p>}
                                 </FormControl>
                             </div>
                             <div className="col-4">
@@ -159,6 +172,7 @@ function AddContact() {
                                     value={formData.relationship}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.relationship && <p className="text-danger">{errors.relationship[0]}</p>}
                                 </FormControl>
                             </div>
                         </div>
@@ -176,6 +190,7 @@ function AddContact() {
                                     value={formData.notes}
                                     onChange={handleContactFormChange}
                                     />
+                                    {errors.notes && <p className="text-danger">{errors.notes[0]}</p>}
                                 </FormControl>
                             </div>
                         </div>
@@ -246,6 +261,7 @@ function AddContact() {
                             </div>
                         </Collapse>
                         <FormControlLabel control={<Checkbox />} label="Consent to add this contact" required="required" onChange={handleConsentChange} />
+                        {errors.consent && <p className="text-danger">{errors.consent}</p>}
                         <button className="btn btn-success float-end my-4">Submit</button>
                     </Box>
                     <div className="col-4">
