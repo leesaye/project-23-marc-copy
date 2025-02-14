@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Layout from '../components/Layout';
@@ -24,16 +24,19 @@ const CalendarPage = () => {
                     axios.get('http://127.0.0.1:8000/api/tasks/')
                 ]);
 
-                const eventsData = eventsResponse.data;
+                const eventsData = eventsResponse.data.map(event => ({
+                    ...event,
+                    start: new Date(event.start), 
+                    end: new Date(event.end) 
+                }));
+
                 const tasksData = tasksResponse.data;
 
-                console.log("Fetched tasks:", tasksData);  
-
                 const taskEvents = tasksData.map(task => ({
-                    id: task.id,  
+                    id: `task-${task.id}`,
                     title: `Task: ${task.title}`,
-                    start: moment.utc(task.date).local().startOf('day').toDate(),
-                    end: moment.utc(task.date).local().endOf('day').toDate(),
+                    start: moment(task.date).startOf('day').toDate(),
+                    end: moment(task.date).endOf('day').toDate(),
                     allDay: true
                 }));
 
@@ -62,12 +65,19 @@ const CalendarPage = () => {
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/events/', newEvent);
-                setEvents(prevEvents => [...prevEvents, response.data]);
-                setNewEvent({ title: '', start: '', end: '' });
-                setShowEventForm(false);
+                const createdEvent = response.data;
+
+                setEvents([...events, {
+                    ...createdEvent,
+                    start: new Date(createdEvent.start), 
+                    end: new Date(createdEvent.end)
+                }]);
             } catch (error) {
                 console.error('Error adding event:', error);
             }
+
+            setNewEvent({ title: '', start: '', end: '' });
+            setShowEventForm(false);
         }
     };
 
@@ -76,22 +86,24 @@ const CalendarPage = () => {
         if (newTask.title.trim() !== '' && newTask.date) {
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/tasks/', newTask);
-                
-                const newTaskEvent = {
-                    id: response.data.id,
-                    title: `Task: ${response.data.title}`,
-                    start: moment.utc(response.data.date).local().startOf('day').toDate(),
-                    end: moment.utc(response.data.date).local().endOf('day').toDate(),
+                const createdTask = response.data;
+
+                const taskEvent = {
+                    id: `task-${createdTask.id}`,
+                    title: `Task: ${createdTask.title}`,
+                    start: moment.utc(createdTask.date).local().startOf('day').toDate(),
+                    end: moment.utc(createdTask.date).local().endOf('day').toDate(),
                     allDay: true
                 };
 
-                setTasks(prevTasks => [...prevTasks, response.data]);
-                setEvents(prevEvents => [...prevEvents, newTaskEvent]); 
-                setNewTask({ title: '', date: '' });
-                setShowTaskForm(false);
+                setTasks([...tasks, createdTask]);
+                setEvents([...events, taskEvent]);
             } catch (error) {
                 console.error('Error adding task:', error);
             }
+
+            setNewTask({ title: '', date: '' });
+            setShowTaskForm(false);
         }
     };
 
@@ -104,6 +116,8 @@ const CalendarPage = () => {
                     startAccessor="start"
                     endAccessor="end"
                     style={{ height: "80vh" }}
+                    views={{ month: true, week: true, day: true, agenda: true }} 
+                    defaultView={Views.MONTH}
                 />
 
                 {tasks.length > 0 && (
