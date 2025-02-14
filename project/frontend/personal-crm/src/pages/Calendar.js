@@ -37,7 +37,8 @@ const CalendarPage = () => {
                     title: `Task: ${task.title}`,
                     start: moment(task.date).startOf('day').toDate(),
                     end: moment(task.date).endOf('day').toDate(),
-                    allDay: true
+                    allDay: true,
+                    style: { backgroundColor: '#014F86', color: 'white' } 
                 }));
 
                 setEvents([...eventsData, ...taskEvents]);
@@ -93,7 +94,8 @@ const CalendarPage = () => {
                     title: `Task: ${createdTask.title}`,
                     start: moment.utc(createdTask.date).local().startOf('day').toDate(),
                     end: moment.utc(createdTask.date).local().endOf('day').toDate(),
-                    allDay: true
+                    allDay: true,
+                    style: { backgroundColor: '#014F86', color: 'white' }
                 };
 
                 setTasks([...tasks, createdTask]);
@@ -107,6 +109,13 @@ const CalendarPage = () => {
         }
     };
 
+    const eventPropGetter = (event) => {
+        if (typeof event.id === 'string' && event.id.startsWith('task-')) {
+            return { style: { backgroundColor: '#014F86', color: 'white' } }; // Dark blue with white text
+        }
+        return {};
+    };
+
     return (
         <Layout>
             <div className="calendar-container">
@@ -118,6 +127,7 @@ const CalendarPage = () => {
                     style={{ height: "80vh" }}
                     views={{ month: true, week: true, day: true, agenda: true }} 
                     defaultView={Views.MONTH}
+                    eventPropGetter={eventPropGetter}
                 />
 
                 {tasks.length > 0 && (
