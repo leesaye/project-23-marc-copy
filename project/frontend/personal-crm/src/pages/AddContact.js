@@ -7,6 +7,7 @@ import axios from 'axios';
 function AddContact() {
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
     const imageInputRef = useRef();
+    const nav = useNavigate();
     const [consent, setConsent] = useState(false);
     const [quizVisible, setQuizVisible] = useState(false);
     const [quizAnswers, setQuizAnswers] = useState({
@@ -25,8 +26,6 @@ function AddContact() {
         notes: "",
         relationship_rating: 0
     });
-
-    const nav = useNavigate();
 
     const handleContactFormChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -73,7 +72,7 @@ function AddContact() {
         } else {
             alert("Consent required");
         }
-        
+
     };
 
     return (
@@ -185,7 +184,7 @@ function AddContact() {
                                 <div className="col-6">
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="knownLong">Have you known them for more than 10 years?</InputLabel>
-                                        <Select 
+                                        <Select
                                             id="knownLong"
                                             name="knownLong"
                                             label="Have you known them for more than 10 years?"
@@ -200,7 +199,7 @@ function AddContact() {
                                 <div className="col-6">
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="trust">Do you trust them?</InputLabel>
-                                        <Select 
+                                        <Select
                                             id="trust"
                                             name="trust"
                                             label="Do you trust them?"
@@ -217,7 +216,7 @@ function AddContact() {
                                 <div className="col-6">
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="communication">Do you feel like you communicate well with them?</InputLabel>
-                                        <Select 
+                                        <Select
                                             id="communication"
                                             name="communication"
                                             label="Do you feel like you communicate well with them?"
@@ -232,7 +231,7 @@ function AddContact() {
                                 <div className="col-6">
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="enjoyment">Do you enjoy being around them?</InputLabel>
-                                        <Select 
+                                        <Select
                                             id="enjoyment"
                                             name="enjoyment"
                                             label="Do you enjoy being around them?"

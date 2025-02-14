@@ -34,6 +34,7 @@ class AddContactView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 # GET/POST
 class IndividualContactView(APIView):
     permission_classes = [IsAuthenticated]
@@ -63,6 +64,23 @@ class IndividualContactView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# DELETE
+class DeleteContactView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, contact_id):
+        try:
+            contact = Contact.objects.get(id=contact_id)
+        except Contact.DoesNotExist:
+            raise NotFound(detail="Contact not found", code=status.HTTP_404_NOT_FOUND)
+
+        if contact.user != request.user:
+            raise PermissionDenied("You do not have permission to delete this contact.")
+
+        contact.delete()
+        return Response({"message": "Contact deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
 # Relationship quiz
@@ -107,6 +125,3 @@ class RelationshipQuizView(APIView):
         # Return the updated contact data
         serializer = ContactSerializer(contact)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# Delete a contact (post or delete)

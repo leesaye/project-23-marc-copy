@@ -1,11 +1,12 @@
 import Layout from "../components/Layout";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 function ContactId() {
     const { contact_id } = useParams();
     const [contact, setContact] = useState(null);
+    const nav = useNavigate();
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:8000/contacts/${contact_id}`)
@@ -16,6 +17,18 @@ function ContactId() {
             console.error("Error fetching contact:", error);
         });
     }, [contact_id]);
+
+    const handleDelete = async () => {
+        try {
+            await axios.delete(`http://127.0.0.1:8000/contacts/${contact_id}/delete`);
+            console.log(`Contact ${contact_id} deleted successfully`);
+            alert("Contact successfully deleted!");
+            nav('/contacts/');
+        } catch (error) {
+            console.error("Error deleting contact:", error);
+            alert("Failed to delete contact.");
+        }
+    };
 
     return (
         <Layout>
@@ -34,7 +47,7 @@ function ContactId() {
             </div>
             }
 
-            <button className="btn btn-danger">Delete contact</button>
+            <button className="btn btn-danger" onClick={handleDelete}>Delete contact</button>
 
         </Layout>
     );

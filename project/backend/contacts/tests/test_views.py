@@ -23,7 +23,7 @@ class ContactViewTests(TestCase):
         self.client.cookies = response.cookies
 
     def create_test_contact(self, name, user):
-        Contact.objects.create(
+        return Contact.objects.create(
             user=user,
             name=name,
             email="alice@example.com",
@@ -193,6 +193,38 @@ class ContactViewTests(TestCase):
 
             # Verify no contact was created
             self.assertEqual(Contact.objects.count(), 0)
+            print(f"Passed: {self._testMethodName}\n")
+        except AssertionError as e:
+            print(f"Failed: {self._testMethodName}\n")
+            print(f"Assertion failed: {e}")
+
+    def test_delete_contact(self):
+        try:
+            print(f"\nStarting: {self._testMethodName}")
+            # Reverse URL here because need contact ID first
+            self.del_contact = self.create_test_contact("Test Delete", self.user)
+            self.delete_contact_url = reverse("delete-contact", kwargs={"contact_id": self.del_contact.id})
+            response = self.client.delete(self.delete_contact_url)
+            self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+            # Verify that the contact is actually deleted
+            self.assertFalse(Contact.objects.filter(id=self.del_contact.id).exists())
+            print(f"Passed: {self._testMethodName}\n")
+        except AssertionError as e:
+            print(f"Failed: {self._testMethodName}\n")
+            print(f"Assertion failed: {e}")
+
+    def test_unauthenticated_user_cannot_delete_contact(self):
+        try:
+            print(f"\nStarting: {self._testMethodName}")
+            self.del_contact = self.create_test_contact("Test Delete", self.user)
+            self.delete_contact_url = reverse("delete-contact", kwargs={"contact_id": self.del_contact.id})
+            self.client.logout()
+
+            response = self.client.delete(self.delete_contact_url)
+            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+            self.assertTrue(Contact.objects.filter(id=self.del_contact.id).exists())
             print(f"Passed: {self._testMethodName}\n")
         except AssertionError as e:
             print(f"Failed: {self._testMethodName}\n")
