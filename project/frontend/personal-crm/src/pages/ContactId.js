@@ -1,8 +1,8 @@
 import Layout from "../components/Layout";
+import axiosInstance from "../endpoints/api";
 import { FormControl, InputLabel, OutlinedInput, Box, Select, Collapse, MenuItem } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from 'axios';
 
 function ContactId() {
     const { contact_id } = useParams();
@@ -56,7 +56,7 @@ function ContactId() {
         const updatedFormData = { ...formData, relationship_rating: quizVisible ? calculateRelationshipValue() : formData.relationship_rating };
 
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/contacts/${contact.id}`, updatedFormData);
+            const response = await axiosInstance.post(`http://127.0.0.1:8000/contacts/${contact.id}`, updatedFormData);
             console.log("Contact updated:", response.data);
             alert("Contact successfully updated!");
             nav('/contacts/');
@@ -71,7 +71,7 @@ function ContactId() {
     };
 
     useEffect(() => {
-        axios.get(`http://127.0.0.1:8000/contacts/${contact_id}`)
+        axiosInstance.get(`http://127.0.0.1:8000/contacts/${contact_id}`)
         .then(response => {
             setContact(response.data);
         })
@@ -82,7 +82,7 @@ function ContactId() {
 
     const handleDelete = async () => {
         try {
-            await axios.delete(`http://127.0.0.1:8000/contacts/${contact_id}/delete`);
+            await axiosInstance.delete(`http://127.0.0.1:8000/contacts/${contact_id}/delete`);
             console.log(`Contact ${contact_id} deleted successfully`);
             alert("Contact successfully deleted!");
             nav('/contacts/');

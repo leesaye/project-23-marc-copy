@@ -1,4 +1,5 @@
 import Layout from '../components/Layout';
+import axiosInstance from "../endpoints/api";
 import Paper from '@mui/material/Paper';
 import Contact from '../components/Contact';
 import InputBase from '@mui/material/InputBase';
@@ -7,7 +8,6 @@ import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddIcon from '@mui/icons-material/Add';
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 function Contacts() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -16,7 +16,7 @@ function Contacts() {
 
     useEffect(() => {
         // Fetch contacts from the Django backend
-        axios.get('http://127.0.0.1:8000/contacts/')
+        axiosInstance.get('http://127.0.0.1:8000/contacts/')
             .then(response => {
                 setContacts(response.data);
             })
@@ -25,7 +25,7 @@ function Contacts() {
             });
     }, []);
 
-    const filteredContacts = contacts.filter((contacts) => 
+    const filteredContacts = contacts.filter((contacts) =>
         contacts.name.toLowerCase().search(searchQuery.toLowerCase()) !== -1
     );
 
@@ -102,7 +102,7 @@ function Contacts() {
                 sortedContacts.map(contact =>
                     <Contact contact={contact} />
                 )}
-                
+
             </div>
         </Layout>
     );

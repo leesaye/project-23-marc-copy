@@ -1,8 +1,8 @@
 import Layout from "../components/Layout";
+import axiosInstance from "../endpoints/api";
 import { FormControl, InputLabel, OutlinedInput, Box, Select, Collapse, MenuItem, FormControlLabel, Checkbox } from "@mui/material";
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 
 function AddContact() {
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
@@ -70,7 +70,7 @@ function AddContact() {
         }
 
         try {
-            const response = await axios.post("http://127.0.0.1:8000/contacts/add", updatedFormData);
+            const response = await axiosInstance.post("http://127.0.0.1:8000/contacts/add", updatedFormData);
             console.log("Contact added:", response.data);
             alert("Contact successfully added!");
             nav('/contacts/');

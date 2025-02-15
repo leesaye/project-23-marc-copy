@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from django.test import TestCase, Client
 from contacts.models import Contact
+from contacts.serializer import ContactSerializer
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -51,6 +52,9 @@ class ContactViewTests(TestCase):
         self.contact_list_url = reverse("contacts_page")
         self.add_contact_url = reverse("add_contacts_page")
         # self.contact_detail_url = reverse("individual-contact", kwargs={"contact_id": self.contact.id})
+
+    def tearDown(self):
+        Contact.objects.filter(user=self.user).delete()
 
     def test_authenticated_user_can_get_contacts(self):
         try:
@@ -225,6 +229,37 @@ class ContactViewTests(TestCase):
             self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
             self.assertTrue(Contact.objects.filter(id=self.del_contact.id).exists())
+            print(f"Passed: {self._testMethodName}\n")
+        except AssertionError as e:
+            print(f"Failed: {self._testMethodName}\n")
+            print(f"Assertion failed: {e}")
+
+    def test_edit_contact(self):
+        try:
+            print(f"\nStarting: {self._testMethodName}")
+
+            # Reverse URL here because need contact ID first
+            self.id_contact = self.create_test_contact("Test Edit", self.user)
+            self.id_contact_url = reverse("individual-contact", kwargs={"contact_id": self.id_contact.id})
+
+            response = self.client.get(self.id_contact_url)
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.json()["name"], "Test Edit")
+            self.assertEqual(response.json()["email"], "alice@example.com")
+
+            updated_data = {
+                "name": "Test Edit 111",
+                "email": "111@gmail.com"
+            }
+
+            response = self.client.post(self.id_contact_url, updated_data, format="json")
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+            # Verify that the contact is changed
+            response = self.client.get(self.id_contact_url)
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertEqual(response.json()["name"], "Test Edit 111")
+            self.assertEqual(response.json()["email"], "111@gmail.com")
             print(f"Passed: {self._testMethodName}\n")
         except AssertionError as e:
             print(f"Failed: {self._testMethodName}\n")
