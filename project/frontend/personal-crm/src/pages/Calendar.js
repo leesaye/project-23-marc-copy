@@ -63,6 +63,15 @@ const CalendarPage = () => {
 
     const handleAddEvent = async (e) => {
         e.preventDefault();
+
+        const startDate = new Date(newEvent.start);
+        const endDate = new Date(newEvent.end);
+
+        if (endDate < startDate) {
+            alert("Error: End date/time cannot be earlier than start date/time.");
+            return; 
+        }
+
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
             try {
                 const response = await axios.post('http://127.0.0.1:8000/api/events/', newEvent);
@@ -111,7 +120,7 @@ const CalendarPage = () => {
 
     const eventPropGetter = (event) => {
         if (typeof event.id === 'string' && event.id.startsWith('task-')) {
-            return { style: { backgroundColor: '#014F86', color: 'white' } }; // Dark blue with white text
+            return { style: { backgroundColor: '#014F86', color: 'white' } };
         }
         return {};
     };
