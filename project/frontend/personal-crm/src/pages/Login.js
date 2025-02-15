@@ -2,33 +2,28 @@ import './Login.css';
 import { useState } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useAuth } from "../contexts/useAuth";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); 
   const navigate = useNavigate();
+  const { login_user } = useAuth();
 
   const handleLogin = async () => {
     try {
       setError("");  // Clear any previous error
-
       // Make the login request
-      const response = await axios.post("http://127.0.0.1:8000/api/token/", { username, password });
-      
-      if (response.data.access && response.data.refresh) {
-        console.log("Login successful", response.data);
-     
-        navigate("/", { replace: true });
-      } else {
-        setError("Invalid login response. Please try again.");
-      }
+      // await axios.post("http://127.0.0.1:8000/api/token/", { username, password });
+      // navigate("/");
+      await login_user(username, password);
     } catch (err) {
       if (err.response) {
         if (err.response.status === 401) {
           setError("Invalid username or password. Please try again.");
         } else if (err.response.status === 400) {
-          setError("Bad request. Please ensure all fields are filled correctly.");
+          setError("Fields cannot be blank");
         } else {
           setError("An unexpected error occurred. Please try again later.");
         }

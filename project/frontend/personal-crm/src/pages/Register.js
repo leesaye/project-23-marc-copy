@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useAuth } from "../contexts/useAuth";
 
 const Register = () => {
   const [username, setUsername] = useState("");
@@ -8,7 +9,9 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState([]);
-  const navigate = useNavigate(); 
+  const [usernameError, setUsernameError] = useState(false);
+  const navigate = useNavigate();
+  const { login_user } = useAuth();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,32 +40,19 @@ const Register = () => {
 
     // Clear any errors and proceed with registration
     setError([]);
+    setUsernameError(false);
 
     try {
       // First, register the user
-      const registerResponse = await axios.post("http://127.0.0.1:8000/api/register/", {
+      await axios.post("http://127.0.0.1:8000/api/register/", {
         username,
         email,
         password,
         confirmPassword,
       });
 
-      console.log("Registration successful:", registerResponse.data);
-
       // After successful registration, log the user in
-      const loginResponse = await axios.post("http://127.0.0.1:8000/api/token/", {
-        username,
-        password,
-      });
-
-      console.log("Login successful:", loginResponse.data);
-
-      // Delay the redirect by 1 second to allow the authentication state to update
-      setTimeout(() => {
-        // Redirect to home page (or any other page)
-        navigate("/", { replace: true });
-      }, 1000); // Delay for 1 second
-
+      await login_user(username, password);
     } catch (err) {
       console.error("Error:", err);
 
@@ -72,6 +62,7 @@ const Register = () => {
         // Check for duplicate username error
         if (err.response.data.username) {
           backendErrors.push(err.response.data.username[0]);
+          setUsernameError(true);
         }
 
         // Check for email errors
@@ -108,13 +99,16 @@ const Register = () => {
           </label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${usernameError ? "error-label" : ""}`}
             id="usernameInput"
             name="username"
             value={username}
             required
             placeholder="Username"
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={(event) => {
+              setUsername(event.target.value);
+              setUsernameError(false);
+            }}
           />
         </div>
 
@@ -124,9 +118,7 @@ const Register = () => {
           </label>
           <input
             type="email"
-            className={`form-control ${
-              error.some((e) => e === "Invalid email address") ? "error-label" : ""
-            }`}
+            className={`form-control ${error.some((e) => e === "Invalid email address") ? "error-label" : ""}`}
             id="emailInput"
             name="email"
             value={email}
@@ -145,9 +137,7 @@ const Register = () => {
           </label>
           <input
             type="password"
-            className={`form-control ${
-              error.some((e) => e.includes("Password")) ? "error-label" : ""
-            }`}
+            className={`form-control ${error.some((e) => e.includes("Password")) ? "error-label" : ""}`}
             id="passwordInput"
             name="password"
             value={password}
@@ -166,9 +156,7 @@ const Register = () => {
           </label>
           <input
             type="password"
-            className={`form-control ${
-              error.some((e) => e.includes("Password")) ? "error-label" : ""
-            }`}
+            className={`form-control ${error.some((e) => e.includes("Password")) ? "error-label" : ""}`}
             id="confirmPasswordInput"
             name="confirmPassword"
             value={confirmPassword}
