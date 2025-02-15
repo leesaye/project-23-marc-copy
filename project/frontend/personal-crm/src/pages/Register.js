@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useAuth } from "../contexts/useAuth";
 
 const Register = () => {
@@ -7,15 +8,17 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState([]); 
-  const { register_user } = useAuth();
+  const [error, setError] = useState([]);
+  const [usernameError, setUsernameError] = useState(false);
+  const navigate = useNavigate();
+  const { login_user } = useAuth();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     const errorMessages = [];
 
     // Validate email
@@ -23,7 +26,7 @@ const Register = () => {
       errorMessages.push("Invalid email address");
     }
 
-    // Check for blank password fields
+    // Check for blank password fields or mismatched passwords
     if (password === "" && confirmPassword === "") {
       errorMessages.push("Passwords cannot be blank");
     } else if (password !== confirmPassword) {
@@ -37,7 +40,52 @@ const Register = () => {
 
     // Clear any errors and proceed with registration
     setError([]);
-    register_user(username, email, password, confirmPassword);
+    setUsernameError(false);
+
+    try {
+      // First, register the user
+      await axios.post("http://127.0.0.1:8000/api/register/", {
+        username,
+        email,
+        password,
+        confirmPassword,
+      });
+
+      // After successful registration, log the user in
+      await login_user(username, password);
+    } catch (err) {
+      console.error("Error:", err);
+
+      if (err.response && err.response.data) {
+        let backendErrors = [];
+
+        // Check for duplicate username error
+        if (err.response.data.username) {
+          backendErrors.push(err.response.data.username[0]);
+          setUsernameError(true);
+        }
+
+        // Check for email errors
+        if (err.response.data.email) {
+          backendErrors.push(err.response.data.email[0]);
+        }
+
+        // Add any other errors if available
+        if (err.response.data.password) {
+          backendErrors.push(err.response.data.password[0]);
+        }
+
+        // If no specific error messages, add a generic error message
+        if (backendErrors.length === 0) {
+          backendErrors.push("Registration failed. Please try again.");
+        }
+
+        setError(backendErrors);
+      } else {
+        // Fallback error message if no response is available
+        setError(["Network error. Please try again."]);
+      }
+    }
   };
 
   return (
@@ -51,36 +99,37 @@ const Register = () => {
           </label>
           <input
             type="text"
-            className="form-control"
+            className={`form-control ${usernameError ? "error-label" : ""}`}
             id="usernameInput"
             name="username"
             value={username}
             required
             placeholder="Username"
-            onChange={(event) => setUsername(event.target.value)}
+            onChange={(event) => {
+              setUsername(event.target.value);
+              setUsernameError(false);
+            }}
           />
         </div>
 
         <div className="mb-4">
-            <label htmlFor="emailInput" className="form-label">
-                Email
-            </label>
-            <input
-                type="email"
-                className={`form-control ${
-                error.some((e) => e === "Invalid email address") ? "error-label" : ""
-                }`}
-                id="emailInput"
-                name="email"
-                value={email}
-                required
-                placeholder="Email"
-                onChange={(event) => {
-                setEmail(event.target.value);
-                if (error.length > 0) setError([]); 
-                }}
-            />
-            </div>
+          <label htmlFor="emailInput" className="form-label">
+            Email
+          </label>
+          <input
+            type="email"
+            className={`form-control ${error.some((e) => e === "Invalid email address") ? "error-label" : ""}`}
+            id="emailInput"
+            name="email"
+            value={email}
+            required
+            placeholder="Email"
+            onChange={(event) => {
+              setEmail(event.target.value);
+              if (error.length > 0) setError([]);
+            }}
+          />
+        </div>
 
         <div className="mb-4">
           <label htmlFor="passwordInput" className="form-label">
@@ -88,9 +137,7 @@ const Register = () => {
           </label>
           <input
             type="password"
-            className={`form-control ${
-              error.some((e) => e.includes("Password")) ? "error-label" : ""
-            }`}
+            className={`form-control ${error.some((e) => e.includes("Password")) ? "error-label" : ""}`}
             id="passwordInput"
             name="password"
             value={password}
@@ -109,9 +156,7 @@ const Register = () => {
           </label>
           <input
             type="password"
-            className={`form-control ${
-              error.some((e) => e.includes("Password")) ? "error-label" : ""
-            }`}
+            className={`form-control ${error.some((e) => e.includes("Password")) ? "error-label" : ""}`}
             id="confirmPasswordInput"
             name="confirmPassword"
             value={confirmPassword}
