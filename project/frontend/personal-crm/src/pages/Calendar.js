@@ -70,7 +70,8 @@ const CalendarPage = () => {
                 setEvents([...events, {
                     ...createdEvent,
                     start: new Date(createdEvent.start), 
-                    end: new Date(createdEvent.end)
+                    end: new Date(createdEvent.end),
+                    color: newEvent.color || '#2f61a1'
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
@@ -88,7 +89,7 @@ const CalendarPage = () => {
                 const response = await axios.post('http://127.0.0.1:8000/api/tasks/', {
                     title: newTask.title,
                     date: newTask.date,
-                    color: newTask.color || '#014F86' // Ensure color is included
+                    color: newTask.color || '#014F86' 
                 });
                 const createdTask = response.data;
 
