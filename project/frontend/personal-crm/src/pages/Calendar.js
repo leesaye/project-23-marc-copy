@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Layout from '../components/Layout';
+import axiosInstance from "../endpoints/api"; 
 import './Calendar.css';
 
 const localizer = momentLocalizer(moment);
@@ -20,29 +20,31 @@ const CalendarPage = () => {
         const fetchEventsAndTasks = async () => {
             try {
                 const [eventsResponse, tasksResponse] = await Promise.all([
-                    axios.get('http://127.0.0.1:8000/api/events/'),
-                    axios.get('http://127.0.0.1:8000/api/tasks/')
+                    axiosInstance.get('http://127.0.0.1:8000/api/events/'),
+                    axiosInstance.get('http://127.0.0.1:8000/api/tasks/')
                 ]);
 
                 const eventsData = eventsResponse.data.map(event => ({
                     ...event,
-                    start: new Date(event.start), 
-                    end: new Date(event.end) 
+                    start: moment(event.start).toDate(),
+                    end: moment(event.end).toDate()
                 }));
 
-                const tasksData = tasksResponse.data;
+                const sortedTasksData = tasksResponse.data.sort((a, b) => 
+                    new Date(a.date) - new Date(b.date)
+                );
 
                 const taskEvents = tasksData.map(task => ({
                     id: `${task.id}`,
                     title: `Task: ${task.title}`,
-                    start: moment(task.date).startOf('day').toDate(),
-                    end: moment(task.date).endOf('day').toDate(),
+                    start: moment(task.date).startOf('day').toDate(),  
+                    end: moment(task.date).startOf('day').toDate(),    
                     allDay: true,
-                    style: { backgroundColor: '#014F86', color: 'white' } 
+                    style: { backgroundColor: '#014F86', color: 'white' }
                 }));
 
-                setEvents([...eventsData, ...taskEvents]);
-                setTasks(tasksData);
+                setEvents([...eventsData, ...tasksData]);
+                setTasks(sortedTasksData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -69,18 +71,20 @@ const CalendarPage = () => {
 
         if (endDate < startDate) {
             alert("Error: End date/time cannot be earlier than start date/time.");
-            return; 
+            return;
         }
 
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
             try {
-                const response = await axios.post('http://127.0.0.1:8000/api/events/', newEvent);
+                const response = await axiosInstance.post('http://127.0.0.1:8000/api/events/', newEvent);
                 const createdEvent = response.data;
+
+                console.log("Event added:", createdEvent);
 
                 setEvents([...events, {
                     ...createdEvent,
-                    start: new Date(createdEvent.start), 
-                    end: new Date(createdEvent.end)
+                    start: moment(createdEvent.start).toDate(),
+                    end: moment(createdEvent.end).toDate()
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
@@ -95,14 +99,16 @@ const CalendarPage = () => {
         e.preventDefault();
         if (newTask.title.trim() !== '' && newTask.date) {
             try {
-                const response = await axios.post('http://127.0.0.1:8000/api/tasks/', newTask);
+                const response = await axiosInstance.post('http://127.0.0.1:8000/api/tasks/', newTask);
                 const createdTask = response.data;
+
+                console.log("Task added:", createdTask);
 
                 const taskEvent = {
                     id: `${createdTask.id}`,
                     title: `Task: ${createdTask.title}`,
-                    start: moment.utc(createdTask.date).local().startOf('day').toDate(),
-                    end: moment.utc(createdTask.date).local().endOf('day').toDate(),
+                    start: moment(createdTask.date).startOf('day').toDate(),  
+                    end: moment(createdTask.date).startOf('day').toDate(),    
                     allDay: true,
                     style: { backgroundColor: '#014F86', color: 'white' }
                 };

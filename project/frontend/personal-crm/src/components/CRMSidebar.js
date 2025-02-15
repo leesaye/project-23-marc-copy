@@ -7,14 +7,22 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
+import MenuIcon from '@mui/icons-material/Menu';
+import { IconButton } from '@mui/material';
+import { useState } from 'react';
 
 import { useNavigate } from "react-router-dom"
 
 import { logout } from "../endpoints/api";
 
 function CRMSidebar() {
+    const [collapsed, setCollapsed] = useState(false);
 
     const nav = useNavigate();
+
+    const handleCollapseToggle = () => {
+        setCollapsed(!collapsed);
+    }
 
     const handleLogout = async () => {
         const success = await logout();
@@ -24,10 +32,18 @@ function CRMSidebar() {
     }
 
     return (
-        <Sidebar>
+        <Sidebar collapsed={collapsed}>
             <Menu>
-                <MenuItem className="mt-3">
-                    <h2> Personal CRM </h2>
+                <MenuItem
+                className="mt-2"
+                    onClick={handleCollapseToggle}
+                    icon={
+                    <IconButton>
+                        <MenuIcon />
+                    </IconButton>
+                    }
+                >
+                    {!collapsed && <h4 className="mt-1">Personal CRM</h4>}
                 </MenuItem>
                 <hr className="mx-3" style={{borderWidth: "3px"}} />
                 <MenuItem component={<Link to="/" />} icon={<HomeIcon />}> Home </MenuItem>
@@ -38,11 +54,13 @@ function CRMSidebar() {
                 <hr className="mx-3" style={{borderWidth: "3px"}} />
                 <MenuItem component={<Link to="/profile/" />} icon={<PersonIcon />}> Profile </MenuItem>
                 <MenuItem component={<Link to="/settings/" />} icon={<SettingsIcon />}> Settings </MenuItem>
-                <MenuItem> 
-                    <button className="btn btn-primary w-100 fs-6" onClick={()=>handleLogout()}>
-                        Logout
-                    </button>
-                 </MenuItem>
+                {!collapsed &&
+                    <MenuItem> 
+                        <button className="btn btn-primary w-100 fs-6" onClick={()=>handleLogout()}>
+                            Logout
+                        </button>
+                    </MenuItem>
+                }
             </Menu>
         </Sidebar>
     );
