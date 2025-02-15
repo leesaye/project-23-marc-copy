@@ -10,6 +10,37 @@ const REGISTER_URL = `${BASE_URL}register/`
 
 axios.defaults.withCredentials = true; 
 
+const axiosInstance = axios.create({
+    withCredentials: true, //ensure cookies and tokens are sent all the time
+})
+
+// Function to refresh the token
+export const refresh_token = async () => {
+    try {
+        await axios.post(REFRESH_URL, {}, { withCredentials: true });
+        return true;
+    } catch (error) {
+        console.error("Token refresh failed:", error);
+        return false;
+    }
+};
+
+// Axios response interceptor for handling 401 errors
+axiosInstance.interceptors.response.use(
+    response => response,  // If response is OK, just return it
+    async error => {
+        if (error.response && error.response.status === 401) {  // Handle unauthorized error
+            const tokenRefreshed = await refresh_token();
+            if (tokenRefreshed) {
+                // Retry the original request
+                return axiosInstance(error.config);
+            }
+        }
+        return Promise.reject(error);
+    }
+);
+export default axiosInstance
+
 export const login = async (username, password) => {
     try {
         const response = await axios.post(
@@ -25,20 +56,6 @@ export const login = async (username, password) => {
         return false;  // Return false or handle the error as needed
     }
 };
-
-export const refresh_token = async () => {
-    try{
-        await axios.post(REFRESH_URL, 
-            {},
-            { withCredentials: true } 
-        )
-
-        return true
-    } catch (error){
-        return false
-    }
-
-}
 
 const call_refresh = async (error, func) => { //call this when ever there is an error doing a request where the token has expired
     if (error.response && error.response.startus === 401){ //not authorized
