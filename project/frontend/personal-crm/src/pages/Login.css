@@ -46,3 +46,9 @@
   .redtext {
     color: red;
   }
+  
+  .error-message {
+    text-align: left;
+    color: red;
+    margin-top: 8px; 
+  }

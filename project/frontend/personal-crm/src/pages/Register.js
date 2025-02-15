@@ -1,21 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../contexts/useAuth";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState([]); 
-  const { register_user } = useAuth();
+  const [error, setError] = useState([]);
+  const navigate = useNavigate(); 
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     const errorMessages = [];
 
     // Validate email
@@ -23,7 +23,7 @@ const Register = () => {
       errorMessages.push("Invalid email address");
     }
 
-    // Check for blank password fields
+    // Check for blank password fields or mismatched passwords
     if (password === "" && confirmPassword === "") {
       errorMessages.push("Passwords cannot be blank");
     } else if (password !== confirmPassword) {
@@ -37,7 +37,64 @@ const Register = () => {
 
     // Clear any errors and proceed with registration
     setError([]);
-    register_user(username, email, password, confirmPassword);
+
+    try {
+      // First, register the user
+      const registerResponse = await axios.post("http://127.0.0.1:8000/api/register/", {
+        username,
+        email,
+        password,
+        confirmPassword,
+      });
+
+      console.log("Registration successful:", registerResponse.data);
+
+      // After successful registration, log the user in
+      const loginResponse = await axios.post("http://127.0.0.1:8000/api/token/", {
+        username,
+        password,
+      });
+
+      console.log("Login successful:", loginResponse.data);
+
+      // Delay the redirect by 1 second to allow the authentication state to update
+      setTimeout(() => {
+        // Redirect to home page (or any other page)
+        navigate("/", { replace: true });
+      }, 1000); // Delay for 1 second
+
+    } catch (err) {
+      console.error("Error:", err);
+
+      if (err.response && err.response.data) {
+        let backendErrors = [];
+
+        // Check for duplicate username error
+        if (err.response.data.username) {
+          backendErrors.push(err.response.data.username[0]);
+        }
+
+        // Check for email errors
+        if (err.response.data.email) {
+          backendErrors.push(err.response.data.email[0]);
+        }
+
+        // Add any other errors if available
+        if (err.response.data.password) {
+          backendErrors.push(err.response.data.password[0]);
+        }
+
+        // If no specific error messages, add a generic error message
+        if (backendErrors.length === 0) {
+          backendErrors.push("Registration failed. Please try again.");
+        }
+
+        setError(backendErrors);
+      } else {
+        // Fallback error message if no response is available
+        setError(["Network error. Please try again."]);
+      }
+    }
   };
 
   return (
@@ -62,25 +119,25 @@ const Register = () => {
         </div>
 
         <div className="mb-4">
-            <label htmlFor="emailInput" className="form-label">
-                Email
-            </label>
-            <input
-                type="email"
-                className={`form-control ${
-                error.some((e) => e === "Invalid email address") ? "error-label" : ""
-                }`}
-                id="emailInput"
-                name="email"
-                value={email}
-                required
-                placeholder="Email"
-                onChange={(event) => {
-                setEmail(event.target.value);
-                if (error.length > 0) setError([]); 
-                }}
-            />
-            </div>
+          <label htmlFor="emailInput" className="form-label">
+            Email
+          </label>
+          <input
+            type="email"
+            className={`form-control ${
+              error.some((e) => e === "Invalid email address") ? "error-label" : ""
+            }`}
+            id="emailInput"
+            name="email"
+            value={email}
+            required
+            placeholder="Email"
+            onChange={(event) => {
+              setEmail(event.target.value);
+              if (error.length > 0) setError([]);
+            }}
+          />
+        </div>
 
         <div className="mb-4">
           <label htmlFor="passwordInput" className="form-label">
