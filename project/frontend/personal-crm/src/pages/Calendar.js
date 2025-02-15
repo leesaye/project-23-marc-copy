@@ -33,7 +33,7 @@ const CalendarPage = () => {
                 const tasksData = tasksResponse.data;
 
                 const taskEvents = tasksData.map(task => ({
-                    id: `task-${task.id}`,
+                    id: `${task.id}`,
                     title: `Task: ${task.title}`,
                     start: moment(task.date).startOf('day').toDate(),
                     end: moment(task.date).endOf('day').toDate(),
@@ -99,7 +99,7 @@ const CalendarPage = () => {
                 const createdTask = response.data;
 
                 const taskEvent = {
-                    id: `task-${createdTask.id}`,
+                    id: `${createdTask.id}`,
                     title: `Task: ${createdTask.title}`,
                     start: moment.utc(createdTask.date).local().startOf('day').toDate(),
                     end: moment.utc(createdTask.date).local().endOf('day').toDate(),
@@ -125,6 +125,20 @@ const CalendarPage = () => {
         return {};
     };
 
+    const deleteItem = async (event) => {
+        console.log(event)
+        try {
+            const response = await axios.delete(`http://127.0.0.1:8000/api/tasks/${event.id}/`, newTask);
+            console.log(tasks)
+            const updatedTasks = tasks.filter(task => task.id !== parseInt(event.id, 10));
+            console.log(updatedTasks)
+            setTasks(updatedTasks)
+
+        } catch (error) {
+            console.error('Error deleting task:', error);
+        }
+    };
+
     return (
         <Layout>
             <div className="calendar-container">
@@ -137,9 +151,10 @@ const CalendarPage = () => {
                     views={{ month: true, week: true, day: true, agenda: true }} 
                     defaultView={Views.MONTH}
                     eventPropGetter={eventPropGetter}
+                    onSelectEvent={deleteItem}
                 />
 
-                {tasks.length > 0 && (
+                {tasks?.length > 0 && (
                     <div className="task-list">
                         <h3>Tasks</h3>
                         <ul>
