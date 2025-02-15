@@ -84,8 +84,7 @@ export const logout = async () => {
 
 export const is_authenticated = async () => {
     try {
-        await axios.post(AUTH_URL,
-            {},
+        await axios.get(AUTH_URL,
             {withCredentials: true}
         )
         return true
