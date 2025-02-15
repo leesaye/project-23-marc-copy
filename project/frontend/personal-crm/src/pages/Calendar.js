@@ -31,8 +31,9 @@ const CalendarPage = () => {
                 }));
 
                 const tasksData = tasksResponse.data;
+                const sortedTasks = tasksData.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-                const taskEvents = tasksData.map(task => ({
+                const taskEvents = sortedTasks.map(task => ({
                     id: `task-${task.id}`,
                     title: `Task: ${task.title}`,
                     start: moment(task.date).startOf('day').toDate(),
@@ -102,10 +103,9 @@ const CalendarPage = () => {
                     color: createdTask.color || '#014f86'
                 };
 
-                console.log(events);
-                console.log(tasks);
+                const updatedTasks = [...tasks, createdTask].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-                setTasks([...tasks, createdTask]);
+                setTasks(updatedTasks);
                 setEvents([...events, taskEvent]);
             } catch (error) {
                 console.error('Error adding task:', error);
