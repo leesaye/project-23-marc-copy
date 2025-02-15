@@ -24,32 +24,27 @@ const CalendarPage = () => {
                     axiosInstance.get('http://127.0.0.1:8000/api/tasks/')
                 ]);
 
-                console.log("Fetched events:", eventsResponse.data);
-                console.log("Fetched tasks:", tasksResponse.data);
-
                 const eventsData = eventsResponse.data.map(event => ({
                     ...event,
                     start: moment(event.start).toDate(),
                     end: moment(event.end).toDate()
                 }));
 
-                const tasksData = tasksResponse.data;
-                const sortedTasks = tasksData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                const sortedTasksData = tasksResponse.data.sort((a, b) => 
+                    new Date(a.date) - new Date(b.date)
+                );
 
-                const taskEvents = sortedTasks.map(task => ({
+                const tasksData = sortedTasksData.map(task => ({
                     id: `task-${task.id}`,
                     title: `Task: ${task.title}`,
                     start: moment(task.date).startOf('day').toDate(),  
                     end: moment(task.date).startOf('day').toDate(),    
                     allDay: true,
-                    style: { backgroundColor: task.color || '#014F86', color: 'white' } 
+                    style: { backgroundColor: '#014F86', color: 'white' }
                 }));
 
-                console.log("Processed events:", eventsData);
-                console.log("Processed tasks:", tasksData);
-
                 setEvents([...eventsData, ...tasksData]);
-                setTasks(tasksResponse.data);
+                setTasks(sortedTasksData);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -60,10 +55,11 @@ const CalendarPage = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
         if (showEventForm) {
-            setNewEvent(prev => ({ ...prev, [name]: value }));
+            setNewEvent({ ...newEvent, [name]: value });
         } else if (showTaskForm) {
-            setNewTask(prev => ({ ...prev, [name]: value }));
+            setNewTask({ ...newTask, [name]: value });
         }
     };
 
@@ -87,15 +83,14 @@ const CalendarPage = () => {
 
                 setEvents([...events, {
                     ...createdEvent,
-                    start: new Date(createdEvent.start), 
-                    end: new Date(createdEvent.end),
-                    color: newEvent.color || '#2f61a1'
+                    start: moment(createdEvent.start).toDate(),
+                    end: moment(createdEvent.end).toDate()
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
             }
 
-            setNewEvent({ title: '', start: '', end: '', color: newEvent.color || '#2f61a1' });
+            setNewEvent({ title: '', start: '', end: '' });
             setShowEventForm(false);
         }
     };
@@ -104,11 +99,7 @@ const CalendarPage = () => {
         e.preventDefault();
         if (newTask.title.trim() !== '' && newTask.date) {
             try {
-                const response = await axios.post('http://127.0.0.1:8000/api/tasks/', {
-                    title: newTask.title,
-                    date: newTask.date,
-                    color: newTask.color || '#014F86' 
-                });
+                const response = await axiosInstance.post('http://127.0.0.1:8000/api/tasks/', newTask);
                 const createdTask = response.data;
 
                 console.log("Task added:", createdTask);
@@ -116,41 +107,26 @@ const CalendarPage = () => {
                 const taskEvent = {
                     id: `task-${createdTask.id}`,
                     title: `Task: ${createdTask.title}`,
-                    start: moment(createdTask.date).startOf('day').toDate(),
-                    end: moment(createdTask.date).endOf('day').toDate(),
+                    start: moment(createdTask.date).startOf('day').toDate(),  
+                    end: moment(createdTask.date).startOf('day').toDate(),    
                     allDay: true,
-                    color: createdTask.color || '#014f86'
+                    style: { backgroundColor: '#014F86', color: 'white' }
                 };
 
-                const updatedTasks = [...tasks, createdTask].sort((a, b) => new Date(a.date) - new Date(b.date));
-
-                setTasks(updatedTasks);
+                setTasks([...tasks, createdTask]);
                 setEvents([...events, taskEvent]);
             } catch (error) {
                 console.error('Error adding task:', error);
             }
 
-            setNewTask({ title: '', date: '', color: newTask.color || '#014F86' });
+            setNewTask({ title: '', date: '' });
             setShowTaskForm(false);
         }
     };
 
     const eventPropGetter = (event) => {
         if (typeof event.id === 'string' && event.id.startsWith('task-')) {
-            return { style: { backgroundColor: event.color || '#014F86', color: 'white' } }; 
-        }
-        
-        return { style: { backgroundColor: event.color || '#2f61a1', color: 'white' } };
-    };
-
-    const dayPropGetter = (date) => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0); 
-    
-        if (date < today) {
-            return {
-                className: 'past-day'
-            };
+            return { style: { backgroundColor: '#014F86', color: 'white' } };
         }
         return {};
     };
@@ -167,7 +143,6 @@ const CalendarPage = () => {
                     views={{ month: true, week: true, day: true, agenda: true }} 
                     defaultView={Views.MONTH}
                     eventPropGetter={eventPropGetter}
-                    dayPropGetter={dayPropGetter} 
                 />
 
                 {tasks.length > 0 && (
@@ -198,8 +173,6 @@ const CalendarPage = () => {
                             <input type="datetime-local" id="start" name="start" value={newEvent.start} onChange={handleInputChange} required />
                             <label htmlFor="end">End Time:</label>
                             <input type="datetime-local" id="end" name="end" value={newEvent.end} onChange={handleInputChange} required />
-                            <label htmlFor="eventColor">Color:</label>
-                            <input type="color" id="eventColor" name="color" value={newEvent.color || "#000000"} onChange={handleInputChange} />
                             <div className="modal-buttons">
                                 <button className="blue-button" onClick={handleAddEvent}>Save</button>
                                 <button className="cancel-button" onClick={() => setShowEventForm(false)}>Cancel</button>
@@ -216,8 +189,6 @@ const CalendarPage = () => {
                             <input type="text" id="taskTitle" name="title" value={newTask.title} onChange={handleInputChange} required />
                             <label htmlFor="taskDate">Date:</label>
                             <input type="date" id="taskDate" name="date" value={newTask.date} onChange={handleInputChange} required />
-                            <label htmlFor="taskColor">Color:</label>
-                            <input type="color" id="taskColor" name="color" value={newTask.color || "#000000"} onChange={handleInputChange} />
                             <div className="modal-buttons">
                                 <button className="blue-button" onClick={handleAddTask}>Save</button>
                                 <button className="cancel-button" onClick={() => setShowTaskForm(false)}>Cancel</button>
