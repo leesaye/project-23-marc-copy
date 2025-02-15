@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'rest_framework_simplejwt',
-    'accounts'
+    'accounts',
+    'contacts'
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,7 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 
 #enable jwt auth
-REST_FRAMEWORK = { 
+REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         #'rest_framework_simplejwt.authentication.JWTAuthentication',
         'accounts.authentication.CookiesJWTAuthentication',
