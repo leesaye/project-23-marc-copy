@@ -144,8 +144,8 @@ const CalendarPage = () => {
         if (event.type === "Event") {
             try {
                 const response = await axiosInstance.delete(`http://127.0.0.1:8000/api/events/${event.id}/delete/`);
-                const updatedTasks = tasks.filter(task => task.id !== event.id);
-                const updatedEvents = events.filter(e => e.id !== event.id);
+                const updatedTasks = tasks.filter(task => task.id.toString() !== event.id.toString());
+                const updatedEvents = events.filter(e => e.id.toString() !== event.id.toString());
                 setTasks(updatedTasks)
                 setEvents(updatedEvents)
     
