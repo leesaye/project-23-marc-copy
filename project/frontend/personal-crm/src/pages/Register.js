@@ -12,8 +12,8 @@ const Register = () => {
   const [usernameError, setUsernameError] = useState(false);
   const navigate = useNavigate();
   const { login_user } = useAuth();
-  const BASE_URL = 'https://project-23-marc-backend-deployment.onrender.com/';
-  const REGISTER_URL = `${BASE_URL}register/api/`
+  const BASE_URL = 'https://project-23-marc-backend-deployment.onrender.com/api/';
+  const REGISTER_URL = `${BASE_URL}register/`
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
