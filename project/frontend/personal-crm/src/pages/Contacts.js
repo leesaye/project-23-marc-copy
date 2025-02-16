@@ -13,10 +13,11 @@ function Contacts() {
     const [searchQuery, setSearchQuery] = useState("");
     const [contacts, setContacts] = useState([]);
     const [sortValue, setSearchValue] = useState("Name (asc)");
+    const BASE_URL = `http://127.0.0.1:8000/`;
 
     useEffect(() => {
         // Fetch contacts from the Django backend
-        axiosInstance.get('http://127.0.0.1:8000/contacts/')
+        axiosInstance.get(`${BASE_URL}contacts/`)
             .then(response => {
                 setContacts(response.data);
             })
