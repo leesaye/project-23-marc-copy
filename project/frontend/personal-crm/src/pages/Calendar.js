@@ -26,8 +26,8 @@ const CalendarPage = () => {
 
                 const eventsData = eventsResponse.data.map(event => ({
                     ...event,
-                    start: moment(event.start).toDate(),
-                    end: moment(event.end).toDate(),
+                    start: moment(event.start).add(5, 'hours').toDate(),
+                    end: moment(event.end).add(5, 'hours').toDate(),
                     type: "Event"
                 }));
 
@@ -183,7 +183,11 @@ const CalendarPage = () => {
             <div className="calendar-container">
                 <Calendar
                     localizer={localizer}
-                    events={events}
+                    events={events.map(event => ({
+                        ...event,
+                        start: moment(event.start).add(5, 'hours').toDate(),
+                        end: moment(event.end).add(5, 'hours').toDate(),
+                    }))} 
                     startAccessor="start"
                     endAccessor="end"
                     style={{ height: "80vh" }}

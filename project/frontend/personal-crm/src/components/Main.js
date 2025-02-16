@@ -23,6 +23,7 @@ function Main() {
                 <Route path='/contacts/' element={<PrivateRoute><Contacts/></PrivateRoute>} />
                 <Route path='/contacts/add/' element={<PrivateRoute><AddContact/></PrivateRoute>} />
                 <Route path='/contacts/:contact_id/' element={<PrivateRoute><ContactId/></PrivateRoute>} />
+                <Route path='/calendars/' element={<PrivateRoute><CalendarPage/></PrivateRoute>} />
             </Routes>
         </Fragment>
     );
