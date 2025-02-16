@@ -15,13 +15,14 @@ const CalendarPage = () => {
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
     const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task' });
+    const BASE_URL = 'http://127.0.0.1:8000/';
 
     useEffect(() => {
         const fetchEventsAndTasks = async () => {
             try {
                 const [eventsResponse, tasksResponse] = await Promise.all([
-                    axiosInstance.get('http://127.0.0.1:8000/api/events/'),
-                    axiosInstance.get('http://127.0.0.1:8000/api/tasks/')
+                    axiosInstance.get(`${BASE_URL}api/events/`),
+                    axiosInstance.get(`${BASE_URL}api/tasks/`)
                 ]);
 
                 const eventsData = eventsResponse.data.map(event => ({
@@ -78,7 +79,7 @@ const CalendarPage = () => {
 
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
             try {
-                const response = await axiosInstance.post('http://127.0.0.1:8000/api/events/', newEvent);
+                const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
                 const createdEvent = response.data;
 
                 console.log("Event added:", createdEvent);
@@ -102,7 +103,7 @@ const CalendarPage = () => {
         e.preventDefault();
         if (newTask.title.trim() !== '' && newTask.date) {
             try {
-                const response = await axiosInstance.post('http://127.0.0.1:8000/api/tasks/', newTask);
+                const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, newTask);
                 const createdTask = response.data;
 
                 console.log("Task added:", createdTask);
@@ -143,7 +144,7 @@ const CalendarPage = () => {
     const deleteItem = async (event) => {
         if (event.type === "Event") {
             try {
-                const response = await axiosInstance.delete(`http://127.0.0.1:8000/api/events/${event.id}/delete/`);
+                const response = await axiosInstance.delete(`${BASE_URL}api/events/${event.id}/delete/`);
                 const updatedTasks = tasks.filter(task => task.id.toString() !== event.id.toString());
                 const updatedEvents = events.filter(e => e.id.toString() !== event.id.toString());
                 setTasks(updatedTasks)
@@ -155,7 +156,7 @@ const CalendarPage = () => {
 
         } else if (event.type === "Task") {
             try {
-                const response = await axiosInstance.delete(`http://127.0.0.1:8000/api/tasks/${event.id}/delete/`);
+                const response = await axiosInstance.delete(`${BASE_URL}api/tasks/${event.id}/delete/`);
                 const updatedTasks = tasks.filter(task => task.id.toString() !== event.id.toString());
                 const updatedEvents = events.filter(e => e.id.toString() !== event.id.toString());
                 setTasks(updatedTasks)
