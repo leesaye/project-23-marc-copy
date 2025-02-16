@@ -12,6 +12,8 @@ const Register = () => {
   const [usernameError, setUsernameError] = useState(false);
   const navigate = useNavigate();
   const { login_user } = useAuth();
+  const BASE_URL = 'https://project-23-marc-backend-deployment.onrender.com/';
+  const REGISTER_URL = `${BASE_URL}register/`
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,7 +46,7 @@ const Register = () => {
 
     try {
       // First, register the user
-      await axios.post("http://127.0.0.1:8000/api/register/", {
+      await axios.post(REGISTER_URL, {
         username,
         email,
         password,
