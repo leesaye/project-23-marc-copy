@@ -1,25 +1,36 @@
 import './Login.css';
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { useAuth } from "../contexts/useAuth";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(""); 
+  const navigate = useNavigate();
   const { login_user } = useAuth();
 
   const handleLogin = async () => {
     try {
-      setError(""); 
+      setError("");  // Clear any previous error
+      // Make the login request
+      // await axios.post("http://127.0.0.1:8000/api/token/", { username, password });
+      // navigate("/");
       await login_user(username, password);
     } catch (err) {
-      console.error("Login Error:", err);
-      if (err.message.includes("Login failed")) {
-        setError("Incorrect username or password.");
+      if (err.response) {
+        if (err.response.status === 401) {
+          setError("Invalid username or password. Please try again.");
+        } else if (err.response.status === 400) {
+          setError("Fields cannot be blank");
+        } else {
+          setError("An unexpected error occurred. Please try again later.");
+        }
       } else {
-        setError("An unexpected error occurred. Please try again.");
+        setError("Network error. Please check your connection and try again.");
       }
+      console.error(err.message);
     }
   };
 
@@ -32,8 +43,8 @@ const Login = () => {
         <div className="mb-3">
           <label htmlFor="emailInput" className="form-label">Username</label>
           <input 
-            type="email" 
-            className={error ? "form-control error-label" : "form-control"} 
+            type="text"
+            className={`form-control ${error ? "error-label" : ""}`} 
             id="emailInput" 
             name="email" 
             value={username} 
@@ -47,7 +58,7 @@ const Login = () => {
           <label htmlFor="passwordInput" className="form-label">Password</label>
           <input 
             type="password" 
-            className={error ? "form-control error-label" : "form-control"} 
+            className={`form-control ${error ? "error-label" : ""}`} 
             id="passwordInput"            
             name="password" 
             value={password} 
@@ -55,19 +66,19 @@ const Login = () => {
             placeholder="Password"  
             onChange={event => {
               setPassword(event.target.value);
-              setError(""); 
+              setError(""); // Clear error when typing
             }} 
           />
-          {error && <p className='bluelink'>{error}</p>}
         </div>
         
+        {error && <p className="error-message">{error}</p>}
+
         <div className="input-group mb-3">
           <button className="btn btn-primary w-100 fs-6" onClick={handleLogin}>
             Login
           </button>
-          
         </div>
-        {error ? <p className='bluelink'>Username/Password not found</p> : <></>}
+
         <small>
           Don't have an account?  
           <Link to="/register" className="bluelink"> Sign Up</Link>

@@ -20,7 +20,7 @@ export const refresh_token = async () => {
         await axios.post(REFRESH_URL, {}, { withCredentials: true });
         return true;
     } catch (error) {
-        console.error("Token refresh failed:", error);
+        // console.error("Token refresh failed:", error);
         return false;
     }
 };
@@ -42,19 +42,11 @@ axiosInstance.interceptors.response.use(
 export default axiosInstance
 
 export const login = async (username, password) => {
-    try {
-        const response = await axios.post(
-            LOGIN_URL, 
-            { username, password },  // Object shorthand for cleaner syntax
-            { withCredentials: true }  // Ensures cookies are included
-        );
-        
-        // Check if the response contains a success attribute (depends on backend response structure)
-        return response.data
-    } catch (error) {
-        console.error("Login failed:", error);
-        return false;  // Return false or handle the error as needed
-    }
+    await axios.post(
+        LOGIN_URL, 
+        { username, password },  // Object shorthand for cleaner syntax
+        { withCredentials: true }  // Ensures cookies are included
+    );
 };
 
 const call_refresh = async (error, func) => { //call this when ever there is an error doing a request where the token has expired
@@ -84,8 +76,7 @@ export const logout = async () => {
 
 export const is_authenticated = async () => {
     try {
-        await axios.post(AUTH_URL,
-            {},
+        await axios.get(AUTH_URL,
             {withCredentials: true}
         )
         return true

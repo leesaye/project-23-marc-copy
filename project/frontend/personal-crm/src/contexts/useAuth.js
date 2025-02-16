@@ -23,12 +23,9 @@ export const AuthProvider = ({children}) => {
     }
 
     const login_user = async (username, password) => {
-        const success = await login(username, password);
-        if (success){
-            setIsAuthenticted(true)
-            nav('/')
-        }
-
+        await login(username, password);
+        setIsAuthenticted(true)
+        nav('/')
     }
 
     const register_user = async (username, email, password, confirmPassword) =>{
