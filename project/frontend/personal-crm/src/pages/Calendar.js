@@ -15,6 +15,8 @@ const CalendarPage = () => {
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
     const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task' });
+    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
+    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task' });
 
     useEffect(() => {
         const fetchEventsAndTasks = async () => {
@@ -29,6 +31,8 @@ const CalendarPage = () => {
                     start: moment(event.start).toDate(),
                     end: moment(event.end).toDate(),
                     type: "Event"
+                    end: moment(event.end).toDate(),
+                    type: "Event"
                 }));
 
                 const sortedTasksData = tasksResponse.data.sort((a, b) => 
@@ -37,10 +41,13 @@ const CalendarPage = () => {
 
                 const tasksData = sortedTasksData.map(task => ({
                     id: `${task.id}`,
+                    id: `${task.id}`,
                     title: `Task: ${task.title}`,
                     start: moment(task.date).startOf('day').toDate(),  
                     end: moment(task.date).startOf('day').toDate(),    
                     allDay: true,
+                    style: { backgroundColor: '#014F86', color: 'white' },
+                    type: "Task"
                     style: { backgroundColor: '#014F86', color: 'white' },
                     type: "Task"
                 }));
@@ -88,6 +95,8 @@ const CalendarPage = () => {
                     start: moment(createdEvent.start).toDate(),
                     end: moment(createdEvent.end).toDate(),
                     type: 'Event'
+                    end: moment(createdEvent.end).toDate(),
+                    type: 'Event'
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
@@ -109,10 +118,13 @@ const CalendarPage = () => {
 
                 const taskEvent = {
                     id: `${createdTask.id}`,
+                    id: `${createdTask.id}`,
                     title: `Task: ${createdTask.title}`,
                     start: moment(createdTask.date).startOf('day').toDate(),  
                     end: moment(createdTask.date).startOf('day').toDate(),    
                     allDay: true,
+                    style: { backgroundColor: '#014F86', color: 'white' },
+                    type: "Task"
                     style: { backgroundColor: '#014F86', color: 'white' },
                     type: "Task"
                 };
@@ -199,6 +211,7 @@ const CalendarPage = () => {
 
                 />
 
+                {tasks?.length > 0 && (
                 {tasks?.length > 0 && (
                     <div className="task-list">
                         <h3>Tasks</h3>

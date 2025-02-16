@@ -22,6 +22,7 @@ db.sqlite3
 # Ignore migrations cache
 **/migrations/*.pyc
 **/migrations/__pycache__/
+**/migrations/*
 
 # Ignore system files (macOS, Windows, Linux)
 .DS_Store
