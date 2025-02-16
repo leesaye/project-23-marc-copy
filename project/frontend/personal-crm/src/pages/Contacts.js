@@ -13,7 +13,8 @@ function Contacts() {
     const [searchQuery, setSearchQuery] = useState("");
     const [contacts, setContacts] = useState([]);
     const [sortValue, setSearchValue] = useState("Name (asc)");
-    const BASE_URL = `http://127.0.0.1:8000/`;
+    // const BASE_URL = `http://127.0.0.1:8000/`;
+    const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
 
     useEffect(() => {
         // Fetch contacts from the Django backend
