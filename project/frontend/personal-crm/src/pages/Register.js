@@ -13,7 +13,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { login_user } = useAuth();
   const BASE_URL = 'https://project-23-marc-backend-deployment.onrender.com/';
-  const REGISTER_URL = `${BASE_URL}register/`
+  const REGISTER_URL = `${BASE_URL}register/api/`
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
