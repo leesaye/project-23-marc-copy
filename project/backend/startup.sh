@@ -9,6 +9,7 @@ python -m pip install django-cors-headers
 #deployment packages
 python -m pip install dj-database-url
 python -m pip install psycopg2-binary 
+python -m pip install gunicorn
 
 python manage.py makemigrations
 python manage.py migrate
