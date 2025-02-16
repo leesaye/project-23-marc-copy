@@ -13,8 +13,8 @@ const CalendarPage = () => {
     const [tasks, setTasks] = useState([]);
     const [showEventForm, setShowEventForm] = useState(false);
     const [showTaskForm, setShowTaskForm] = useState(false);
-    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '' });
-    const [newTask, setNewTask] = useState({ title: '', date: '' });
+    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
+    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task' });
 
     useEffect(() => {
         const fetchEventsAndTasks = async () => {
@@ -27,7 +27,8 @@ const CalendarPage = () => {
                 const eventsData = eventsResponse.data.map(event => ({
                     ...event,
                     start: moment(event.start).toDate(),
-                    end: moment(event.end).toDate()
+                    end: moment(event.end).toDate(),
+                    type: "Event"
                 }));
 
                 const sortedTasksData = tasksResponse.data.sort((a, b) => 
@@ -35,12 +36,13 @@ const CalendarPage = () => {
                 );
 
                 const tasksData = sortedTasksData.map(task => ({
-                    id: `task-${task.id}`,
+                    id: `${task.id}`,
                     title: `Task: ${task.title}`,
                     start: moment(task.date).startOf('day').toDate(),  
                     end: moment(task.date).startOf('day').toDate(),    
                     allDay: true,
-                    style: { backgroundColor: '#014F86', color: 'white' }
+                    style: { backgroundColor: '#014F86', color: 'white' },
+                    type: "Task"
                 }));
 
                 setEvents([...eventsData, ...tasksData]);
@@ -84,7 +86,8 @@ const CalendarPage = () => {
                 setEvents([...events, {
                     ...createdEvent,
                     start: moment(createdEvent.start).toDate(),
-                    end: moment(createdEvent.end).toDate()
+                    end: moment(createdEvent.end).toDate(),
+                    type: 'Event'
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
@@ -105,12 +108,13 @@ const CalendarPage = () => {
                 console.log("Task added:", createdTask);
 
                 const taskEvent = {
-                    id: `task-${createdTask.id}`,
+                    id: `${createdTask.id}`,
                     title: `Task: ${createdTask.title}`,
                     start: moment(createdTask.date).startOf('day').toDate(),  
                     end: moment(createdTask.date).startOf('day').toDate(),    
                     allDay: true,
-                    style: { backgroundColor: '#014F86', color: 'white' }
+                    style: { backgroundColor: '#014F86', color: 'white' },
+                    type: "Task"
                 };
 
                 setTasks([...tasks, createdTask]);
@@ -125,11 +129,57 @@ const CalendarPage = () => {
     };
 
     const eventPropGetter = (event) => {
-        if (typeof event.id === 'string' && event.id.startsWith('task-')) {
-            return { style: { backgroundColor: '#014F86', color: 'white' } };
-        }
-        return {};
+        let backgroundColor = event.type === "Task" ? '#014F86' : '#4A90E2';
+        let color = 'white';
+
+        return {
+            style: {
+                backgroundColor,
+                color
+            }
     };
+
+    };
+
+    const deleteItem = async (event) => {
+        if (event.type === "Event") {
+            try {
+                const response = await axiosInstance.delete(`http://127.0.0.1:8000/api/events/${event.id}/delete/`);
+                const updatedTasks = tasks.filter(task => task.id !== event.id);
+                const updatedEvents = events.filter(e => e.id !== event.id);
+                setTasks(updatedTasks)
+                setEvents(updatedEvents)
+    
+            } catch (error) {
+                console.error('Error deleting Event:', error);
+            }
+
+        } else if (event.type === "Task") {
+            try {
+                const response = await axiosInstance.delete(`http://127.0.0.1:8000/api/tasks/${event.id}/delete/`);
+                const updatedTasks = tasks.filter(task => task.id.toString() !== event.id.toString());
+                const updatedEvents = events.filter(e => e.id.toString() !== event.id.toString());
+                setTasks(updatedTasks)
+                setEvents(updatedEvents)
+    
+            } catch (error) {
+                console.error('Error deleting task:', error);
+            }
+        } else {
+            console.error("Trying to delete invalid item, shouldn't end up here")
+        }
+
+    };
+
+    const CustomEvent = ({ event }) => {
+        return (
+            <div className="custom-event">
+                <button className="delete-icon" onClick={() => deleteItem(event)}>❌</button>
+                <span>{event.title}</span>
+            </div>
+        );
+    };
+
 
     return (
         <Layout>
@@ -143,9 +193,13 @@ const CalendarPage = () => {
                     views={{ month: true, week: true, day: true, agenda: true }} 
                     defaultView={Views.MONTH}
                     eventPropGetter={eventPropGetter}
+                    components={{
+                        event: CustomEvent,  
+                    }}
+
                 />
 
-                {tasks.length > 0 && (
+                {tasks?.length > 0 && (
                     <div className="task-list">
                         <h3>Tasks</h3>
                         <ul>
