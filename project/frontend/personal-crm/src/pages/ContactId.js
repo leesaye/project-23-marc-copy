@@ -18,6 +18,7 @@ function ContactId() {
         enjoyment: "",
     });
     const [errors, setErrors] = useState({});
+    const BASE_URL = "http://127.0.0.1:8000/";
 
     const [formData, setFormData] = useState({
         name: "",
@@ -56,7 +57,7 @@ function ContactId() {
         const updatedFormData = { ...formData, relationship_rating: quizVisible ? calculateRelationshipValue() : formData.relationship_rating };
 
         try {
-            const response = await axiosInstance.post(`http://127.0.0.1:8000/contacts/${contact.id}`, updatedFormData);
+            const response = await axiosInstance.post(`${BASE_URL}/contacts/${contact.id}`, updatedFormData);
             console.log("Contact updated:", response.data);
             alert("Contact successfully updated!");
             nav('/contacts/');
@@ -71,7 +72,7 @@ function ContactId() {
     };
 
     useEffect(() => {
-        axiosInstance.get(`http://127.0.0.1:8000/contacts/${contact_id}`)
+        axiosInstance.get(`${BASE_URL}contacts/${contact_id}`)
         .then(response => {
             setContact(response.data);
         })
@@ -82,7 +83,7 @@ function ContactId() {
 
     const handleDelete = async () => {
         try {
-            await axiosInstance.delete(`http://127.0.0.1:8000/contacts/${contact_id}/delete`);
+            await axiosInstance.delete(`${BASE_URL}/contacts/${contact_id}/delete`);
             console.log(`Contact ${contact_id} deleted successfully`);
             alert("Contact successfully deleted!");
             nav('/contacts/');

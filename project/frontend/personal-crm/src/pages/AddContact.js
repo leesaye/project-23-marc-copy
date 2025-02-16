@@ -17,6 +17,7 @@ function AddContact() {
         enjoyment: "",
     });
     const [errors, setErrors] = useState({});
+    const BASE_URL = `http://127.0.0.1:8000/`;
 
     const [formData, setFormData] = useState({
         name: "",
@@ -70,7 +71,7 @@ function AddContact() {
         }
 
         try {
-            const response = await axiosInstance.post("http://127.0.0.1:8000/contacts/add", updatedFormData);
+            const response = await axiosInstance.post(`${BASE_URL}/contacts/add`, updatedFormData);
             console.log("Contact added:", response.data);
             alert("Contact successfully added!");
             nav('/contacts/');
