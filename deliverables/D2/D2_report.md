@@ -113,7 +113,7 @@ A description of the specific features, modules, or components built by the sub-
    4. Private Routes so only authenticated users can access pages and make api calls (PrivateRoute.js, useAuth.js)  
    5. Field Validation (Login.js, Register.js)  
       1. All fields on the Login and Register pages are validated so that users can only login and register with appropriate information. For example, red-text will appear underneath the password field saying that username or password information is incorrect. In addition, the username and password fields are highlighted with a red border and they disappear, along with the error message, once users begin editing the fields again. Similar Field Validation happens on the Register page, displaying when a username is already taken, an email format is invalid, and the password fields do not match or are left blank. On this page, multiple errors can appear alongside each other so users know what information is incorrect all at once. For both pages, the login and register buttons do not allow the user to login or register if the field information is incorrect and produces error messages.  
-   6. User Authentication Timeout  
+   6. User Authentication Timeout 
 	   1. Session refreshes every time user navigates to a new page (useAuth.js triggers get\_authenticed on page change)  
 	   2. All authenticated backend responses are called with axiosInstance which is a custom wrapper around axios made to have extra functionality.  
          1. axiosInstance is Implemented in api.js  
@@ -123,7 +123,8 @@ A description of the specific features, modules, or components built by the sub-
 	3. Flow Diagram
          
          ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdjsNrJZp_weJoXDGqzp_KcZs71pQkro5XyBHDslqoAEa1RWi5l_REKLN1Bf7F-0lkLEGymnI-avjt_xv3gpR3sIRbGdXfBwChZYocpgbBXyMQxJNbOC0StYZY3zw7ddFxSL12M?key=Y9inWgrbARsizmGAsFQgb-Na)
-      4. Backend Testing
+
+  7. Backend Testing
 	      1. A test suite was created to test backend apis for user authentication using django unittest.
 
 Lessons learned from this phase.  
