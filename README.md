@@ -27,9 +27,9 @@ Primary Features and functionalities currently implemented for D2:
 
 The Final MVP for Personal CRM should accomplish the following 3 main user stories:
 
-4. As a user I want to be reminded that I haven't communicated with someone for a while.
-5. As a user, I want to be able to easily action follow-ups or outstanding items and set due dates - that means I should be able to tap one button and the message sends.
-6. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to next question."
+1. As a user I want to be reminded that I haven't communicated with someone for a while.
+2. As a user, I want to be able to easily action follow-ups or outstanding items and set due dates - that means I should be able to tap one button and the message sends.
+3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to next question."
 
 ## Screenshots, GIFs, or Short Videos:
 View the following video for a walkthrough and user flow of our website:
@@ -38,17 +38,19 @@ View the following video for a walkthrough and user flow of our website:
 
 ## How the TA can Test the features:
 1. Visit our deployed website here: https://personalcrm.netlify.app/
+
 	1. Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity.
-2. After clicking the link above you will be brought to the log in page.
-		1. You can use the following test user to login
-			1. username: newuser
-			2. password: 123
-		2. You may also register a new account instead by clicking the Sign Up link at the bottom of the Log In page.
-			1. Here you can enter a username email and password.
-			2. Feel free to use this account instead of the test user above
-3. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
-4. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
-5. To test our second use case, click the Contacts tab on the left sidebar.
+	   
+3. After clicking the link above you will be brought to the log in page.
+	1. You can use the following test user to login
+		1. username: newuser
+		2. password: 123
+	2. You may also register a new account instead by clicking the Sign Up link at the bottom of the Log In page.
+		1. Here you can enter a username email and password.
+		2. Feel free to use this account instead of the test user above
+4. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
+5. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
+6. To test our second use case, click the Contacts tab on the left sidebar.
 	1. Here you can add a new contact by clicking the green add contact button.
 		1. This will bring you to an add contacts page where you can enter information about a new contact you want to add
 		2. Try inputing a name, email, phone, job, relationship and notes.
@@ -63,7 +65,7 @@ View the following video for a walkthrough and user flow of our website:
 	4. On the contact overview tab you can also sort your contacts by clicking the "Sory By" button
 	5. You can also search your contacts using the search bar.
 	6. Note that the import button is not implemented for d2
-6. To test our third use case, click the Calendar Tab on the left sidebar
+7. To test our third use case, click the Calendar Tab on the left sidebar
 	1. This will bring up a calendar view 
 	2. To add an event to the calendar click the add event button located at the bottom right of the screen.
 		1. This will bring up a dialog to add an event
@@ -76,8 +78,8 @@ View the following video for a walkthrough and user flow of our website:
 		1. This process is similar to adding an event but without an end date
 	4. On the calendar tab you can also change the views by clicking the week day and agenda views at the top right
 	5. You can navigate back and forth in time using the buttons in the top left.
-7. For more space you can collapse the sidebar by clicking the three lines in the top left corner
-8. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
+8. For more space you can collapse the sidebar by clicking the three lines in the top left corner
+9. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
 	1. This will bring you back to the log in page
 Notes for testing
 - For any further clarity with the steps above, please refer to the walkthrough video above.
@@ -102,8 +104,8 @@ Steps to Install Dependencies and Get local server running
 	2. run npm install to install all the dependencies
 	3. run npm start to start the frontend locally
 3. For Backend, open new terminal:
-	4. cd into project/backend/
-	5. view the INSTALL.md file and follow instructions from there
+	1. cd into project/backend/
+	2. view the INSTALL.md file and follow instructions from there
 4. Visit frontend localhost link to start testing locally
 
 Unit tests: 
