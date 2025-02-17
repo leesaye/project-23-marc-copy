@@ -81,6 +81,7 @@ View the following video for a walkthrough and user flow of our website:
 8. For more space you can collapse the sidebar by clicking the three lines in the top left corner
 9. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
 	1. This will bring you back to the log in page
+
 Notes for testing
 - For any further clarity with the steps above, please refer to the walkthrough video above.
 - If request are slow, please be patient as our backend server is using the free tier. (inactivity for 15 mins will cause server to shutdown and will cause next request to take longer (~2mins))
