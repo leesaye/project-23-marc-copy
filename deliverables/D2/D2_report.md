@@ -107,23 +107,23 @@ A description of the specific features, modules, or components built by the sub-
       2. Cross-Origin Resource Sharing (CORS) is used as a security measure when authenticated to allow only specific domains to send backend requests  
       3. Tokens are stored in cookies rather than local or session storage to prevent attackers from stealing tokens through javascript injection  
    2. Login UI (Login.js, api.js, useAuth.js, Login.css)  
-      4. Login page that users interact with first when they access our website. It is described by Login.js and stylized by Login.css. It features the title of our project ‘Personal-CRM’ with two fields to enter their username and password. There is a button, labelled ‘Login’ for users to click to login once they have filled in their information. There is also a link titled ‘Sign up’ for users to be redirected to the Register page and register if they do not already have an account for our website. On a successful login, users are redirected to the homepage of our website.  
+	   1. Login page that users interact with first when they access our website. It is described by Login.js and stylized by Login.css. It features the title of our project ‘Personal-CRM’ with two fields to enter their username and password. There is a button, labelled ‘Login’ for users to click to login once they have filled in their information. There is also a link titled ‘Sign up’ for users to be redirected to the Register page and register if they do not already have an account for our website. On a successful login, users are redirected to the homepage of our website.  
    3. Register UI (Register.js, api.js, useAuth.js)  
       1. Register page that users are redirected to when they click on the ‘Sign up’ link on the Login page. It is described by Register.js and also stylized by Login.css for a similar style. It features a username, email, password, and confirm-password fields. There is a button, labelled ‘Register’ for users to click to register once they have filled in their information. There is also a link titled ‘Login’ for users to be redirected to the Login page and login if they already have an account for our website. On a successful registration, users are redirected to the homepage of our website.   
    4. Private Routes so only authenticated users can access pages and make api calls (PrivateRoute.js, useAuth.js)  
    5. Field Validation (Login.js, Register.js)  
       1. All fields on the Login and Register pages are validated so that users can only login and register with appropriate information. For example, red-text will appear underneath the password field saying that username or password information is incorrect. In addition, the username and password fields are highlighted with a red border and they disappear, along with the error message, once users begin editing the fields again. Similar Field Validation happens on the Register page, displaying when a username is already taken, an email format is invalid, and the password fields do not match or are left blank. On this page, multiple errors can appear alongside each other so users know what information is incorrect all at once. For both pages, the login and register buttons do not allow the user to login or register if the field information is incorrect and produces error messages.  
    6. User Authentication Timeout  
-      2. Session refreshes every time user navigates to a new page (useAuth.js triggers get\_authenticed on page change)  
-      3. All authenticated backend responses are called with axiosInstance which is a custom wrapper around axios made to have extra functionality.  
+	   1. Session refreshes every time user navigates to a new page (useAuth.js triggers get\_authenticed on page change)  
+	   2. All authenticated backend responses are called with axiosInstance which is a custom wrapper around axios made to have extra functionality.  
          1. axiosInstance is Implemented in api.js  
          2. Everytime axios Instance is called it does two things:  
             1. First adds withCredentials: true to each request to ensure that tokens are used as credentials  
             2. Intercepts any 401 responses returned from requests and attempts to refresh the token to determine whether the 401 error is due to an unauthenticated user or not. If the 401 response comes from an unauthenticated user then the refresh token will be used to re-authenticate the user.  
-      4. Flow Diagram
+	3. Flow Diagram
          
          ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdjsNrJZp_weJoXDGqzp_KcZs71pQkro5XyBHDslqoAEa1RWi5l_REKLN1Bf7F-0lkLEGymnI-avjt_xv3gpR3sIRbGdXfBwChZYocpgbBXyMQxJNbOC0StYZY3zw7ddFxSL12M?key=Y9inWgrbARsizmGAsFQgb-Na)
-      5. Backend Testing
+      4. Backend Testing
 	      1. A test suite was created to test backend apis for user authentication using django unittest.
 
 Lessons learned from this phase.  
