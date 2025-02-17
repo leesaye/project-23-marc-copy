@@ -17,9 +17,9 @@ Primary Features and functionalities currently implemented for D2:
 1. A user can register and login (Inital Page)
 	1. A user can login or create and account if they do not have one.
 2. A User can create and add contacts to their account (Contacts Tab)
-	2. A user can add contacts and input information about each of their contacts.
-	3. They can also take a quiz that asks questions about their contact to prompt the user to add more information about a specific the contact.
-	4. A use can view all their contacts in a consolidated overview.
+	1. A user can add contacts and input information about each of their contacts.
+	2. They can also take a quiz that asks questions about their contact to prompt the user to add more information about a specific the contact.
+	3. A use can view all their contacts in a consolidated overview.
 3. A User can add events and tasks to a calendar as reminders for when to reach out to contacts. (Calendar Tab)
 	1. On the Calendar Tab, a use can view a calendar view of all their upcoming events and tasks.
 	2. A user can also add events or tasks to the calendar.
@@ -27,28 +27,28 @@ Primary Features and functionalities currently implemented for D2:
 
 The Final MVP for Personal CRM should accomplish the following 3 main user stories:
 
-1. As a user I want to be reminded that I haven't communicated with someone for a while.
-2. As a user, I want to be able to easily action follow-ups or outstanding items and set due dates - that means I should be able to tap one button and the message sends.
-3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to next question."
+4. As a user I want to be reminded that I haven't communicated with someone for a while.
+5. As a user, I want to be able to easily action follow-ups or outstanding items and set due dates - that means I should be able to tap one button and the message sends.
+6. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to next question."
 
 ## Screenshots, GIFs, or Short Videos:
 View the following video for a walkthrough and user flow of our website:
 [https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link](https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link)
 
 ## How the TA can Test the features:
-1. Visit our deployed website here: https://personalcrm.netlify.app/
+7. Visit our deployed website here: https://personalcrm.netlify.app/
 	1. Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity.
-2. After clicking the link above you will be brought to the log in page.
+8. After clicking the link above you will be brought to the log in page.
 		1. You can use the following test user to login
 			1. username: newuser
 			2. password: 123
 		2. You may also register a new account instead by clicking the Sign Up link at the bottom of the Log In page.
 			1. Here you can enter a username email and password.
 			2. Feel free to use this account instead of the test user above
-3. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
-4. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
-5. To test our second use case, click the Contacts tab on the left sidebar.
-	1. Here you can add a new contact by clicking the green add contact button.
+9. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
+10. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
+11. To test our second use case, click the Contacts tab on the left sidebar.
+	2. Here you can add a new contact by clicking the green add contact button.
 		1. This will bring you to an add contacts page where you can enter information about a new contact you want to add
 		2. Try inputing a name, email, phone, job, relationship and notes.
 		3. You can also try the relationship rating quiz by clicking the blue relationship rating quiz button at the top.
@@ -56,28 +56,28 @@ View the following video for a walkthrough and user flow of our website:
 		4. You can also upload an image on the righthand side
 		5. To submit the contact and add it to the list of your contacts you must first consent to add this contact for compliance reasons.
 		6. After the above fields are entered, click the green submit button to add the contact. You will be prompted with a dialog box saying the contact has been added
-	2. Once a contact is added you will be brought back to the contacts page where you can see an overview of all your added contacts. You should see that your new contact has been added. You should also see a relationship rating status bar indicating how well you know your contact based on the relationship quiz taken earlier.
-	3. If you would like to edit information about your contact click the edit link next to the contact on the right.
+	3. Once a contact is added you will be brought back to the contacts page where you can see an overview of all your added contacts. You should see that your new contact has been added. You should also see a relationship rating status bar indicating how well you know your contact based on the relationship quiz taken earlier.
+	4. If you would like to edit information about your contact click the edit link next to the contact on the right.
 		1. this will bring you to a page where you can edit existing info or even delete the contact
-	4. On the contact overview tab you can also sort your contacts by clicking the "Sory By" button
-	5. You can also search your contacts using the search bar.
-	6. Note that the import button is not implemented for d2
-6. To test our third use case, click the Calendar Tab on the left sidebar
-	1. This will bring up a calendar view 
-	2. To add an event to the calendar click the add event button located at the bottom right of the screen.
-		1. This will bring up a dialog to add an event
+	5. On the contact overview tab you can also sort your contacts by clicking the "Sory By" button
+	6. You can also search your contacts using the search bar.
+	7. Note that the import button is not implemented for d2
+12. To test our third use case, click the Calendar Tab on the left sidebar
+	8. This will bring up a calendar view 
+	9. To add an event to the calendar click the add event button located at the bottom right of the screen.
+		2. This will bring up a dialog to add an event
 			1. Enter the title of the event, the start date and the end date (either by typing or clicking on the calendar icon)
 				1. There may be issues with the calendar icon popup so ensure that you use chrome for best results. A time must be added for an event to be created
 			2. Save the event
 			3. This will add an event block to the calendar on the specified day selected
 			4. You can click the x to delete the event on the calendar
-	3. You can also add a task instead by clicking the add task button
-		1. This process is similar to adding an event but without an end date
-	4. On the calendar tab you can also change the views by clicking the week day and agenda views at the top right
-	5. You can navigate back and forth in time using the buttons in the top left.
-7. For more space you can collapse the sidebar by clicking the three lines in the top left corner
-8. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
-	1. This will bring you back to the log in page
+	10. You can also add a task instead by clicking the add task button
+		3. This process is similar to adding an event but without an end date
+	11. On the calendar tab you can also change the views by clicking the week day and agenda views at the top right
+	12. You can navigate back and forth in time using the buttons in the top left.
+13. For more space you can collapse the sidebar by clicking the three lines in the top left corner
+14. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
+	13. This will bring you back to the log in page
 Notes for testing
 - For any further clarity with the steps above, please refer to the walkthrough video above.
 - If request are slow, please be patient as our backend server is using the free tier. (inactivity for 15 mins will cause server to shutdown and will cause next request to take longer (~2mins))
@@ -95,15 +95,15 @@ Dependencies:
 	- django-cors-headers
 
 Steps to Install Dependencies and Get local server running
-1. Clone the repo
-2. For Frontend:
+15. Clone the repo
+16. For Frontend:
 	1. Cd into project/frontend/personalcrm/
 	2. run npm install to install all the dependencies
 	3. run npm start to start the frontend locally
-3. For Backend, open new terminal:
-	1. cd into project/backend/
-	2. view the INSTALL.md file and follow instructions from there
-4. Visit frontend localhost link to start testing locally
+17. For Backend, open new terminal:
+	4. cd into project/backend/
+	5. view the INSTALL.md file and follow instructions from there
+18. Visit frontend localhost link to start testing locally
 
 Unit tests: 
 - To run unit tests for a use case, cd into project/backend and run the command below:
@@ -153,11 +153,11 @@ https://www.figma.com/design/I9kl6N0QCoiMsL8oPgZ4lJ/Personal-CRM-Prototype?node-
 ## Coding Standards and Guidelines
 
 We will be using standard coding guidelines that adhere to the five pillars of code quality:
-11. Readability
-12. Maintainability
-13. Efficiency
-14. Reliability
-15. Reusability
+19. Readability
+20. Maintainability
+21. Efficiency
+22. Reliability
+23. Reusability
 ​
 ## Licenses 
  - Not Applicable. There are no licenses involved in the project as of now.
