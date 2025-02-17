@@ -40,15 +40,15 @@ Testing plan (Django Unittest for backend and Jest for frontend)
 
 * **Unit testing**  
   * Testing source code (aim for high line coverage percentage)  
-  * Automated test cases that can compile and run easily (so testing the code is as fast as possible)  
+  * Automated test cases that can compile and run easily (so testing the code is as fast as possible, Django unittest enables this)  
 * **Functional testing**  
-  * Automated test cases  
-    * Want to cover all core use cases and corner cases  
-  * User testing (get people to test the app manually)  
-* Note: we should **integrate these tests** into Github Actions **to run functional/unit tests with every pull request** (ensures that we don’t break a feature/break the main branch whenever we do merging)  
-  * If we don’t use Github Actions (or something like that), then we need to make sure everyone writes tests concurrently as they develop (to make sure whatever they’re working on works and doesn’t break other stuff), and make sure they run those tests on a PR before we merge that PR  
-* **Write a checklist of pre-submit/pre-merge requirements**  
-  * Includes code formatting requirements (make sure code isn’t messy), naming/oop stuff, dependency checks, and testing requirements
+  * Automated test cases with Jest or Selenium
+    * Want to cover all core use cases and corner cases
+  * For now: manual user testing (by developers) on the frontend
+* Notes (features to enforce quality for future development/infrastructure):
+  * Use GitHub Actions to run functional/unit tests with every pull request (a double check to ensure no issues when merging)  
+  * **Write a checklist of pre-submit/pre-merge requirements** (includes code formatting requirements, naming, dependency checks, and testing requirements)
+* For now, ensure developers write unit tests/manually test concurrently as they develop features, and make sure they run those tests on a PR before merge
 
 ## 4\. Developing a system model:
 
