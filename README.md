@@ -25,7 +25,7 @@ Primary Features and functionalities currently implemented for D2:
 	2. A user can also add events or tasks to the calendar.
 
 
-The Final MVP for Personal CRM should accomplishes the following 3 main user stories:
+The Final MVP for Personal CRM should accomplishe the following 3 main user stories:
 
 1. As a user I want to be reminded that I haven't communicated with someone for a while.
 2. As a user, I want to be able to easily action follow-ups or outstanding items and set due dates - that means I should be able to tap one button and the message sends.
