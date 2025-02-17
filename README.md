@@ -107,16 +107,27 @@ Steps to Install Dependencies and Get local server running
 
 ## Deployment Instructions
 Repo has been forked and changed slightly to allow for deployment.
-Frontend Deployment Using Netlify:
-- 
-Backend Deployment Using Render:
-- Create an account on Render..com
+
+**Frontend Deployment Using Netlify:**
+- Create an account on netlify.com and connect to GitHub
+- Follow the instructions here (using this repo, or a fork of it):
+	- https://docs.netlify.com/welcome/add-new-site/#import-from-an-existing-repository
+ - Below are the build settings required
+ 	- Base directory: project/frontend/personal-crm
+  	- Build command: npm run build
+	- Publish directory: project/frontend/personal-crm/build
+ - Below are some ENV variables required
+ 	- NODE_VERSION=23.7.0 (anything above 20 should work)
+  	- CI=false (prevents netlify from treating warnings as errors)
+
+**Backend Deployment Using Render:**
+- Create an account on Render.com
 - First create and connect to render postgres database by following documentation:
 	- https://render.com/docs/postgresql-creating-connecting
 - And follow instructions on "Your First Render Deploy" documentation:
 	- https://render.com/docs/your-first-deploy
 - There are some ENV variables required
-	- ALLOWED_HOSTS (list of urls separated by space )
+	- ALLOWED_HOSTS (list of urls separated by space)
 	- DATABASE_URL (Postgres internal database url)
 	- DEBUG (True or False)
 	- SECRET_KEY (random generation)
