@@ -125,7 +125,7 @@ A description of the specific features, modules, or components built by the sub-
          ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdjsNrJZp_weJoXDGqzp_KcZs71pQkro5XyBHDslqoAEa1RWi5l_REKLN1Bf7F-0lkLEGymnI-avjt_xv3gpR3sIRbGdXfBwChZYocpgbBXyMQxJNbOC0StYZY3zw7ddFxSL12M?key=Y9inWgrbARsizmGAsFQgb-Na)
 
   7. Backend Testing
-	      1. A test suite was created to test backend apis for user authentication using django unittest.
+	  1. A test suite was created to test backend apis for user authentication using django unittest.
 
 Lessons learned from this phase.  
 - What worked well?  
