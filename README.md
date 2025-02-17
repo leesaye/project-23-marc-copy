@@ -105,6 +105,11 @@ Steps to Install Dependencies and Get local server running
 	2. view the INSTALL.md file and follow instructions from there
 4. Visit frontend localhost link to start testing locally
 
+Unit tests: 
+- To run unit tests for a use case, cd into project/backend and run the command below:
+	- python manage.py test \<app-name\>.tests
+- \<app-name\> being "accounts", "contacts" or "calendarapi" (as of D2)
+
 ## Deployment Instructions
 Repo has been forked and changed slightly to allow for deployment.
 
