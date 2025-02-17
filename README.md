@@ -39,7 +39,7 @@ View the following video for a walkthrough and user flow of our website:
 ## How the TA can Test the features:
 1. Visit our deployed website here: https://personalcrm.netlify.app/
 
-	1. Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity.
+	1. Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity. You may be seeing a loading screen for aprox 1-2 mins or a request may take a while to get sent.
 	   
 3. After clicking the link above you will be brought to the log in page.
 	1. You can use the following test user to login
@@ -62,7 +62,7 @@ View the following video for a walkthrough and user flow of our website:
 	2. Once a contact is added you will be brought back to the contacts page where you can see an overview of all your added contacts. You should see that your new contact has been added. You should also see a relationship rating status bar indicating how well you know your contact based on the relationship quiz taken earlier.
 	3. If you would like to edit information about your contact click the edit link next to the contact on the right.
 		1. this will bring you to a page where you can edit existing info or even delete the contact
-	4. On the contact overview tab you can also sort your contacts by clicking the "Sory By" button
+	4. On the contact overview tab you can also sort your contacts by clicking the "Sort By" button
 	5. You can also search your contacts using the search bar.
 	6. Note that the import button is not implemented for d2
 7. To test our third use case, click the Calendar Tab on the left sidebar
