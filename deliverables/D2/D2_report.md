@@ -121,6 +121,7 @@ A description of the specific features, modules, or components built by the sub-
             1. First adds withCredentials: true to each request to ensure that tokens are used as credentials  
             2. Intercepts any 401 responses returned from requests and attempts to refresh the token to determine whether the 401 error is due to an unauthenticated user or not. If the 401 response comes from an unauthenticated user then the refresh token will be used to re-authenticate the user.  
       4. Flow Diagram
+         
          ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdjsNrJZp_weJoXDGqzp_KcZs71pQkro5XyBHDslqoAEa1RWi5l_REKLN1Bf7F-0lkLEGymnI-avjt_xv3gpR3sIRbGdXfBwChZYocpgbBXyMQxJNbOC0StYZY3zw7ddFxSL12M?key=Y9inWgrbARsizmGAsFQgb-Na)
       5. Backend Testing
 	      1. A test suite was created to test backend apis for user authentication using django unittest.
