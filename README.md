@@ -140,6 +140,10 @@ Repo has been forked and changed slightly to allow for deployment.
 	- DATABASE_URL (Postgres internal database url)
 	- DEBUG (True or False)
 	- SECRET_KEY (random generation)
+ - Build settings
+ 	- Base directory: project/backend
+  	- Build command: pip install -r requirements.txt
+   	- Start command: gunicorn backend.wsgi
 
 
 ## Prototype
