@@ -76,7 +76,7 @@ View the following video for a walkthrough and user flow of our website:
 			4. You can click the x to delete the event on the calendar
 	3. You can also add a task instead by clicking the add task button
 		1. This process is similar to adding an event but without an end date
-	4. On the calendar tab you can also change the views by clicking the week day and agenda views at the top right
+	4. On the calendar tab you can also change the views by clicking the week, day and agenda views at the top right
 	5. You can navigate back and forth in time using the buttons in the top left.
 8. For more space you can collapse the sidebar by clicking the three lines in the top left corner
 9. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
