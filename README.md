@@ -70,7 +70,7 @@ View the following video for a walkthrough and user flow of our website:
 	2. To add an event to the calendar click the add event button located at the bottom right of the screen.
 		1. This will bring up a dialog to add an event
 			1. Enter the title of the event, the start date and the end date (either by typing or clicking on the calendar icon)
-				1. There may be issues with the calendar icon popup so ensure that you use chrome for best results. A time must be added for an event to be created
+				1. There may be issues with the calendar icon popup so ensure that you use chrome for the best results. A time must be added for an event to be created
 			2. Save the event
 			3. This will add an event block to the calendar on the specified day selected
 			4. You can click the x to delete the event on the calendar
@@ -86,7 +86,7 @@ Notes for testing
 - For any further clarity with the steps above, please refer to the walkthrough video above.
 - If request are slow, please be patient as our backend server is using the free tier. (inactivity for 15 mins will cause server to shutdown and will cause next request to take longer (~2mins))
 - Authentication access token expires after to 5 mins in which user may be prompted to log in (usually not the case)
-- Authentication access refresh token expires after a day in which user must re-log in.
+- Authentication access refresh token expires after a day in which case the user must re-log in.
 
 ## Developer Instructions
 Developers can test the project locally
