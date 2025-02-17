@@ -46,7 +46,7 @@ View the following video for a walkthrough and user flow of our website:
 		1. username: newuser
 		2. password: 123
 	2. You may also register a new account instead by clicking the Sign Up link at the bottom of the Log In page.
-		1. Here you can enter a username email and password.
+		1. Here you can enter a username, email and password.
 		2. Feel free to use this account instead of the test user above
 4. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
 5. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
