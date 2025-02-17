@@ -15,20 +15,20 @@ The Personal CRM Web Application is designed to automate and simplify the proces
 Primary Features and functionalities currently implemented for D2:
 
 1. A user can register and login (Inital Page)
-	1. A user can login or create and account if they do not have one.
+	1. A user can login or create an account if they do not have one.
 2. A user can create and add contacts to their account (Contacts Tab)
 	1. A user can add contacts and input information about each of their contacts.
 	2. They can also take a quiz that asks questions about their contact to generate a relationship score with that contact that determines the strength of the relationship.
 	3. A user can view all their contacts in a consolidated overview.
 3. A user can add events and tasks to a calendar as reminders for when to reach out to contacts. (Calendar Tab)
-	1. On the Calendar Tab, a user can view a calendar view of all their upcoming events and tasks.
+	1. On the Calendar Tab, a user can view a calendar of all their upcoming events and tasks.
 	2. A user can also add events or tasks to the calendar.
 
 
 The Final MVP for Personal CRM should accomplish the following 3 main user stories:
 
-1. As a user I want to be reminded that I haven't communicated with someone for a while.
-2. As a user, I want to be able to easily action follow-ups or outstanding items and set due dates - that means I should be able to tap one button and the message sends.
+1. As a user I want to be reminded when I haven't communicated with someone for a while.
+2. As a user, I want to be able to easily follow up on outstanding items and set due dates - that means I should be able to tap one button and the message sends.
 3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to next question."
 
 ## Screenshots, GIFs, or Short Videos:
