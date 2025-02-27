@@ -3,16 +3,13 @@
 #### **Part 1 – Planning:** 
 
 1. **Identifying the problem/improvement**  
-   * Define the problem you are solving.
-
-Currently, users can create and view tasks on their calendars, like “Wish Marc a Happy Birthday,” but they still have to come up with a message and manually send it. This extra step can be inconvenient and time-consuming for users with many contacts. Because of this, they might forget to send the message altogether, leading to missed opportunities to maintain and strengthen their connections, one of the main goals defined by our partner for the project (Personal CRM). While our calendar feature helps users remember important dates, it doesn't assist them in actually completing the tasks. This can create friction in the process of crafting the messages. Additionally, there is no built-in way to quickly send these messages directly from our website. 
+   * Define the problem you are solving. Currently, users can create and view tasks on their calendars, like “Wish Marc a Happy Birthday,” but they still have to come up with a message and manually send it. This extra step can be inconvenient and time-consuming for users with many contacts. Because of this, they might forget to send the message altogether, leading to missed opportunities to maintain and strengthen their connections, one of the main goals defined by our partner for the project (Personal CRM). While our calendar feature helps users remember important dates, it doesn't assist them in actually completing the tasks. This can create friction in the process of crafting the messages. Additionally, there is no built-in way to quickly send these messages directly from our website. 
 
 Ex: Task- Wish Marc a “Happy Birthday” \-\> button to generate the message 
-
 AI generates-   
 “Happy Birthday Marc\!\! 🎉🎂 Wishing you a fantastic day filled with joy, laughter, and all the things that make you happiest. Here's to another amazing year ahead\! 🥳🎈”
 
-The user has to option to edit the message and send the message on LinkedIn, messages, etc 
+The user has the option to edit the message and send the message on LinkedIn, messages, etc 
 
 * Explain how the AI component enhances your project (e.g., automation, decision-making, prediction, personalization, etc.). 
 
@@ -20,8 +17,7 @@ We are integrating an AI-powered message generator to hopefully make communicati
 
 - Automation: AI will instantly generate a personalized message for any task that involves communication.  
 - Personalization: The AI will use the contact’s name and occasion (e.g., birthday, anniversary, professional milestone) to create the message.   
-- Efficiency: Users can generate a message with one click, removing the time and effort needed to write one manually. After generating the message, users will have options to send it directly through LinkedIn, email, or SMS, streamlining the entire process.  
-*   
+- Efficiency: Users can generate a message with one click, removing the time and effort needed to write one manually. After generating the message, users will have options to send it directly through LinkedIn, email, or SMS, streamlining the entire process.  *   
 2. **Criteria, Research, Selection**  
    * Identify the criteria for your choice.
 
