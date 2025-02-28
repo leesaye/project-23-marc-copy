@@ -3,7 +3,7 @@
 #### **Part 1 – Planning:** 
 
 1. **Identifying the problem/improvement**
-   * **Define the problem you are solving.**
+   * **Define the problem you are solving.**                                                                                      
 The Problem we are solving is the issue of prioritizing tasks and events that occur within a user's circle. Our feed user story involves highlighting all the upcoming tasks and events going on into one easy to comprehend “Feed Page”. This page will show all events that are coming up and organize these events by what would be the highest priority for the user to accomplish first.
 
    * **Explain how the AI component enhances your project (e.g., automation, decision-making, prediction, personalization, etc.).** 
