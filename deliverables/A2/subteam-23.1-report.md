@@ -3,8 +3,8 @@
 #### **Part 1 – Planning:** 
 
 1. **Identifying the problem/improvement**
-   * **Define the problem you are solving.**                                                                                      
-The Problem we are solving is the issue of prioritizing tasks and events that occur within a user's circle. Our feed user story involves highlighting all the upcoming tasks and events going on into one easy to comprehend “Feed Page”. This page will show all events that are coming up and organize these events by what would be the highest priority for the user to accomplish first.
+   * **Define the problem you are solving.** 
+     The Problem we are solving is the issue of prioritizing tasks and events that occur within a user's circle. Our feed user story involves highlighting all the upcoming tasks and events going on into one easy to comprehend “Feed Page”. This page will show all events that are coming up and organize these events by what would be the highest priority for the user to accomplish first.
 
    * **Explain how the AI component enhances your project (e.g., automation, decision-making, prediction, personalization, etc.).** 
      The use of AI will enhance the decision-making process for the user. AI is used to read all upcoming tasks/events and generate priority for each of these tasks. It will then consolidate all this information and give the user an order in which to complete these tasks.  
@@ -13,9 +13,9 @@ The Problem we are solving is the issue of prioritizing tasks and events that oc
 
 2. **Criteria, Research, Selection**  
    * **Identify the criteria for your choice.** 
-** Model must be able to take in our Event and Task objects
+	   * Model must be able to take in our Event and Task objects
 		   * Each object has a data associated with which our model should be able to take into account
-** Model must be able to understand the type of event based on the title
+	- Model must be able to understand the type of event based on the title
 		- Events have set dates on which they will occur and they cannot be done before that date.
 		- Tasks must be done before their deadline.
 		- AI must be able to understand the title of the event/task and generate predictions on the priority of the task.
@@ -39,7 +39,7 @@ The Problem we are solving is the issue of prioritizing tasks and events that oc
 			 * Pro: Perfect for decision making based on a given structure (Input/Output)
 			 * Con: Model needs to be trained
 			 * Con: Little to no online datasets available that map tasks to a priority. Not much on Kaggle.
-			 * Con: Not Good for NLP tasks.
+			 * Not Good for NLP tasks.
      * **Performance (e.g., speed, accuracy, resource efficiency)** 
 	     * ChatGPT API
 		     * Accuracy may be a concern as prioritization is subjective based on a user’s current circumstances and opinion. For example, going to a Blue Jay’s Game with Jeff may have higher priority if the User has already skipped out on events with Jeff multiple times prior.
