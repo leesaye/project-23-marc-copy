@@ -39,7 +39,7 @@ The Problem we are solving is the issue of prioritizing tasks and events that oc
 			 * Pro: Perfect for decision making based on a given structure (Input/Output)
 			 * Con: Model needs to be trained
 			 * Con: Little to no online datasets available that map tasks to a priority. Not much on Kaggle.
-			 * Not Good for NLP tasks.
+			 * Con: Not Good for NLP tasks.
      * **Performance (e.g., speed, accuracy, resource efficiency)** 
 	     * ChatGPT API
 		     * Accuracy may be a concern as prioritization is subjective based on a user’s current circumstances and opinion. For example, going to a Blue Jay’s Game with Jeff may have higher priority if the User has already skipped out on events with Jeff multiple times prior.
