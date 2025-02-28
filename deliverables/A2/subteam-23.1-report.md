@@ -12,13 +12,13 @@
      For example, let’s say the user has three events: Go to Blue Jays game with Jeff (Event), Wish George a Happy Birthday (Task), Connect with Judy about a project she recently posted on LinkedIn (Task). The AI model will compare these events/tasks and build an order in which the user should complete these tasks based on a priority it has generated. Then it will output a simple message on how to handle these tasks. For example, “You have three upcoming events. We suggest you Wish George a Happy Birthday as his birthday is today. Then you should take a look at Judy’s LinkedIn Project and see if there is an interesting topic for you to connect on. Finally you should make sure to find a baseball cap to prepare for the Blue Jays game with Jeff tomorrow.”
 
 2. **Criteria, Research, Selection**  
-   * **Identify the criteria for your choice.** 
-	   * Model must be able to take in our Event and Task objects
-		   * Each object has a data associated with which our model should be able to take into account
-	   * Model must be able to understand the type of event based on the title
-		   * Events have set dates on which they will occur and they cannot be done before that date.
-		   * Tasks must be done before their deadline.
-		   * AI must be able to understand the title of the event/task and generate predictions on the priority of the task.
+- *Identify the criteria for your choice.** 
+	- Model must be able to take in our Event and Task objects
+		- Each object has a data associated with which our model should be able to take into account
+	- Model must be able to understand the type of event based on the title
+		- Events have set dates on which they will occur and they cannot be done before that date.
+		- Tasks must be done before their deadline.
+		- AI must be able to understand the title of the event/task and generate predictions on the priority of the task.
 			- Happy Birthdays have a single day in which the task must be completed whereas reaching out to someone to talk about a project can be done any day before a deadline.
 	- Model must be able to prioritize events based on the Contact associated with the event.
 		- The model must take into account the relationship rating between the user and their contact. If Judy has a low relationship score then tasks involving her will have lower priority. 
