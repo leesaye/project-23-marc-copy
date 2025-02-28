@@ -24,50 +24,49 @@
 		- The model must take into account the relationship rating between the user and their contact. If Judy has a low relationship score then tasks involving her will have lower priority. 
 		- Contact’s occupations matter. A contacts boss may have events with higher priority than a contact’s close friend as it may be easier to reschedule events with close friends compared to events with a user’s boss.
 	- The Model must be able to create coherent and concise sentences that action the user to complete tasks/events in a specific order.
+- **Identify potential AI models, frameworks, and libraries suitable for your goal.** 
+	- ChatGPT API (or any type of pre-trained model available such as google gemini)
+	- Scikit-learn (Untrained Model, Locally running and deployed models)
 
-   * **Identify potential AI models, frameworks, and libraries suitable for your goal.** 
-	   * ChatGPT API (or any type of pre-trained model available such as google gemini)
-	   * Scikit-learn (Untrained Model, Locally running and deployed models)
+* **Compare alternatives and justify your choices based on:**   
+	* **Feasibility (e.g., dataset availability, model complexity)** 
+		* ChatGPT API
+			* Pro: no need to train a model making it very feasible to integrate into our project
+			* Pro: Great for easy to use NLP task required to read titles and output sentences to action users
+			* Con: ChatGPT Tokens are a paid Service with limited Free Tier 
+		* Scikit-Learn
+			* Pro: Perfect for decision making based on a given structure (Input/Output)
+			* Con: Model needs to be trained
+			* Con: Little to no online datasets available that map tasks to a priority. Not much on Kaggle.
+			* Not Good for NLP tasks.
+	* **Performance (e.g., speed, accuracy, resource efficiency)** 
+		* ChatGPT API
+			* Accuracy may be a concern as prioritization is subjective based on a user’s current circumstances and opinion. For example, going to a Blue Jay’s Game with Jeff may have higher priority if the User has already skipped out on events with Jeff multiple times prior.
+			* If a user has many events/tasks/contacts, compute time will drastically decline. Fast compute time is essential for something like a Feed page as constant updates are made.
+			* High resource efficiency as OpenAI servers are used and no resources or additional overhead is required to store data locally or on our own remote server
+		* Scikit-Learn
+			* Slow speed when training model. High speed when computing priority as model is specifically trained for the specialized task of accessing priority for tasks
+			* Low accuracy as existing datasets are scarce.
+			* Low resource efficiency as models need to be trained locally or on our own remote servers and data storage must be provided by us.
+	* **How to integrate with your existing tech stack**
+		* Django Backend requests can make a ChatGPT API request using python.
+		* Scikit-Learn is python based which will integrate nicely with our Django backend as it is also written in python.
+* *If your goal involves model training/testing, outline any datasets required.**
+	* If Scikit-Learn is chosen, model training and testing is required. 
+		* User Task/Event Dataset required. Must be custom build as there are not a lot of dataset like this out there
+			* Must include task/event types
+			* Deadlines
+			* Relationships 
+			* Priority labels
+		* Models like ChatGPT do not need to be trained and therefore do not require datasets
 
-   * **Compare alternatives and justify your choices based on:**   
-     * **Feasibility (e.g., dataset availability, model complexity)** 
-	     * ChatGPT API
-		     * Pro: no need to train a model making it very feasible to integrate into our project
-		     * Pro: Great for easy to use NLP task required to read titles and output sentences to action users
-		     * Con: ChatGPT Tokens are a paid Service with limited Free Tier 
-		 * Scikit-Learn
-			 * Pro: Perfect for decision making based on a given structure (Input/Output)
-			 * Con: Model needs to be trained
-			 * Con: Little to no online datasets available that map tasks to a priority. Not much on Kaggle.
-			 * Not Good for NLP tasks.
-     * **Performance (e.g., speed, accuracy, resource efficiency)** 
-	     * ChatGPT API
-		     * Accuracy may be a concern as prioritization is subjective based on a user’s current circumstances and opinion. For example, going to a Blue Jay’s Game with Jeff may have higher priority if the User has already skipped out on events with Jeff multiple times prior.
-		     * If a user has many events/tasks/contacts, compute time will drastically decline. Fast compute time is essential for something like a Feed page as constant updates are made.
-		     * High resource efficiency as OpenAI servers are used and no resources or additional overhead is required to store data locally or on our own remote server
-		 * Scikit-Learn
-			 * Slow speed when training model. High speed when computing priority as model is specifically trained for the specialized task of accessing priority for tasks
-			 * Low accuracy as existing datasets are scarce.
-			 * Low resource efficiency as models need to be trained locally or on our own remote servers and data storage must be provided by us.
-     * **How to integrate with your existing tech stack**
-	     * Django Backend requests can make a ChatGPT API request using python.
-	     * Scikit-Learn is python based which will integrate nicely with our Django backend as it is also written in python.
- * *If your goal involves model training/testing, outline any datasets required.**
-	 * If Scikit-Learn is chosen, model training and testing is required. 
-		 * User Task/Event Dataset required. Must be custom build as there are not a lot of dataset like this out there
-			 * Must include task/event types
-			 * Deadlines
-			 * Relationships 
-			 * Priority labels
-		 * Models like ChatGPT do not need to be trained and therefore do not require datasets
+* **Discuss if you need to develop data preprocessing, bias mitigation and ethical consideration strategies.**  
+	* Data Preprocessing is required if Scikit-Learn is chosen as we must create our own dataset and create events and tasks with the required attributes. This means we need to sift through existing datasets and add appropriate information to train our model as no dataset online has all this information.
+	* Bias Mitigation: allowing users to reset and suggest metrics for the AI to consider when ranking prioritization can help mitigate bias
+	* Privacy: Allowing users to opt-out of this feature should be an option, in case they have concerns allowing AI to parse their relationship data
+	* Transparency: All users to see insights into why certain tasks were prioritized
 
-   * **Discuss if you need to develop data preprocessing, bias mitigation and ethical consideration strategies.**  
-	   * Data Preprocessing is required if Scikit-Learn is chosen as we must create our own dataset and create events and tasks with the required attributes. This means we need to sift through existing datasets and add appropriate information to train our model as no dataset online has all this information.
-	   * Bias Mitigation: allowing users to reset and suggest metrics for the AI to consider when ranking prioritization can help mitigate bias
-	   * Privacy: Allowing users to opt-out of this feature should be an option, in case they have concerns allowing AI to parse their relationship data
-	   * Transparency: All users to see insights into why certain tasks were prioritized
-
-   * **Justify why this feature is necessary and how it aligns with the project’s goals.**   
+* **Justify why this feature is necessary and how it aligns with the project’s goals.**   
     This feature is necessary because the overarching goal of the Personal CRM is to keep track of and maintain relationships with others with minimal input from the user. An AI-driven algorithm to prioritize tasks and events relieves the mental burden to keep track of relationship-oriented tasks and events. It allows users to maintain and improve the strength of their relationships by focusing on the most important tasks and events and customize them to their needs.
 
 #### **Part 2 – Impact Analysis:** 
