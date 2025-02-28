@@ -4,7 +4,7 @@
 
 1. **Identifying the problem/improvement**
    * **Define the problem you are solving.** 
-     The Problem we are solving is the issue of prioritizing tasks and events that occur within a user's circle. Our feed user story involves highlighting all the upcoming tasks and events going on into one easy to comprehend “Feed Page”. This page will show all events that are coming up and organize these events by what would be the highest priority for the user to accomplish first.
+     The problem we are solving is the issue of prioritizing tasks and events that occur within a user's circle. Our feed user story involves highlighting all the upcoming tasks and events going on into one easy to comprehend “Feed Page”. This page will show all events that are coming up and organize these events by what would be the highest priority for the user to accomplish first.
 
    * **Explain how the AI component enhances your project (e.g., automation, decision-making, prediction, personalization, etc.).** 
      The use of AI will enhance the decision-making process for the user. AI is used to read all upcoming tasks/events and generate priority for each of these tasks. It will then consolidate all this information and give the user an order in which to complete these tasks.  
@@ -64,7 +64,7 @@
 	* Data Preprocessing is required if Scikit-Learn is chosen as we must create our own dataset and create events and tasks with the required attributes. This means we need to sift through existing datasets and add appropriate information to train our model as no dataset online has all this information.
 	* Bias Mitigation: allowing users to reset and suggest metrics for the AI to consider when ranking prioritization can help mitigate bias
 	* Privacy: Allowing users to opt-out of this feature should be an option, in case they have concerns allowing AI to parse their relationship data
-	* Transparency: All users to see insights into why certain tasks were prioritized
+	* Transparency: Allow users to see insights into why certain tasks were prioritized
 
 * **Justify why this feature is necessary and how it aligns with the project’s goals.**   
     This feature is necessary because the overarching goal of the Personal CRM is to keep track of and maintain relationships with others with minimal input from the user. An AI-driven algorithm to prioritize tasks and events relieves the mental burden to keep track of relationship-oriented tasks and events. It allows users to maintain and improve the strength of their relationships by focusing on the most important tasks and events and customize them to their needs.
@@ -87,7 +87,7 @@ The final step is to analyze the impact of the improvement on the performance of
 		* ChatGPT API can reduce this latency but with an extra paid cost
 		* Locally trained and deployed models may reduce external requests but require a lot of computational power and resources
 		* Introducing AI in general into our algorithm may increase latency in feed updates by taking time to process data, and will consume more resources as it requires more computational power
-	* Resource Consumption trade-offs between Locally trained models and API models::
+	* Resource Consumption trade-offs between Locally trained models and API models:
 		* All AI models require a lot of processing power
 		* Locally running models avoid the API cost, but use local resources.
 		* Local resources may also have their own additional cost which means in some cases API costs may be cheaper.
