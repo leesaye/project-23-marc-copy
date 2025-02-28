@@ -13,9 +13,9 @@ The Problem we are solving is the issue of prioritizing tasks and events that oc
 
 2. **Criteria, Research, Selection**  
    * **Identify the criteria for your choice.** 
-	   * Model must be able to take in our Event and Task objects
+** Model must be able to take in our Event and Task objects
 		   * Each object has a data associated with which our model should be able to take into account
-	- Model must be able to understand the type of event based on the title
+** Model must be able to understand the type of event based on the title
 		- Events have set dates on which they will occur and they cannot be done before that date.
 		- Tasks must be done before their deadline.
 		- AI must be able to understand the title of the event/task and generate predictions on the priority of the task.
