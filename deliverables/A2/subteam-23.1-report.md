@@ -15,10 +15,10 @@
    * **Identify the criteria for your choice.** 
 	   * Model must be able to take in our Event and Task objects
 		   * Each object has a data associated with which our model should be able to take into account
-	- Model must be able to understand the type of event based on the title
-		- Events have set dates on which they will occur and they cannot be done before that date.
-		- Tasks must be done before their deadline.
-		- AI must be able to understand the title of the event/task and generate predictions on the priority of the task.
+	   * Model must be able to understand the type of event based on the title
+		   * Events have set dates on which they will occur and they cannot be done before that date.
+		   * Tasks must be done before their deadline.
+		   * AI must be able to understand the title of the event/task and generate predictions on the priority of the task.
 			- Happy Birthdays have a single day in which the task must be completed whereas reaching out to someone to talk about a project can be done any day before a deadline.
 	- Model must be able to prioritize events based on the Contact associated with the event.
 		- The model must take into account the relationship rating between the user and their contact. If Judy has a low relationship score then tasks involving her will have lower priority. 
