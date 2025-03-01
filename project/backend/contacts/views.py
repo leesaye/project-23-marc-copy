@@ -97,21 +97,40 @@ class UploadLinkedInCSVView(APIView):
         file = request.FILES['csv']
 
         try:
-            df = pd.read_csv(file)
+            # Detect the header row first because LinkedIn adds rows at the top with useless info
+            header_row = find_header_row(file)
+            if header_row is None:
+                return Response({"error": "Invalid CSV format, headers not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Read CSV from the detected header row
+            file.seek(0)
+            df = pd.read_csv(file, skiprows=header_row)
 
             if df is None or df.empty:
                 return Response({"error": "Uploaded CSV file is empty or invalid"}, status=status.HTTP_400_BAD_REQUEST)
 
-            required_columns = ["First Name", "Last Name", "URL", "Email Address", "Company", "Position", "Date of Connection"]
+            required_columns = ["First Name", "Last Name", "URL", "Email Address", "Company", "Position", "Connected On"]
             if not all(col in df.columns for col in required_columns):
                 return Response({"error": "Invalid CSV format"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            df.dropna(how="all", inplace=True)   # Drop rows where all values are NaN, needed because we change all NaN values in rows to ""
+            df.reset_index(drop=True, inplace=True)  # Reset index after dropping rows
+            
+            # Convert columns to string and replace NaN values with default strings
+            for col in required_columns:
+                df[col] = df[col].fillna("").astype(str)  # Ensure all values are strings so no float errors from NaN
 
             contacts_to_create = []
 
             for _, row in df.iterrows():
-                first_name = row.get("First Name", "").strip()
-                last_name = row.get("Last Name", "").strip()
+                first_name = row["First Name"].strip()
+                last_name = row["Last Name"].strip()
                 name = f"{first_name} {last_name}".strip()
+                
+                email = row["Email Address"].strip() or "No Email"
+                job = row["Position"].strip() or "No Job"
+                company = row["Company"].strip() or "No Company"
+                linkedin_url = row["URL"].strip() or "No URL"
 
                 if not name:
                     return Response({"error": "Contact name cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
@@ -119,13 +138,14 @@ class UploadLinkedInCSVView(APIView):
                 contact = Contact(
                     id=uuid.uuid4(),
                     user=request.user,
-                    name=f"{row['First Name']} {row['Last Name']}",
-                    email=row.get("Email Address", ""),
-                    job=row.get("Position", ""),
-                    company=row.get("Company", ""),
-                    relationship="",
-                    linkedin_url=row.get("URL", ""),
-                    notes=""
+                    name=name,
+                    email=email,
+                    job=job,
+                    company=company,
+                    relationship="LinkedIn connection",
+                    relationship_rating=50,
+                    linkedin_url=linkedin_url,
+                    notes=""    
                 )
                 contacts_to_create.append(contact)
 
@@ -181,3 +201,12 @@ class RelationshipQuizView(APIView):
         # Return the updated contact data
         serializer = ContactSerializer(contact)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+def find_header_row(file):
+    """Detects the correct header row dynamically."""
+    sample = pd.read_csv(file, header=None, nrows=10)  # Read first 10 rows to check for header line
+    for i, row in sample.iterrows():
+        if "First Name" in row.values and "Last Name" in row.values:
+            return i  # Return row index where headers are found
+    return None

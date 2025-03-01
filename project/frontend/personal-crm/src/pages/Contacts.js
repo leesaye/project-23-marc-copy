@@ -44,44 +44,6 @@ function Contacts() {
         return a.name.localeCompare(b.name); // Default is Name (asc), including for any unknown values
     });
 
-    // CSV upload
-    const handleCSVUploadClick = () => {
-        if (csvInputRef.current) {
-            csvInputRef.current.click();
-        }
-    };
-
-    const handleCSVUpload = async (e) => {
-        const file = e.target.files[0];
-
-        if (!file || file.type !== "text/csv") {
-            alert("Please upload a valid CSV file.");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("csv", file);
-
-        try {
-            const response = await axiosInstance.post(`${BASE_URL}contacts/upload-contacts/`, formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                    // CSRF Tokens might be needed?
-                },
-            });
-
-            console.log("Upload Success:", response.data);
-            alert("CSV uploaded successfully");
-
-            // Fetch new results
-            fetchContacts();
-        } catch (error) {
-            console.error("Error uploading CSV:", error);
-            console.error("Data:", error.response.data);
-            alert("Error uploading CSV");
-        }
-    };
-
     return (
         <Layout>
             <div className="conatiner bg-primary-subtle rounded p-3 vh-100">
@@ -109,11 +71,11 @@ function Contacts() {
                                 <SwapVertIcon />
                                 Sort by
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
-                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
-                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
-                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
+                            <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
+                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
+                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
+                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
                             </ul>
                         </div>
                     </div>
@@ -122,19 +84,9 @@ function Contacts() {
                             <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 Import
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><button class="dropdown-item" onClick={handleCSVUploadClick}>Upload CSV</button></li>
-                                {/* Hidden File Input */}
-                                <input
-                                    type="file"
-                                    name="csv"
-                                    ref={csvInputRef}
-                                    style={{ display: "none" }}
-                                    accept=".csv"
-                                    onChange={handleCSVUpload}
-                                />
-
-                                <li><button class="dropdown-item">Connect with LinkedIn</button></li>
+                            <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
+                                <li><button className="dropdown-item">Connect with Google</button></li>
                             </ul>
                         </div>
                     </div>
