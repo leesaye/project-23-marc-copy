@@ -1,4 +1,8 @@
 from django.shortcuts import render
+import pandas as pd
+import uuid
+
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from . models import Contact
 from rest_framework.response import Response
@@ -81,6 +85,58 @@ class DeleteContactView(APIView):
 
         contact.delete()
         return Response({"message": "Contact deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+# POST
+class UploadLinkedInCSVView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        if 'csv' not in request.FILES:
+            return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+        file = request.FILES['csv']
+
+        try:
+            df = pd.read_csv(file)
+
+            if df is None or df.empty:
+                return Response({"error": "Uploaded CSV file is empty or invalid"}, status=status.HTTP_400_BAD_REQUEST)
+
+            required_columns = ["First Name", "Last Name", "URL", "Email Address", "Company", "Position", "Date of Connection"]
+            if not all(col in df.columns for col in required_columns):
+                return Response({"error": "Invalid CSV format"}, status=status.HTTP_400_BAD_REQUEST)
+
+            contacts_to_create = []
+
+            for _, row in df.iterrows():
+                first_name = row.get("First Name", "").strip()
+                last_name = row.get("Last Name", "").strip()
+                name = f"{first_name} {last_name}".strip()
+
+                if not name:
+                    return Response({"error": "Contact name cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
+
+                contact = Contact(
+                    id=uuid.uuid4(),
+                    user=request.user,
+                    name=f"{row['First Name']} {row['Last Name']}",
+                    email=row.get("Email Address", ""),
+                    job=row.get("Position", ""),
+                    company=row.get("Company", ""),
+                    relationship="",
+                    linkedin_url=row.get("URL", ""),
+                    notes=""
+                )
+                contacts_to_create.append(contact)
+
+            # Bulk create (supposedly faster)
+            Contact.objects.bulk_create(contacts_to_create)
+
+            return Response({"message": "Contacts uploaded successfully"}, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 
 # Relationship quiz
