@@ -48,7 +48,7 @@ function CSVUpload() {
     
     return (
         <Layout>
-            <div className="conatiner bg-primary-subtle rounded p-3 vh-100">
+            <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                 <h2>How to export LinkedIn contacts as CSV:</h2>
                 <ul>
                     <li><h5>1) Log into LinkedIn on your Desktop</h5></li>
