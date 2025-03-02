@@ -112,10 +112,10 @@ class UploadLinkedInCSVView(APIView):
             required_columns = ["First Name", "Last Name", "URL", "Email Address", "Company", "Position", "Connected On"]
             if not all(col in df.columns for col in required_columns):
                 return Response({"error": "Invalid CSV format"}, status=status.HTTP_400_BAD_REQUEST)
-            
+
             df.dropna(how="all", inplace=True)   # Drop rows where all values are NaN, needed because we change all NaN values in rows to ""
             df.reset_index(drop=True, inplace=True)  # Reset index after dropping rows
-            
+
             # Convert columns to string and replace NaN values with default strings
             for col in required_columns:
                 df[col] = df[col].fillna("").astype(str)  # Ensure all values are strings so no float errors from NaN
@@ -126,7 +126,7 @@ class UploadLinkedInCSVView(APIView):
                 first_name = row["First Name"].strip()
                 last_name = row["Last Name"].strip()
                 name = f"{first_name} {last_name}".strip()
-                
+
                 email = row["Email Address"].strip() or "No Email"
                 job = row["Position"].strip() or "No Job"
                 company = row["Company"].strip() or "No Company"
@@ -145,7 +145,7 @@ class UploadLinkedInCSVView(APIView):
                     relationship="LinkedIn connection",
                     relationship_rating=50,
                     linkedin_url=linkedin_url,
-                    notes=""    
+                    notes=""
                 )
                 contacts_to_create.append(contact)
 
@@ -201,12 +201,19 @@ class RelationshipQuizView(APIView):
         # Return the updated contact data
         serializer = ContactSerializer(contact)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
 
 def find_header_row(file):
-    """Detects the correct header row dynamically."""
-    sample = pd.read_csv(file, header=None, nrows=10)  # Read first 10 rows to check for header line
-    for i, row in sample.iterrows():
-        if "First Name" in row.values and "Last Name" in row.values:
-            return i  # Return row index where headers are found
+    # """Detects the correct header row dynamically."""
+    # sample = pd.read_csv(file, header=None, nrows=10)  # Read first 10 rows to check for header line
+    # for i, row in sample.iterrows():
+    #     if "First Name" in row.values and "Last Name" in row.values:
+    #         return i  # Return row index where headers are found
+    # return None
+    header_idx = 0
+    for line in file:
+        decoded = line.decode('utf-8').strip()
+        if "First Name" in decoded and "Last Name" in decoded:
+            return header_idx
+        header_idx += 1
     return None
