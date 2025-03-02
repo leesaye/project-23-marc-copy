@@ -3,7 +3,7 @@ import axios from "axios";
 import { Context } from "../contexts/AIContext";
 
 function SampleAIChat() {
-    const [todo, setTodo] = useState("Loading...");
+    // const [todo, setTodo] = useState("Loading...");
     // const API_KEY = "AIzaSyCvRfJGtuK4ms8qPSV4fzTmEGYwUYrBWU0";
 
     // useEffect(() => {
@@ -31,7 +31,7 @@ function SampleAIChat() {
     return (
         <div>
             <h1>What to do for today</h1>
-            <p>{todo}</p>
+            {/* <p>{todo}</p> */}
             {/* <input onChange={(e)=>setInput(e.target.value)} value={input} type="text" placeholder='Enter a prompt'/> */}
             <input onChange={(e)=>setInput(e.target.value)} value={input} type="text" placeholder="Enter a prompt here"></input>
             <button onClick={()=>onSent()}>Generate a Plan</button>
