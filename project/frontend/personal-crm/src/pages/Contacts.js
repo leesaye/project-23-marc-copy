@@ -40,7 +40,7 @@ function Contacts() {
 
     return (
         <Layout>
-            <div className="conatiner bg-primary-subtle rounded p-3 vh-100">
+            <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                 <div className="row">
                     <div className="col-2">
                         <h2>Contacts</h2>

@@ -110,7 +110,7 @@ function ContactId() {
     return (
         <Layout>
             {!contact ? <p>Loading...</p>:
-            <div className="conatiner bg-primary-subtle rounded p-3 vh-100">
+            <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                 <div className="row">
                     <div className="col-5">
                         <h2>Edit contact: {contact.name}</h2>
