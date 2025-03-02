@@ -8,6 +8,7 @@ class Event(models.Model):
     start = models.DateTimeField()
     end = models.DateTimeField()
     color = models.CharField(max_length=7, default='#4A90E2')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events', default=1)
 
     def str(self):
         return self.title
