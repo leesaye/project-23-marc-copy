@@ -26,13 +26,17 @@ const CalendarPage = () => {
                     axiosInstance.get(`${BASE_URL}api/events/`),
                     axiosInstance.get(`${BASE_URL}api/tasks/`)
                 ]);
+                
+                console.log("Raw event data from backend:", eventsResponse.data);
 
                 const eventsData = eventsResponse.data.map(event => ({
                     ...event,
-                    start: moment(event.start).add(5, 'hours').toDate(),
-                    end: moment(event.end).add(5, 'hours').toDate(),
+                    start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
+                    end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")),      
                     type: "Event"
                 }));
+
+                console.log("Converted event data for frontend:", eventsData);
 
                 const sortedTasksData = tasksResponse.data.sort((a, b) => 
                     new Date(a.date) - new Date(b.date)
@@ -88,8 +92,8 @@ const CalendarPage = () => {
 
                 setEvents([...events, {
                     ...createdEvent,
-                    start: moment(createdEvent.start).toDate(),
-                    end: moment(createdEvent.end).toDate(),
+                    start: new Date(moment.utc(createdEvent.start).format("YYYY-MM-DDTHH:mm:ss")),
+                    end: new Date(moment.utc(createdEvent.end).format("YYYY-MM-DDTHH:mm:ss")),      
                     type: 'Event'
                 }]);
             } catch (error) {
@@ -186,20 +190,17 @@ const CalendarPage = () => {
             <div className="calendar-container">
                 <Calendar
                     localizer={localizer}
-                    events={events.map(event => ({
-                        ...event,
-                        start: moment(event.start).add(5, 'hours').toDate(),
-                        end: moment(event.end).add(5, 'hours').toDate(),
-                    }))} 
+                    events={events}  
                     startAccessor="start"
                     endAccessor="end"
                     style={{ height: "80vh" }}
-                    views={{ month: true, week: true, day: true, agenda: true }} 
+                    views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
                     defaultView={Views.MONTH}
                     eventPropGetter={eventPropGetter}
                     components={{
                         event: CustomEvent,  
                     }}
+                    timeZone="UTC"
                 />
 
                 {tasks?.length > 0 && (
