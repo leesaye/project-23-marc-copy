@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Layout from '../components/Layout';
 import axiosInstance from "../endpoints/api"; 
 import './Calendar.css';
+import { ContactsContext } from '../contexts/contactsContext';
 
 const localizer = momentLocalizer(moment);
 
 const CalendarPage = () => {
+    const { contacts } = useContext(ContactsContext);
     const [events, setEvents] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [showEventForm, setShowEventForm] = useState(false);
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
-    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task' });
+    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '' });
     const BASE_URL = 'http://127.0.0.1:8000/';
 
     useEffect(() => {
@@ -124,7 +126,7 @@ const CalendarPage = () => {
                 console.error('Error adding task:', error);
             }
 
-            setNewTask({ title: '', date: '' });
+            setNewTask({ title: '', date: '' , contact: ''});
             setShowTaskForm(false);
         }
     };
@@ -244,6 +246,15 @@ const CalendarPage = () => {
                             <input type="text" id="taskTitle" name="title" value={newTask.title} onChange={handleInputChange} required />
                             <label htmlFor="taskDate">Date:</label>
                             <input type="date" id="taskDate" name="date" value={newTask.date} onChange={handleInputChange} required />
+
+                            <label htmlFor="taskContact">Contact:</label>
+                            <select id="taskContact" name="contact" value={newTask.contact} onChange={handleInputChange}>
+                                <option value="">Select a contact (optional)</option>
+                                {contacts.map(contact => (
+                                    <option key={contact.id} value={contact.id}>{contact.name}</option>
+                                ))}
+                            </select>
+
                             <div className="modal-buttons">
                                 <button className="blue-button" onClick={handleAddTask}>Save</button>
                                 <button className="cancel-button" onClick={() => setShowTaskForm(false)}>Cancel</button>
