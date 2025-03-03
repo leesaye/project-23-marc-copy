@@ -1,42 +1,45 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import Layout from '../components/Layout';
 import axiosInstance from "../endpoints/api"; 
 import './Calendar.css';
-import { ContactsContext } from '../contexts/contactsContext';
 
 const localizer = momentLocalizer(moment);
 
 const CalendarPage = () => {
-    const { contacts } = useContext(ContactsContext);
     const [events, setEvents] = useState([]);
     const [tasks, setTasks] = useState([]);
-    const [showEventForm, setShowEventForm] = useState(false);
-    const [showTaskForm, setShowTaskForm] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [formType, setFormType] = useState(null); 
     const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
     const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '' });
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [contacts, setContacts] = useState([]);
+
+    
     const BASE_URL = 'http://127.0.0.1:8000/';
 
     useEffect(() => {
         const fetchEventsAndTasks = async () => {
             try {
-                const [eventsResponse, tasksResponse] = await Promise.all([
+                const [eventsResponse, tasksResponse, contactsResponse] = await Promise.all([
                     axiosInstance.get(`${BASE_URL}api/events/`),
-                    axiosInstance.get(`${BASE_URL}api/tasks/`)
+                    axiosInstance.get(`${BASE_URL}api/tasks/`), 
+                    axiosInstance.get(`${BASE_URL}contacts/`)
                 ]);
                 
-                console.log("Raw event data from backend:", eventsResponse.data);
+                setContacts(contactsResponse.data);
 
                 const eventsData = eventsResponse.data.map(event => ({
                     ...event,
                     start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
-                    end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")),      
+                    end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
                     type: "Event"
                 }));
 
-                console.log("Converted event data for frontend:", eventsData);
 
                 const sortedTasksData = tasksResponse.data.sort((a, b) => 
                     new Date(a.date) - new Date(b.date)
@@ -44,12 +47,13 @@ const CalendarPage = () => {
 
                 const tasksData = sortedTasksData.map(task => ({
                     id: `${task.id}`,
-                    title: `Task: ${task.title}`,
+                    title: `${task.title}`,
                     start: moment(task.date).startOf('day').toDate(),  
                     end: moment(task.date).startOf('day').toDate(),    
                     allDay: true,
                     style: { backgroundColor: '#014F86', color: 'white' },
-                    type: "Task"
+                    type: "Task", 
+                    contact: task.contact || "",
                 }));
 
                 setEvents([...eventsData, ...tasksData]);
@@ -65,9 +69,9 @@ const CalendarPage = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        if (showEventForm) {
+        if (formType === 'event') {
             setNewEvent({ ...newEvent, [name]: value });
-        } else if (showTaskForm) {
+        } else if (formType === 'task') {
             setNewTask({ ...newTask, [name]: value });
         }
     };
@@ -75,25 +79,15 @@ const CalendarPage = () => {
     const handleAddEvent = async (e) => {
         e.preventDefault();
 
-        const startDate = new Date(newEvent.start);
-        const endDate = new Date(newEvent.end);
-
-        if (endDate < startDate) {
-            alert("Error: End date/time cannot be earlier than start date/time.");
-            return;
-        }
-
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
             try {
                 const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
                 const createdEvent = response.data;
 
-                console.log("Event added:", createdEvent);
-
                 setEvents([...events, {
                     ...createdEvent,
                     start: new Date(moment.utc(createdEvent.start).format("YYYY-MM-DDTHH:mm:ss")),
-                    end: new Date(moment.utc(createdEvent.end).format("YYYY-MM-DDTHH:mm:ss")),      
+                    end: new Date(moment.utc(createdEvent.end).format("YYYY-MM-DDTHH:mm:ss")), 
                     type: 'Event'
                 }]);
             } catch (error) {
@@ -101,7 +95,7 @@ const CalendarPage = () => {
             }
 
             setNewEvent({ title: '', start: '', end: '' });
-            setShowEventForm(false);
+            setSidebarOpen(false);
         }
     };
 
@@ -112,16 +106,15 @@ const CalendarPage = () => {
                 const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, newTask);
                 const createdTask = response.data;
 
-                console.log("Task added:", createdTask);
-
                 const taskEvent = {
                     id: `${createdTask.id}`,
-                    title: `Task: ${createdTask.title}`,
+                    title: `${createdTask.title}`,
                     start: moment(createdTask.date).startOf('day').toDate(),  
                     end: moment(createdTask.date).startOf('day').toDate(),    
                     allDay: true,
                     style: { backgroundColor: '#014F86', color: 'white' },
-                    type: "Task"
+                    type: "Task",
+                    contact: createdTask.contact || ""
                 };
 
                 setTasks([...tasks, createdTask]);
@@ -131,22 +124,115 @@ const CalendarPage = () => {
             }
 
             setNewTask({ title: '', date: '' , contact: ''});
-            setShowTaskForm(false);
+            setSidebarOpen(false);
+            // setShowTaskForm(false);
         }
     };
-
-    const eventPropGetter = (event) => {
-        let backgroundColor = event.type === "Task" ? '#014F86' : '#4A90E2';
-        let color = 'white';
-
-        return {
-            style: {
-                backgroundColor,
-                color
-            }
-        };
+    
+    const handleUpdateEvent = async (e) => {
+        e.preventDefault();
+    
+        if (!selectedEvent) return;
+    
+        try {
+            const updatedEventData = {
+                title: selectedEvent.title,
+                start: selectedEvent.start,
+                end: selectedEvent.end,
+            };
+    
+            await axiosInstance.put(`${BASE_URL}api/events/${selectedEvent.id}/`, updatedEventData);
+    
+            const updatedEvents = events.map(event =>
+                event.id === selectedEvent.id
+                    ? { 
+                        ...event, 
+                        title: updatedEventData.title,
+                        start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
+                        end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss"))
+                    } 
+                    : event
+            );
+    
+            setEvents(updatedEvents);
+    
+            setSelectedEvent(null);
+            setSidebarOpen(false);
+        } catch (error) {
+            console.error('Error updating event:', error);
+        }
     };
-
+            
+    const handleUpdateTask = async (e) => {
+        e.preventDefault();
+    
+        if (!selectedTask) return;
+    
+        try {
+            const updatedTaskData = {
+                title: selectedTask.title,
+                date: moment(selectedTask.start).format("YYYY-MM-DD"),
+                contact: selectedTask.contact || "",
+            };
+    
+            await axiosInstance.put(`${BASE_URL}api/tasks/${selectedTask.id}/`, updatedTaskData);
+    
+            const updatedTasks = tasks.map(task =>
+                task.id === selectedTask.id ? { ...task, ...updatedTaskData } : task
+            );
+    
+            setTasks(updatedTasks);
+    
+            const updatedEvents = events.map(event =>
+                event.id === selectedTask.id
+                    ? { 
+                        ...event, 
+                        title: `${updatedTaskData.title}`,
+                        start: moment(updatedTaskData.date).startOf('day').toDate(),
+                        end: moment(updatedTaskData.date).startOf('day').toDate(),
+                        contact: updatedTaskData.contact, 
+                        style: { backgroundColor: '#014F86', color: 'white' }
+                    } 
+                    : event
+            );
+    
+            setEvents(updatedEvents);
+    
+            setSelectedTask(null);
+            setSidebarOpen(false);
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
+    };
+                
+    const CustomEvent = ({ event }) => { 
+        return (
+            <div className="custom-event" onClick={() => {
+                setFormType(event.type.toLowerCase());
+    
+                if (event.type === "Event") {
+                    setSelectedEvent(event);
+                    setNewEvent({ 
+                        title: event.title, 
+                        start: moment(event.start).format("YYYY-MM-DDTHH:mm"), 
+                        end: moment(event.end).format("YYYY-MM-DDTHH:mm") 
+                    });
+                } else if (event.type === "Task") {
+                    setSelectedTask(event);
+                    setNewTask({ 
+                        title: event.title, 
+                        date: moment(event.start).format("YYYY-MM-DD"),
+                        contact: event.contact ? event.contact : ""   
+                    });
+                }
+    
+                setSidebarOpen(true);  
+            }}>
+                <span>{event.title}</span>
+            </div>
+        );
+    };    
+            
     const deleteItem = async (event) => {
         if (event.type === "Event") {
             try {
@@ -174,98 +260,165 @@ const CalendarPage = () => {
         } else {
             console.error("Trying to delete invalid item, shouldn't end up here")
         }
-    };
-
-    const CustomEvent = ({ event }) => {
-        return (
-            <div className="custom-event">
-                <button className="delete-icon" onClick={() => deleteItem(event)}>❌</button>
-                <span>{event.title}</span>
-            </div>
-        );
-    };
+    };    
 
     return (
         <Layout>
-            <div className="calendar-container">
-                <Calendar
-                    localizer={localizer}
-                    events={events}  
-                    startAccessor="start"
-                    endAccessor="end"
-                    style={{ height: "80vh" }}
-                    views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
-                    defaultView={Views.MONTH}
-                    eventPropGetter={eventPropGetter}
-                    components={{
-                        event: CustomEvent,  
-                    }}
-                    timeZone="UTC"
-                />
-
-                {tasks?.length > 0 && (
-                    <div className="task-list">
-                        <h3>Tasks</h3>
-                        <ul>
-                            {tasks.map((task) => (
-                                <li key={task.id}>
-                                    <strong>{task.title}</strong> - {moment(task.date).format('MMM DD, YYYY')}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
-
-                <div className="bottom-right-buttons">
-                    <button className="blue-button" onClick={() => setShowEventForm(true)}>+ Add Event</button>
-                    <button className="blue-button" onClick={() => setShowTaskForm(true)}>+ Add Task</button>
+            <div className={`calendar-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
+                <div className={`calendar-container ${sidebarOpen ? 'shrink' : ''}`}>
+                    <Calendar
+                        localizer={localizer}
+                        events={events}  
+                        startAccessor="start"
+                        endAccessor="end"
+                        style={{ height: "95vh" }} 
+                        views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
+                        defaultView={Views.MONTH}
+                        components={{
+                            event: CustomEvent, 
+                        }}
+                        eventPropGetter={(event) => {
+                            let backgroundColor = event.type === "Task" ? "#014F86" : "#3174ad"; 
+                            let color = "white";
+                            return { style: { backgroundColor, color } };
+                        }}  
+                                         
+                    />
                 </div>
 
-                {showEventForm && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <h3>Add Event</h3>
-                            <label htmlFor="eventTitle">Title:</label>
-                            <input type="text" id="eventTitle" name="title" value={newEvent.title} onChange={handleInputChange} required />
-                            <label htmlFor="start">Start Time:</label>
-                            <input type="datetime-local" id="start" name="start" value={newEvent.start} onChange={handleInputChange} required />
-                            <label htmlFor="end">End Time:</label>
-                            <input type="datetime-local" id="end" name="end" value={newEvent.end} onChange={handleInputChange} required />
-                            <div className="modal-buttons">
-                                <button className="blue-button" onClick={handleAddEvent}>Save</button>
-                                <button className="cancel-button" onClick={() => setShowEventForm(false)}>Cancel</button>
+                <div className="bottom-right-buttons">
+                <button 
+                    className="blue-button" 
+                    onClick={() => { 
+                        setFormType('event'); 
+                        setSelectedEvent(null); 
+                        setSelectedTask(null);
+                        setNewEvent({ title: '', start: '', end: '', type: 'Event' });  // Reset fields
+                        setSidebarOpen(true); 
+                    }}
+                >
+                    + Add Event
+                </button>
+                <button 
+                    className="blue-button" 
+                    onClick={() => { 
+                        setFormType('task'); 
+                        setSelectedEvent(null); 
+                        setSelectedTask(null);
+                        setNewTask({ title: '', date: '', contact: '', type: 'Task' }); // Reset fields
+                        setSidebarOpen(true); 
+                    }}
+                >
+                    + Add Task
+                </button>
+            </div>
+
+            <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+                {formType === 'event' ? (
+                    selectedEvent ? (
+                        <>
+                            <h3>Edit Event</h3>
+                            <label>Title:</label>
+                            <input 
+                                type="text" 
+                                name="title" 
+                                value={selectedEvent.title} 
+                                onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })} 
+                            />
+                            <label>Start Time:</label>
+                            <input 
+                                type="datetime-local" 
+                                name="start" 
+                                value={moment(selectedEvent.start).format("YYYY-MM-DDTHH:mm")} 
+                                onChange={(e) => setSelectedEvent({ ...selectedEvent, start: e.target.value })}
+                            />
+                            <label>End Time:</label>
+                            <input 
+                                type="datetime-local" 
+                                name="end" 
+                                value={moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm")} 
+                                onChange={(e) => setSelectedEvent({ ...selectedEvent, end: e.target.value })}
+                            />
+                            <div className="button-group">
+                                <button className="save-button" onClick={handleUpdateEvent}>Save Changes</button>
+                                <button className="cancel-button" onClick={() => { deleteItem(selectedEvent); setSidebarOpen(false); }}>Delete</button>
                             </div>
-                        </div>
-                    </div>
-                )}
-
-                {showTaskForm && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <h3>Add Task</h3>
-                            <label htmlFor="taskTitle">Title:</label>
-                            <input type="text" id="taskTitle" name="title" value={newTask.title} onChange={handleInputChange} required />
-                            <label htmlFor="taskDate">Date:</label>
-                            <input type="date" id="taskDate" name="date" value={newTask.date} onChange={handleInputChange} required />
-
-                            <label htmlFor="taskContact">Contact:</label>
-                            <select id="taskContact" name="contact" value={newTask.contact} onChange={handleInputChange}>
+                        </>
+                    ) : (
+                        <>
+                            <h3>Add Event</h3>
+                            <label>Title:</label>
+                            <input type="text" name="title" value={newEvent.title} onChange={handleInputChange} />
+                            <label>Start Time:</label>
+                            <input type="datetime-local" name="start" value={newEvent.start} onChange={handleInputChange} />
+                            <label>End Time:</label>
+                            <input type="datetime-local" name="end" value={newEvent.end} onChange={handleInputChange} />
+                            <div className="button-group">
+                                <button className="save-button" onClick={handleAddEvent}>Save</button>
+                                <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
+                            </div>
+                        </>
+                    )
+                ) : formType === 'task' ? (
+                    selectedTask ? (
+                        <>
+                            <h3>Edit Task</h3>
+                            <label>Title:</label>
+                            <input 
+                                type="text" 
+                                name="title" 
+                                value={selectedTask.title} 
+                                onChange={(e) => setSelectedTask({ ...selectedTask, title: e.target.value })} 
+                            />
+                            <label>Date:</label>
+                            <input 
+                                type="date" 
+                                name="date" 
+                                value={moment(selectedTask.start).format("YYYY-MM-DD")} 
+                                onChange={(e) => setSelectedTask({ ...selectedTask, start: e.target.value })}
+                            />
+                            <label>Contact:</label>
+                            <select 
+                                name="contact" 
+                                value={selectedTask.contact} 
+                                onChange={(e) => setSelectedTask({ ...selectedTask, contact: e.target.value })}
+                            >
                                 <option value="">Select a contact (optional)</option>
                                 {contacts.map(contact => (
                                     <option key={contact.id} value={contact.id}>{contact.name}</option>
                                 ))}
                             </select>
-
-                            <div className="modal-buttons">
-                                <button className="blue-button" onClick={handleAddTask}>Save</button>
-                                <button className="cancel-button" onClick={() => setShowTaskForm(false)}>Cancel</button>
+                            <div className="button-group">
+                                <button className="save-button" onClick={handleUpdateTask}>Save Changes</button>
+                                <button className="cancel-button" onClick={() => { deleteItem(selectedTask); setSidebarOpen(false); }}>Delete</button>
                             </div>
-                        </div>
-                    </div>
-                )}
+                        </>
+                    ) : (
+                        <>
+                            <h3>Add Task</h3>
+                            <label>Title:</label>
+                            <input type="text" name="title" value={newTask.title} onChange={handleInputChange} />
+                            <label>Date:</label>
+                            <input type="date" name="date" value={newTask.date} onChange={handleInputChange} />
+                            <label>Contact:</label>
+                            <select name="contact" value={newTask.contact} onChange={handleInputChange}>
+                                <option value="">Select a contact (optional)</option>
+                                {contacts.map(contact => (
+                                    <option key={contact.id} value={contact.id}>{contact.name}</option>
+                                ))}
+                            </select>
+                            <div className="button-group">
+                                <button className="save-button" onClick={handleAddTask}>Save</button>
+                                <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
+                            </div>
+                        </>
+                    )
+                ) : null}
+            </div>
             </div>
         </Layout>
     );
 };
 
 export default CalendarPage;
+
