@@ -1,6 +1,8 @@
 import Layout from "../components/Layout";
 import React, { useState, useEffect } from "react";
 import { getRandom, getAll } from "@divyanshu013/inspirational-quotes";
+import TodoSentence from "../components/TodoSentence";
+import AIContextProvider from "../contexts/AIContext";
 
 function Home() {
     const [quote, setQuote] = useState([]);
@@ -27,6 +29,7 @@ function Home() {
                     </blockquote>
                     }
                 </div>
+                <AIContextProvider><TodoSentence/></AIContextProvider>
             </div>
         </Layout>
     );

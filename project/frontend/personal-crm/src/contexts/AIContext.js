@@ -16,9 +16,9 @@ const AIContextProvider = (props) => {
         setResultData("") //remove preivoius response
         setLoading(true) //display loading animation
         setShowResult(true)
-        setRecentPrompt(input)
-        setPrevPrompts(prev=>[...prev,input])
-        const response = await run(input)
+        setRecentPrompt(prompt)
+        // setPrevPrompts(prev=>[...prev,input])
+        const response = await run(prompt)
         //formatting for api response
         let responseArray = response.split("**")
         let newResponse = "";
