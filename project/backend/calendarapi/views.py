@@ -1,3 +1,7 @@
+import requests
+from django.http import JsonResponse
+from rest_framework.decorators import api_view
+
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -83,3 +87,22 @@ class DeleteTaskView(APIView):
         task = get_object_or_404(Task, id=task_id, user=request.user)
         task.delete()
         return Response({"message": "Task deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+@api_view(['GET'])
+def proxy_google_calendar(request):
+    access_token = request.headers.get('Authorization')
+
+    if not access_token:
+        return JsonResponse({"error": "No access token provided"}, status=400)
+
+    url = "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+    headers = {
+        'Authorization': access_token
+    }
+
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise error for bad responses
+        return JsonResponse(response.json())
+    except requests.exceptions.RequestException as e:
+        return JsonResponse({"error": str(e)}, status=500)
