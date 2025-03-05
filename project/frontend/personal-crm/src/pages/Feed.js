@@ -25,11 +25,11 @@ function Feed() {
     try {
       // Using Dummy Data for Now
       const dummyEvents = [
-        { id: 1, title: "Event 1", description: "This is the first event", date: "2025-03-10" },
-        { id: 2, title: "Event 2", description: "This is the second event", date: "2025-03-12" },
-        { id: 3, title: "Event 3", description: "This is the third event", date: "2025-03-15" },
-        { id: 4, title: "Event 4", description: "This is the fourth event", date: "2025-03-18" },
-        { id: 5, title: "Event 5", description: "This is the fifth event", date: "2025-03-20" },
+        { id: 1, title: "Event 1", description: "This is the first event", date: "2025-03-10", contact: "John Smith" },
+        { id: 2, title: "Event 2", description: "This is the second event", date: "2025-03-12", contact: "John Smith"},
+        { id: 3, title: "Event 3", description: "This is the third event", date: "2025-03-15", contact: "John Smith"},
+        { id: 4, title: "Event 4", description: "This is the fourth event", date: "2025-03-18", contact: "John Smith" },
+        { id: 5, title: "Event 5", description: "This is the fifth event", date: "2025-03-20",  contact: "John Smith" },
       ];
 
       setEvents((prevEvents) => [...prevEvents, ...dummyEvents]);
@@ -114,7 +114,7 @@ function Feed() {
                   <div>
                     <h5>{event.title}</h5>
                     <p>{event.description}</p>
-                    <small>{event.date}</small>
+                    <small>{event.date} {event.contact} </small>
                   </div>
                   {addedEvents[event.id] ? (
                     <span
