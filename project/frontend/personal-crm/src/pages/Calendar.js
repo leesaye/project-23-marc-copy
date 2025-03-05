@@ -399,8 +399,8 @@ const CalendarPage = () => {
                                 onChange={(e) => setSelectedEvent({ ...selectedEvent, end: e.target.value })}
                             />
                             <div className="button-group">
-                                <button className="save-button" onClick={handleUpdateEvent}>Save Changes</button>
                                 <button className="cancel-button" onClick={() => { deleteItem(selectedEvent); setSidebarOpen(false); }}>Delete</button>
+                                <button className="save-button" onClick={handleUpdateEvent}>Save Changes</button>
                             </div>
                         </>
                     ) : (
@@ -413,8 +413,8 @@ const CalendarPage = () => {
                             <label>End Time:</label>
                             <input type="datetime-local" name="end" value={newEvent.end} onChange={handleInputChange} />
                             <div className="button-group">
-                                <button className="save-button" onClick={handleAddEvent}>Save</button>
                                 <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
+                                <button className="save-button" onClick={handleAddEvent}>Save</button>
                             </div>
                         </>
                     )
@@ -448,8 +448,8 @@ const CalendarPage = () => {
                                 ))}
                             </select>
                             <div className="button-group">
-                                <button className="save-button" onClick={handleUpdateTask}>Save Changes</button>
                                 <button className="cancel-button" onClick={() => { deleteItem(selectedTask); setSidebarOpen(false); }}>Delete</button>
+                                <button className="save-button" onClick={handleUpdateTask}>Save Changes</button>
                             </div>
                         </>
                     ) : (
@@ -467,8 +467,8 @@ const CalendarPage = () => {
                                 ))}
                             </select>
                             <div className="button-group">
-                                <button className="save-button" onClick={handleAddTask}>Save</button>
                                 <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
+                                <button className="save-button" onClick={handleAddTask}>Save</button>
                             </div>
                         </>
                     )
