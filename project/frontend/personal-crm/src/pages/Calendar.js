@@ -133,7 +133,7 @@ const CalendarPage = () => {
         }
     };
     
-    const handleUpdateEvent = async (e) => {
+    const handleUpdateEvent = async (e, selectedColor) => {
         e.preventDefault();
     
         if (!selectedEvent) return;
@@ -143,6 +143,7 @@ const CalendarPage = () => {
                 title: selectedEvent.title,
                 start: selectedEvent.start,
                 end: selectedEvent.end,
+                color: selectedColor
             };
     
             await axiosInstance.put(`${BASE_URL}api/events/${selectedEvent.id}/`, updatedEventData);
@@ -153,7 +154,8 @@ const CalendarPage = () => {
                         ...event, 
                         title: updatedEventData.title,
                         start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
-                        end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss"))
+                        end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
+                        style: { backgroundColor: selectedColor, color: 'white' }
                     } 
                     : event
             );
@@ -167,7 +169,7 @@ const CalendarPage = () => {
         }
     };
             
-    const handleUpdateTask = async (e) => {
+    const handleUpdateTask = async (e, selectedColor) => {
         e.preventDefault();
     
         if (!selectedTask) return;
@@ -177,6 +179,7 @@ const CalendarPage = () => {
                 title: selectedTask.title,
                 date: moment(selectedTask.start).format("YYYY-MM-DD"),
                 contact: selectedTask.contact || "",
+                color: selectedColor
             };
     
             await axiosInstance.put(`${BASE_URL}api/tasks/${selectedTask.id}/`, updatedTaskData);
@@ -195,7 +198,7 @@ const CalendarPage = () => {
                         start: moment(updatedTaskData.date).startOf('day').toDate(),
                         end: moment(updatedTaskData.date).startOf('day').toDate(),
                         contact: updatedTaskData.contact, 
-                        style: { backgroundColor: '#014F86', color: 'white' }
+                        style: { backgroundColor: selectedColor, color: 'white' }
                     } 
                     : event
             );
@@ -343,8 +346,31 @@ const CalendarPage = () => {
                                 value={moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm")} 
                                 onChange={(e) => setSelectedEvent({ ...selectedEvent, end: e.target.value })}
                             />
+                            <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+                                        e.target.classList.add("selected");
+                                        e.target.dataset.selectedColor = color;
+                                    }}
+                                >
+                                </div>
+                                ))}
+                            </div>
                             <div className="button-group">
-                                <button className="save-button" onClick={handleUpdateEvent}>Save Changes</button>
+                                <button 
+                                    className="save-button" 
+                                    onClick={(e) =>{
+                                        const selectedColor = document.querySelector(".color-option.selected")?.dataset.selectedColor || "#3174ad";
+                                        handleUpdateEvent(e, selectedColor);
+                                    }}
+                                >
+                                    Save Changes
+                                </button>
                                 <button className="cancel-button" onClick={() => { deleteItem(selectedEvent); setSidebarOpen(false); }}>Delete</button>
                             </div>
                         </>
@@ -371,7 +397,6 @@ const CalendarPage = () => {
                                 >
                                 </div>
                                 ))}
-
                             </div>
                             <div className="button-group">
                                 <button 
@@ -416,8 +441,32 @@ const CalendarPage = () => {
                                     <option key={contact.id} value={contact.id}>{contact.name}</option>
                                 ))}
                             </select>
+                            <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+                                        e.target.classList.add("selected");
+                                        e.target.dataset.selectedColor = color;
+                                    }}
+                                >
+                                </div>
+                                ))}
+
+                            </div>
                             <div className="button-group">
-                                <button className="save-button" onClick={handleUpdateTask}>Save Changes</button>
+                                <button 
+                                    className="save-button" 
+                                    onClick={(e) =>{
+                                        const selectedColor = document.querySelector(".color-option.selected")?.dataset.selectedColor || "#014F86";
+                                        handleUpdateTask(e, selectedColor);
+                                    }}
+                                >
+                                    Save Changes
+                                </button>
                                 <button className="cancel-button" onClick={() => { deleteItem(selectedTask); setSidebarOpen(false); }}>Delete</button>
                             </div>
                         </>
@@ -459,7 +508,7 @@ const CalendarPage = () => {
                                         handleAddTask(e, selectedColor);
                                     }}
                                 >
-                                Save
+                                    Save
                                 </button>
                                 <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
                             </div>
