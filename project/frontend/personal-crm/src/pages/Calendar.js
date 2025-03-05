@@ -18,7 +18,8 @@ const CalendarPage = () => {
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [contacts, setContacts] = useState([]);
-
+    const [googleAuthToken, setGoogleAuthToken] = useState(null);
+    const [isSignedIn, setIsSignedIn] = useState(false);
     
     const BASE_URL = 'http://127.0.0.1:8000/';
 
@@ -260,7 +261,64 @@ const CalendarPage = () => {
         } else {
             console.error("Trying to delete invalid item, shouldn't end up here")
         }
-    };    
+    };  
+    
+    const fetchGoogleCalendarEvents = async () => {
+        try {
+            const response = await axiosInstance.get(`https://www.googleapis.com/calendar/v3/calendars/primary/events`, {
+                headers: {
+                    Authorization: `Bearer ${googleAuthToken}`,
+                },
+            });
+            console.log(response.data);
+            // axiosInstance.get('http://localhost:8000/proxy-calendar/', { withCredentials: true })
+            //     .then(response => {
+            //         console.log(response.data);
+            //     })
+            //     .catch(error => {
+            //         console.error('Error fetching calendar events:', error);
+            //     });
+
+            const googleEvents = response.data.items.map(event => ({
+                id: event.id,
+                title: event.summary,
+                start: moment(event.start.dateTime || event.start.date).toDate(),
+                end: moment(event.end.dateTime || event.end.date).toDate(),
+                type: 'Google Calendar Event',
+            }));
+
+            setEvents(prevEvents => [...prevEvents, ...googleEvents]);
+        } catch (error) {
+            console.error('Error fetching Google Calendar events:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (googleAuthToken) {
+            fetchGoogleCalendarEvents();
+        }
+    }, [googleAuthToken]);
+
+    const handleGoogleSignIn = () => {
+        const clientId = "907064336132-ndgkcrejsl3kp89016p375at9j8udt2t.apps.googleusercontent.com";
+        const redirectUri = "http://localhost:3000/calendars/"; // Should be a valid OAuth redirect URI
+        const scope = "https://www.googleapis.com/auth/calendar.readonly";
+        const authUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
+    
+        window.location.href = authUrl;
+    };
+
+    useEffect(() => {
+        const fragment = window.location.hash;
+        const tokenMatch = fragment.match(/#access_token=([a-zA-Z0-9_-]+)/);
+
+        if (tokenMatch) {
+            const token = tokenMatch[1];
+            setGoogleAuthToken(token); // Store token
+            window.location.hash = ''; // Clean up the URL
+            setIsSignedIn(true); 
+        }
+    }, []);  
 
     return (
         <Layout>
@@ -311,6 +369,7 @@ const CalendarPage = () => {
                 >
                     + Add Task
                 </button>
+
             </div>
 
             <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
@@ -416,6 +475,14 @@ const CalendarPage = () => {
                 ) : null}
             </div>
             </div>
+            {isSignedIn ? (
+                <p>You are signed in with Google Calendar.</p>
+            ) : (
+                <p>You are not signed in. Please sign in with Google to access your calendar events.</p>
+            )}
+            <button className="blue-button" onClick={handleGoogleSignIn}>
+                Sign in with Google Calendar
+            </button>
         </Layout>
     );
 };
