@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     EventViewSet, TaskViewSet, 
     IndividualEventView, IndividualTaskView, 
-    DeleteEventView, DeleteTaskView
+    DeleteEventView, DeleteTaskView, proxy_google_calendar
 )
 
 router = DefaultRouter()
@@ -16,4 +16,5 @@ urlpatterns = [
     path('events/<int:event_id>/delete/', DeleteEventView.as_view(), name='delete-event'),
     path('tasks/<int:task_id>/', IndividualTaskView.as_view(), name='individual-task'),
     path('tasks/<int:task_id>/delete/', DeleteTaskView.as_view(), name='delete-task'),
+    path("events/google/", proxy_google_calendar, name="get_google_calendar_events"),
 ]
