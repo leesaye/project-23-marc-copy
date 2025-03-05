@@ -19,6 +19,7 @@ const CalendarPage = () => {
     const [selectedTask, setSelectedTask] = useState(null);
     const [contacts, setContacts] = useState([]);
 
+    const COLORS = ["#B5D22C", "#73AA2A", "#0995AE", "#04506A"]
     
     const BASE_URL = 'http://127.0.0.1:8000/';
 
@@ -37,9 +38,10 @@ const CalendarPage = () => {
                     ...event,
                     start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
                     end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
-                    type: "Event"
+                    type: "Event",
+                    style: { backgroundColor: event.color, color: 'white' }
                 }));
-
+                console.log(eventsData)
 
                 const sortedTasksData = tasksResponse.data.sort((a, b) => 
                     new Date(a.date) - new Date(b.date)
@@ -51,7 +53,7 @@ const CalendarPage = () => {
                     start: moment(task.date).startOf('day').toDate(),  
                     end: moment(task.date).startOf('day').toDate(),    
                     allDay: true,
-                    style: { backgroundColor: '#014F86', color: 'white' },
+                    style: { backgroundColor: task.color, color: 'white' },
                     type: "Task", 
                     contact: task.contact || "",
                 }));
@@ -76,11 +78,12 @@ const CalendarPage = () => {
         }
     };
 
-    const handleAddEvent = async (e) => {
+    const handleAddEvent = async (e, selectedColor) => {
         e.preventDefault();
 
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
             try {
+                newEvent.color = selectedColor;
                 const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
                 const createdEvent = response.data;
 
@@ -88,7 +91,8 @@ const CalendarPage = () => {
                     ...createdEvent,
                     start: new Date(moment.utc(createdEvent.start).format("YYYY-MM-DDTHH:mm:ss")),
                     end: new Date(moment.utc(createdEvent.end).format("YYYY-MM-DDTHH:mm:ss")), 
-                    type: 'Event'
+                    type: 'Event',
+                    style: { backgroundColor: selectedColor, color: 'white' }
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
@@ -99,20 +103,20 @@ const CalendarPage = () => {
         }
     };
 
-    const handleAddTask = async (e) => {
+    const handleAddTask = async (e, selectedColor) => {
         e.preventDefault();
         if (newTask.title.trim() !== '' && newTask.date) {
             try {
+                newTask.color = selectedColor;
                 const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, newTask);
                 const createdTask = response.data;
-
                 const taskEvent = {
                     id: `${createdTask.id}`,
                     title: `${createdTask.title}`,
                     start: moment(createdTask.date).startOf('day').toDate(),  
                     end: moment(createdTask.date).startOf('day').toDate(),    
                     allDay: true,
-                    style: { backgroundColor: '#014F86', color: 'white' },
+                    style: { backgroundColor: selectedColor, color: 'white' },
                     type: "Task",
                     contact: createdTask.contact || ""
                 };
@@ -278,7 +282,7 @@ const CalendarPage = () => {
                             event: CustomEvent, 
                         }}
                         eventPropGetter={(event) => {
-                            let backgroundColor = event.type === "Task" ? "#014F86" : "#3174ad"; 
+                            let backgroundColor = event.style.backgroundColor; 
                             let color = "white";
                             return { style: { backgroundColor, color } };
                         }}  
@@ -353,8 +357,32 @@ const CalendarPage = () => {
                             <input type="datetime-local" name="start" value={newEvent.start} onChange={handleInputChange} />
                             <label>End Time:</label>
                             <input type="datetime-local" name="end" value={newEvent.end} onChange={handleInputChange} />
+                            <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+                                        e.target.classList.add("selected");
+                                        e.target.dataset.selectedColor = color;
+                                    }}
+                                >
+                                </div>
+                                ))}
+
+                            </div>
                             <div className="button-group">
-                                <button className="save-button" onClick={handleAddEvent}>Save</button>
+                                <button 
+                                    className="save-button" 
+                                    onClick={(e) =>{
+                                        const selectedColor = document.querySelector(".color-option.selected")?.dataset.selectedColor || "#3174ad";
+                                        handleAddEvent(e, selectedColor);
+                                    }}
+                                >
+                                    Save
+                                </button>
                                 <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
                             </div>
                         </>
@@ -407,8 +435,32 @@ const CalendarPage = () => {
                                     <option key={contact.id} value={contact.id}>{contact.name}</option>
                                 ))}
                             </select>
+                            <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+                                        e.target.classList.add("selected");
+                                        e.target.dataset.selectedColor = color;
+                                    }}
+                                >
+                                </div>
+                                ))}
+
+                            </div>
                             <div className="button-group">
-                                <button className="save-button" onClick={handleAddTask}>Save</button>
+                                <button 
+                                    className="save-button" 
+                                    onClick={(e) =>{
+                                        const selectedColor = document.querySelector(".color-option.selected")?.dataset.selectedColor || "#014F86";
+                                        handleAddTask(e, selectedColor);
+                                    }}
+                                >
+                                Save
+                                </button>
                                 <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
                             </div>
                         </>
