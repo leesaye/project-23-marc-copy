@@ -200,11 +200,11 @@ function Feed() {
             </div>
 
             <div className="modal-buttons">
-              <button className="blue-button" onClick={handleAddEvent}>
-                Save
-              </button>
               <button className="cancel-button" onClick={handleCancel}>
                 Cancel
+              </button>
+              <button className="blue-button" onClick={handleAddEvent}>
+                Save
               </button>
             </div>
           </div>
