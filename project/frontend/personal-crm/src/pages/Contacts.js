@@ -6,9 +6,9 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddIcon from '@mui/icons-material/Add';
-import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+import { useEffect, useState, useRef } from 'react';
 
 function Contacts() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -16,9 +16,15 @@ function Contacts() {
     const [sortValue, setSearchValue] = useState("Name (asc)");
     const [user, setUser] = useState(null);
     const BASE_URL = `http://127.0.0.1:8000/`;
+    const csvInputRef = useRef();
+    const nav = useNavigate();
 
     useEffect(() => {
-        // Fetch contacts from the Django backend
+        // Fetch contacts from the Django backend on mount
+        fetchContacts();
+    }, []);
+
+    const fetchContacts = () => {
         axiosInstance.get(`${BASE_URL}contacts/`)
             .then(response => {
                 setContacts(response.data);
@@ -26,7 +32,7 @@ function Contacts() {
             .catch(error => {
                 console.error("Error fetching contacts", error);
             });
-    }, []);
+    };
 
     const filteredContacts = contacts.filter((contacts) =>
         contacts.name.toLowerCase().search(searchQuery.toLowerCase()) !== -1
@@ -124,11 +130,11 @@ function Contacts() {
                                 <SwapVertIcon />
                                 Sort by
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
-                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
-                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
-                                <li><button class="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
+                            <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
+                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
+                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
+                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
                             </ul>
                         </div>
                     </div>
@@ -137,8 +143,8 @@ function Contacts() {
                             <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 Import
                             </button>
-                            <ul class="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><button class="dropdown-item">Upload CSV</button></li>
+                            <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
                                 {!user ? (
                                     <li><button onClick={login} className="dropdown-item">Connect with Google</button></li>
                                 ) : (

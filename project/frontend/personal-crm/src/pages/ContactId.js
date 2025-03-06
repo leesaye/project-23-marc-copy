@@ -1,6 +1,6 @@
 import Layout from "../components/Layout";
 import axiosInstance from "../endpoints/api";
-import { FormControl, InputLabel, OutlinedInput, Box, Select, Collapse, MenuItem } from "@mui/material";
+import { FormControl, InputLabel, OutlinedInput, Box, Collapse } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -11,14 +11,20 @@ function ContactId() {
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
     const imageInputRef = useRef();
     const [quizVisible, setQuizVisible] = useState(false);
-    const [quizAnswers, setQuizAnswers] = useState({
-        knownLong: "",
-        trust: "",
-        communication: "",
-        enjoyment: "",
-    });
     const [errors, setErrors] = useState({});
     const BASE_URL = "http://127.0.0.1:8000/";
+
+    const QUIZ_QUESTIONS = [
+        "Have they ever supported you in a meaningful way? How?",
+        "How well do you click with them?",
+        "How often do you communicate with this person?",
+        "Would you feel comfortable asking them for a favor? What kind?"
+    ];
+
+    const [quizAnswers, setQuizAnswers] = useState(
+        Object.fromEntries(QUIZ_QUESTIONS.map((question) => [question, ""]))
+    );
+
 
     const [formData, setFormData] = useState({
         name: "",
@@ -38,23 +44,23 @@ function ContactId() {
         imageInputRef.current.click();
     }
 
-    const handleQuizChange = (e) => {
-        setQuizAnswers({ ...quizAnswers, [e.target.name]: e.target.value})
-    }
-
-    const calculateRelationshipValue = (e) => {
-        let value = 0;
-        if (quizAnswers.knownLong === "yes") value += 25;
-        if (quizAnswers.trust === "yes") value += 25;
-        if (quizAnswers.communication === "yes") value += 25;
-        if (quizAnswers.enjoyment === "yes") value += 25;
-        return value;
-    }
+    const handleQuizChange = (e, question) => {
+        setQuizAnswers({ ...quizAnswers, [question]: e.target.value });
+    };
 
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent page reload
 
-        const updatedFormData = { ...formData, relationship_rating: quizVisible ? calculateRelationshipValue() : formData.relationship_rating };
+        // Convert quizAnswers to list of { question, answer }
+        const formattedQuizAnswers = Object.entries(quizAnswers).map(([question, answer]) => ({
+            question,
+            answer
+        }));
+
+        const updatedFormData = {
+            ...formData,
+            quiz_answers: formattedQuizAnswers
+        };
 
         try {
             const response = await axiosInstance.post(`${BASE_URL}/contacts/${contact.id}`, updatedFormData);
@@ -221,68 +227,22 @@ function ContactId() {
                         </div>
                         <Collapse in={quizVisible} >
                             <div className="row my-4">
-                                <div className="col-6">
-                                    <FormControl className="w-100">
-                                        <InputLabel htmlFor="knownLong">Have you known them for more than 10 years?</InputLabel>
-                                        <Select
-                                            id="knownLong"
-                                            name="knownLong"
-                                            label="Have you known them for more than 10 years?"
-                                            value={quizAnswers.knownLong}
-                                            onChange={handleQuizChange}
-                                        >
-                                            <MenuItem value="yes">Yes</MenuItem>
-                                            <MenuItem value="no">No</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </div>
-                                <div className="col-6">
-                                    <FormControl className="w-100">
-                                        <InputLabel htmlFor="trust">Do you trust them?</InputLabel>
-                                        <Select
-                                            id="trust"
-                                            name="trust"
-                                            label="Do you trust them?"
-                                            value={quizAnswers.trust}
-                                            onChange={handleQuizChange}
-                                        >
-                                            <MenuItem value="yes">Yes</MenuItem>
-                                            <MenuItem value="no">No</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </div>
-                            </div>
-                            <div className="row my-4">
-                                <div className="col-6">
-                                    <FormControl className="w-100">
-                                        <InputLabel htmlFor="communication">Do you feel like you communicate well with them?</InputLabel>
-                                        <Select
-                                            id="communication"
-                                            name="communication"
-                                            label="Do you feel like you communicate well with them?"
-                                            value={quizAnswers.communication}
-                                            onChange={handleQuizChange}
-                                        >
-                                            <MenuItem value="yes">Yes</MenuItem>
-                                            <MenuItem value="no">No</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </div>
-                                <div className="col-6">
-                                    <FormControl className="w-100">
-                                        <InputLabel htmlFor="enjoyment">Do you enjoy being around them?</InputLabel>
-                                        <Select
-                                            id="enjoyment"
-                                            name="enjoyment"
-                                            label="Do you enjoy being around them?"
-                                            value={quizAnswers.enjoyment}
-                                            onChange={handleQuizChange}
-                                        >
-                                            <MenuItem value="yes">Yes</MenuItem>
-                                            <MenuItem value="no">No</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </div>
+                                {QUIZ_QUESTIONS.map((question, index) => (
+                                    <div key={index} className="col-6">
+                                        <div className="mb-3">
+                                            <FormControl className="w-100">
+                                                <InputLabel htmlFor={`quiz-${index}`}>{question}</InputLabel>
+                                                <OutlinedInput
+                                                    id={`quiz-${index}`}
+                                                    name={`quiz-${index}`}
+                                                    label={question}
+                                                    value={quizAnswers[question]}
+                                                    onChange={(e) => handleQuizChange(e, question)}
+                                                />
+                                            </FormControl>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </Collapse>
                         <button className="btn btn-danger float-end my-4 ms-3" onClick={handleDelete} type="button">Delete contact</button>

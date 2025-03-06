@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accounts',
     'contacts',
     'calendarapi',
+    'feed',
 ]
 
 MIDDLEWARE = [
