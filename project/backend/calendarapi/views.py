@@ -1,8 +1,7 @@
+import json
 import requests
-from django.http import JsonResponse
-from rest_framework.decorators import api_view
-
 from django.shortcuts import get_object_or_404
+from django.http import JsonResponse
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,6 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied, NotFound
 from .models import Event, Task
 from .serializers import EventSerializer, TaskSerializer
+from django.contrib.auth.models import User
+from datetime import datetime, timedelta
+
 
 class EventViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
@@ -87,22 +89,90 @@ class DeleteTaskView(APIView):
         task = get_object_or_404(Task, id=task_id, user=request.user)
         task.delete()
         return Response({"message": "Task deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    
-@api_view(['GET'])
-def proxy_google_calendar(request):
-    access_token = request.headers.get('Authorization')
 
-    if not access_token:
-        return JsonResponse({"error": "No access token provided"}, status=400)
 
-    url = "https://www.googleapis.com/calendar/v3/calendars/primary/events"
-    headers = {
-        'Authorization': access_token
-    }
+# =======================
+# GOOGLE CALENDAR 
+# =======================
 
-    try:
-        response = requests.get(url, headers=headers)
-        response.raise_for_status()  # Raise error for bad responses
-        return JsonResponse(response.json())
-    except requests.exceptions.RequestException as e:
-        return JsonResponse({"error": str(e)}, status=500)
+class SyncGoogleCalendarView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        access_token = request.data.get("access_token")
+
+        if not access_token:
+            return Response({"error": "No access token provided"}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            now = datetime.utcnow()
+            past_date = now - timedelta(days=365)
+            future_date = now + timedelta(days=365)
+
+            google_calendar_url = "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+            headers = {"Authorization": f"Bearer {access_token}", "Accept": "application/json"}
+
+            past_response = requests.get(
+                google_calendar_url,
+                headers=headers,
+                params={
+                    "maxResults": 1000,
+                    "orderBy": "startTime",
+                    "singleEvents": True,
+                    "timeMin": past_date.isoformat() + "Z",
+                    "timeMax": now.isoformat() + "Z",
+                },
+            )
+
+            future_response = requests.get(
+                google_calendar_url,
+                headers=headers,
+                params={
+                    "maxResults": 1000,
+                    "orderBy": "startTime",
+                    "singleEvents": True,
+                    "timeMin": now.isoformat() + "Z",
+                    "timeMax": future_date.isoformat() + "Z",
+                },
+            )
+
+            past_data = past_response.json()
+            future_data = future_response.json()
+
+            def process_events(data):
+                return [
+                    {
+                        "title": event.get("summary", "No Title"),
+                        "start": event["start"].get("dateTime", event["start"].get("date")),
+                        "end": event["end"].get("dateTime", event["end"].get("date")),
+                        "color": "#4A90E2",
+                        "all_day": "date" in event["start"],
+                    }
+                    for event in data.get("items", []) if "start" in event and "end" in event
+                ]
+
+            all_events = process_events(past_data) + process_events(future_data)
+
+            Event.objects.filter(user=request.user).delete()
+
+            for event in all_events:
+                Event.objects.create(
+                    user=request.user,
+                    title=event["title"],
+                    start=event["start"],
+                    end=event["end"],
+                    color=event["color"],
+                )
+
+            return Response({"message": "Google Calendar events synced successfully!", "events": all_events})
+
+        except requests.RequestException as e:
+            return Response({"error": f"Error fetching events from Google: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GetGoogleEventsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        events = Event.objects.filter(user=request.user).values("title", "start", "end", "color")
+        return Response(events)
