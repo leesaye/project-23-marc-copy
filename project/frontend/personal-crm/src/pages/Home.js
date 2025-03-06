@@ -1,6 +1,8 @@
 import Layout from "../components/Layout";
 import React, { useState, useEffect } from "react";
 import { getRandom, getAll } from "@divyanshu013/inspirational-quotes";
+import TodoSentence from "../components/TodoSentence";
+import AIContextProvider from "../contexts/AIContext";
 
 function Home() {
     const [quote, setQuote] = useState([]);
@@ -19,7 +21,7 @@ function Home() {
                     </div>
                 </div>
                 <div className="text-center mx-5">
-                    <h3 className="mb-4">Featured motivational quote:</h3>
+                    <h3 className="mb-4"></h3>
                     {quote && 
                     <blockquote className="blockquote">
                         <h4><em>{quote.quote}</em></h4>
@@ -27,6 +29,7 @@ function Home() {
                     </blockquote>
                     }
                 </div>
+                <AIContextProvider><TodoSentence/></AIContextProvider>
             </div>
         </Layout>
     );
