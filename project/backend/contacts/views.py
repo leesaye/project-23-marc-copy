@@ -41,7 +41,7 @@ class AddContactView(APIView):
                         quiz_used = True
                 if quiz_used:
                     relationship_rating = get_rating_of_contact(request)
-                    request.data["relationship_rating"] = relationship_rating
+                    data["relationship_rating"] = relationship_rating
 
             data["user"] = request.user.id
             serializer = ContactSerializer(data=data)
