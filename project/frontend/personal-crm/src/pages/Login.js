@@ -1,5 +1,5 @@
 import './Login.css';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from "../contexts/useAuth";
@@ -12,11 +12,52 @@ const Login = () => {
   const { login_user } = useAuth();
   const [attempts, setAttempts] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(30);
+
+  useEffect(() => {
+    const storedIsLocked = localStorage.getItem("isLocked") === "true";
+    const storedTime = parseInt(localStorage.getItem("remainingTime"), 10) || 30; 
+    setRemainingTime(storedTime || 30);
+  
+    if (storedIsLocked) {
+      setIsLocked(true);
+      setRemainingTime(storedTime);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isLocked) {
+      const timer = setInterval(() => {
+        setRemainingTime(prev => {
+          const newTime = prev - 1;
+          if (newTime <= 0) {
+            clearInterval(timer);
+            setIsLocked(false);
+            setAttempts(0);
+            setError("");
+            localStorage.removeItem("isLocked");
+            localStorage.removeItem("remainingTime");
+          }
+          localStorage.setItem("remainingTime", newTime);
+          return newTime;
+        });
+      }, 1000);
+  
+      return () => clearInterval(timer);
+    }
+  }, [isLocked]);
+  
+  useEffect(() => {
+    if (isLocked) {
+      setError(`Too many failed attempts. Try again in ${remainingTime} seconds.`);
+    }
+  }, [remainingTime, isLocked]);
+  
 
 
   const handleLogin = async () => {
     if (isLocked) {
-      setError("Too many failed attempts. Try again in 30 seconds.");
+      setError(`Too many failed attempts. Try again in ${remainingTime} seconds.`);
       return; 
     }
 
@@ -35,13 +76,10 @@ const Login = () => {
   
         if (newAttempts >= 5) {
           setIsLocked(true);
-          setError("Too many failed attempts. Try again Later");
-  
-          setTimeout(() => {
-            setAttempts(0);
-            setIsLocked(false);
-            setError("");
-          }, 30000); // Unlock after 30 seconds  
+          setRemainingTime(30);
+          setError(`Too many failed attempts. Try again in ${remainingTime} seconds.`);
+          localStorage.setItem("isLocked", "true");
+          localStorage.setItem("remainingTime", "30");
         }
   
         return newAttempts;
