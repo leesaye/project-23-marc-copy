@@ -8,49 +8,59 @@ Marc helps B2B SaaS Startup companies scale their revenue. Currently he is runni
 
 ## Description about the project
 
-The Personal CRM Web Application is designed to automate and simplify the process of maintaining relationships across personal and professional circles. For busy professionals, particularly those in fast-paced industries like tech, managing a growing network of contacts can be overwhelming. Life moves quickly, and it’s easy to forget birthdays, miss opportunities to reconnect, or let important relationships fall. Our application centralizes your contact information, aggregates data from platforms like LinkedIn and WhatsApp, and provides automated reminders for important milestones such as birthdays and anniversaries. It also offers AI-driven insights to help you understand the quality and strength of your connections, so you can prioritize relationships that matter most. By streamlining this process in a single, intuitive platform, users save time, enhance their outreach, and keep up-to-date on their social and professional circles without the burden of manual tracking.
+The Personal CRM Web Application is designed to automate and simplify the process of maintaining relationships across personal and professional circles. For busy professionals, particularly those in fast-paced industries like tech, managing a growing network of contacts can be overwhelming. Life moves quickly, and it’s easy to forget birthdays, miss opportunities to reconnect, or let important relationships fall. Our application centralizes your contact information, aggregates data from platforms like LinkedIn and Google, and provides automated reminders for important milestones such as birthdays and anniversaries. It also offers AI-driven insights to help you understand the quality and strength of your connections, so you can prioritize relationships that matter most. By streamlining this process in a single, intuitive platform, users save time, enhance their outreach, and keep up-to-date on their social and professional circles without the burden of manual tracking.
 ​
 ## Key Features
 
-Primary Features and functionalities currently implemented for D2:
+Primary Features and functionalities currently implemented for D3:
 
 1. A user can register and login (Inital Page)
 	1. A user can login or create an account if they do not have one.
 2. A user can create and add contacts to their account (Contacts Tab)
-	1. A user can add contacts and input information about each of their contacts.
-	2. They can also take a quiz that asks questions about their contact to generate a relationship score with that contact that determines the strength of the relationship.
-	3. A user can view all their contacts in a consolidated overview.
+	1. A user can add contacts and input information about each of their contacts manually.
+ 	2. They can also choose to upload their contacts through LinkedIn with its CSV export by uploading the CSV file, or upload their contacts through Google by syncing with Google contacts.
+	3. They can also take a quiz that asks questions about their contact to generate a relationship score using AI that determines the strength of their relationship.
+	4. A user can view all their contacts in a consolidated overview.
 3. A user can add events and tasks to a calendar as reminders for when to reach out to contacts. (Calendar Tab)
 	1. On the Calendar Tab, a user can view a calendar of all their upcoming events and tasks.
 	2. A user can also add events or tasks to the calendar.
+ 	3. A user can sync their calendar with Google Calendars to see those events appear on their calendar on the website.
+4. A user can view and interact with recent events and tasks from their network (Feed Tab)
+	1. A user can view all recent events and tasks from their network in a consolidated view.
+ 	2. A user can add an event taken from activity on a linked site that is not already on their calendar to their calendar through the feed page.
+  	3. A user can see an AI summary of their recent tasks and events and what it recommends that they prioritize.
 
 
 The Final MVP for Personal CRM should accomplish the following 3 main user stories:
 
 1. As a user I want to be reminded when I haven't communicated with someone for a while.
 2. As a user, I want to be able to easily follow up on outstanding items and set due dates - that means I should be able to tap one button and the message sends.
-3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship, without having to remember specific information or input it directly (example: scoring system, swipeable "yes/no" questions). Example: "Do you know Marc's favourite colour? --> Yes/No --> If yes, ask what it is. If no, move to next question."
+3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship by only answering a few short questions about the person, after which a score from 0-100 that represents my relationship with them is generated.
 
 ## Screenshots, GIFs, or Short Videos:
 View the following video for a walkthrough and user flow of our website:
 
+(D2)
 [https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link](https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link)
 
-## How the TA can Test the features:
-1. Visit our deployed website here: https://personalcrm.netlify.app/
+(D3)
 
-	1. Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity. You may be seeing a loading screen for aprox 1-2 mins or a request may take a while to get sent.
+## How the TA can Test the features:
+1. Visit our deployed website here: 
+(D2 snapshot: https://personalcrm.netlify.app/
+
+	Note: Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity. You may be seeing a loading screen for aprox 1-2 mins or a request may take a while to get sent.
 	   
-3. After clicking the link above you will be brought to the log in page.
+2. After clicking the link above you will be brought to the log in page.
 	1. You can use the following test user to login
 		1. username: newuser
 		2. password: 123
 	2. You may also register a new account instead by clicking the Sign Up link at the bottom of the Log In page.
 		1. Here you can enter a username, email and password.
 		2. Feel free to use this account instead of the test user above
-4. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
-5. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
-6. To test our second use case, click the Contacts tab on the left sidebar.
+3. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
+4. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
+5. To test our second use case, click the Contacts tab on the left sidebar.
 	1. Here you can add a new contact by clicking the green add contact button.
 		1. This will bring you to an add contacts page where you can enter information about a new contact you want to add
 		2. Try inputing a name, email, phone, job, relationship and notes.
@@ -64,8 +74,10 @@ View the following video for a walkthrough and user flow of our website:
 		1. this will bring you to a page where you can edit existing info or even delete the contact
 	4. On the contact overview tab you can also sort your contacts by clicking the "Sort By" button
 	5. You can also search your contacts using the search bar.
-	6. Note that the import button is not implemented for d2
-7. To test our third use case, click the Calendar Tab on the left sidebar
+	6. Clicking the import button in the top-right, you can see two options, for uploading LinkedIn contacts and uploading Google contacts.
+ 		7. Clicking import LinkedIn brings you to a page that gives you steps for how to download your LinkedIn contacts CSV file from LinkedIn. You can then upload this file using the upload button on that page and it will add all of your LinkedIn connections.
+   		8. Clicking on the Connect With Google button brings you to a page where you can connect your account to Google if it is not already connected, and then you can sync your Google account's contacts, and it will add all of them to the contacts page.
+6. To test our third use case, click the Calendar Tab on the left sidebar
 	1. This will bring up a calendar view 
 	2. To add an event to the calendar click the add event button located at the bottom right of the screen.
 		1. This will bring up a dialog to add an event
@@ -78,6 +90,10 @@ View the following video for a walkthrough and user flow of our website:
 		1. This process is similar to adding an event but without an end date
 	4. On the calendar tab you can also change the views by clicking the week, day and agenda views at the top right
 	5. You can navigate back and forth in time using the buttons in the top left.
+7. To test our fourth use case, click the Feed Tab on the left sidebar.
+	1. This will bring up a view of recent events in your network.
+ 	2. Events that are already a part of your calendar can be seen with a green checkmark.
+  	3. By clicking the green plus mark on events that are not already in your calendar, you can add them to your calendar.
 8. For more space you can collapse the sidebar by clicking the three lines in the top left corner
 9. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
 	1. This will bring you back to the log in page
@@ -97,6 +113,7 @@ Dependencies:
 	- djangorestframework
 	- djangorestframework-simplejwt
 	- django-cors-headers
+ 	- pandas
 
 Steps to Install Dependencies and Get local server running
 1. Clone the repo
@@ -167,5 +184,8 @@ We will be using standard coding guidelines that adhere to the five pillars of c
 4. Reliability
 5. Reusability
 ​
+## Intellectual Property Confidality Agreement
+ - We have agreed on option #2 - You can upload the code to GitHub or other similar publicly available domains. Marc owns the actual project but the code we worked on is on a private github repository in the CSC301 classroom. 
+
 ## Licenses 
  - Not Applicable. There are no licenses involved in the project as of now.
