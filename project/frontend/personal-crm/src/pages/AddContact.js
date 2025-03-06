@@ -17,7 +17,7 @@ function AddContact() {
         "Have they ever supported you in a meaningful way? How?",
         "How well do you click with them?",
         "How often do you communicate with this person?",
-        "Would you feel comfortable asking this person for a favor? What kind?"
+        "Would you feel comfortable asking them for a favor? What kind?"
     ];
 
     const [quizAnswers, setQuizAnswers] = useState(
