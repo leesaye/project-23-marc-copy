@@ -35,8 +35,13 @@ class AddContactView(APIView):
             data = request.data.copy()
 
             if quiz_answers:
-                relationship_rating = get_rating_of_contact(request)
-                data["relationship_rating"] = relationship_rating
+                quiz_used = False
+                for question in quiz_answers:
+                    if question['answer'] is not None and question['answer'] != "":
+                        quiz_used = True
+                if quiz_used:
+                    relationship_rating = get_rating_of_contact(request)
+                    request.data["relationship_rating"] = relationship_rating
 
             data["user"] = request.user.id
             serializer = ContactSerializer(data=data)
@@ -79,8 +84,13 @@ class IndividualContactView(APIView):
             quiz_answers = request.data.get("quiz_answers", None)
 
             if quiz_answers:
-                relationship_rating = get_rating_of_contact(request)
-                request.data["relationship_rating"] = relationship_rating
+                quiz_used = False
+                for question in quiz_answers:
+                    if question['answer'] is not None and question['answer'] != "":
+                        quiz_used = True
+                if quiz_used:
+                    relationship_rating = get_rating_of_contact(request)
+                    request.data["relationship_rating"] = relationship_rating
 
             # Update contact fields and serialize
             serializer = ContactSerializer(contact, data=request.data,
