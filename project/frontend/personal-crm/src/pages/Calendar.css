@@ -1,3 +1,11 @@
+.bottom-right-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    display: flex;
+    gap: 20px;
+}
+
 .blue-button {
     background-color: rgb(18, 20, 149);
     color: white;
@@ -34,6 +42,10 @@
 .calendar-container {
     flex: 1;
     transition: all 0.3s ease;
+}
+
+.calendar-container.shrink {
+    margin-right: 400px;
 }
 
 .sidebar {
@@ -108,6 +120,18 @@
 
 .save-button:hover {
     background-color: #0056b3;
+}
+
+.cancel-button {
+    background-color: #b52b37;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.cancel-button:hover {
+    background-color: #dc3545;
 }
 
 .color-picker {

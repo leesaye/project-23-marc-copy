@@ -30,11 +30,46 @@ function GoogleCalendar() {
 
 
     useEffect(() => {
-        fetchEventsFromBackend();
         fetchEventsAndTasks();
     }, []);
-
-    const processEvents = (events) => {
+    
+    const fetchEventsAndTasks = async () => {
+        try {
+            const [eventsResponse, tasksResponse, contactsResponse] = await Promise.all([
+                axiosInstance.get(`${BASE_URL}api/events/`),
+                axiosInstance.get(`${BASE_URL}api/tasks/`),
+                axiosInstance.get(`${BASE_URL}contacts/`)
+            ]);
+    
+            setContacts(contactsResponse.data);
+    
+            const eventsData = eventsResponse.data.map(event => ({
+                ...event,
+                start: new Date(event.start),
+                end: new Date(event.end),
+                type: event.source === "google" ? "Google Event" : "Event",
+                style: { backgroundColor: event.color || "#3174ad", color: 'white' }
+            }));
+    
+            const tasksData = tasksResponse.data.map(task => ({
+                id: task.id,
+                title: task.title,
+                start: moment(task.date).startOf('day').toDate(),
+                end: moment(task.date).startOf('day').toDate(),
+                allDay: true,
+                type: "Task",
+                style: { backgroundColor: task.color || "#014F86", color: 'white' },
+                contact: task.contact || ""
+            }));
+    
+            setEvents([...eventsData, ...tasksData]);
+            setTasks(tasksResponse.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+            
+    const processEvents = (events = []) => {
         return events.map(event => ({
             ...event,
             start: new Date(event.start),
@@ -43,60 +78,7 @@ function GoogleCalendar() {
             type: "Event"
         }));
     };
-    
-    const fetchEventsAndTasks = async () => {
-        try {
-            const [eventsResponse, tasksResponse, contactsResponse] = await Promise.all([
-                axiosInstance.get(`${BASE_URL}api/events/`),
-                axiosInstance.get(`${BASE_URL}api/tasks/`), 
-                axiosInstance.get(`${BASE_URL}contacts/`)
-            ]);
-            
-            setContacts(contactsResponse.data);
-
-            const eventsData = eventsResponse.data.map(event => ({
-                ...event,
-                start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
-                end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
-                type: "Event",
-                style: { backgroundColor: event.color, color: 'white' }
-            }));
-            console.log(eventsData)
-
-            const sortedTasksData = tasksResponse.data.sort((a, b) => 
-                new Date(a.date) - new Date(b.date)
-            );
-
-            const tasksData = sortedTasksData.map(task => ({
-                id: `${task.id}`,
-                title: `${task.title}`,
-                start: moment(task.date).startOf('day').toDate(),  
-                end: moment(task.date).startOf('day').toDate(),    
-                allDay: true,
-                style: { backgroundColor: task.color, color: 'white' },
-                type: "Task", 
-                contact: task.contact || "",
-            }));
-
-            setEvents([...eventsData, ...tasksData]);
-            setTasks(sortedTasksData);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-
-    const fetchEventsFromBackend = async () => {
-        try {
-            const response = await axios.get(`${API_BASE_URL}get_google_events/`, {
-                withCredentials: true
-            });
-
-            setEvents(processEvents(response.data));
-        } catch (error) {
-            console.error("Error fetching events from backend:", error);
-        }
-    };
-
+        
     const login = useGoogleLogin({
         scope: "https://www.googleapis.com/auth/calendar.readonly",
         onSuccess: (response) => {
@@ -111,13 +93,14 @@ function GoogleCalendar() {
             const response = await axios.post(`${API_BASE_URL}sync_google_calendar/`, {
                 access_token: token
             }, { withCredentials: true });
-
-            setEvents(processEvents(response.data.events));
+    
+            const eventsData = response.data?.events || [];
+            setEvents(processEvents(eventsData));
         } catch (error) {
             console.error("Sync failed:", error);
         }
     };
-
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
@@ -179,7 +162,6 @@ function GoogleCalendar() {
 
             setNewTask({ title: '', date: '' , contact: ''});
             setSidebarOpen(false);
-            // setShowTaskForm(false);
         }
     };
     
@@ -328,7 +310,7 @@ function GoogleCalendar() {
                     events={events}
                     startAccessor="start"
                     endAccessor="end"
-                    style={{ height: "600px" }}
+                    style={{ height: "500px" }}
                     views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
                     defaultView={Views.MONTH}
                     components={{

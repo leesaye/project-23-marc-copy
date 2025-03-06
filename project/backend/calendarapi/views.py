@@ -110,18 +110,72 @@ class SyncGoogleCalendarView(APIView):
         if not access_token:
             return Response({"error": "No access token provided"}, status=status.HTTP_400_BAD_REQUEST)
 
-        response = Response({"message": "Google Calendar events synced successfully!"})
-        
-        # Store token securely in an HTTP-only cookie
-        response.set_cookie(
-            key="access_token",
-            value=access_token,
-            httponly=True,  # Prevent JavaScript access
-            secure=True,    # Ensure only sent over HTTPS
-            samesite="Lax"  # Prevent CSRF issues
-        )
-        
-        return response
+        try:
+            now = datetime.utcnow()
+            past_date = now - timedelta(days=365)
+            future_date = now + timedelta(days=365)
+
+            google_calendar_url = "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+            headers = {"Authorization": f"Bearer {access_token}", "Accept": "application/json"}
+
+            past_response = requests.get(
+                google_calendar_url,
+                headers=headers,
+                params={
+                    "maxResults": 1000,
+                    "orderBy": "startTime",
+                    "singleEvents": True,
+                    "timeMin": past_date.isoformat() + "Z",
+                    "timeMax": now.isoformat() + "Z",
+                },
+            )
+
+            future_response = requests.get(
+                google_calendar_url,
+                headers=headers,
+                params={
+                    "maxResults": 1000,
+                    "orderBy": "startTime",
+                    "singleEvents": True,
+                    "timeMin": now.isoformat() + "Z",
+                    "timeMax": future_date.isoformat() + "Z",
+                },
+            )
+
+            past_data = past_response.json()
+            future_data = future_response.json()
+
+            def process_events(data):
+                return [
+                    {
+                        "title": event.get("summary", "No Title"),
+                        "start": event["start"].get("dateTime", event["start"].get("date")),
+                        "end": event["end"].get("dateTime", event["end"].get("date")),
+                        "color": "#4285F4",
+                        "all_day": "date" in event["start"],
+                    }
+                    for event in data.get("items", []) if "start" in event and "end" in event
+                ]
+
+            all_events = process_events(past_data) + process_events(future_data)
+
+            # Clear existing Google-synced events first!
+            Event.objects.filter(user=request.user, source='google').delete()
+
+            for event in all_events:
+                Event.objects.create(
+                    user=request.user,
+                    title=event["title"],
+                    start=event["start"],
+                    end=event["end"],
+                    color=event["color"],
+                    source='google'  # Marking Google events
+                )
+
+            return Response({"message": "Google Calendar events synced successfully!", "events": all_events})
+
+        except requests.RequestException as e:
+            return Response({"error": f"Error fetching events from Google: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class GetGoogleEventsView(APIView):
     permission_classes = [IsAuthenticated]
