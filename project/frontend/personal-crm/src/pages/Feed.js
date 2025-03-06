@@ -12,6 +12,9 @@ function Feed() {
   const observer = useRef();
   const BASE_URL = "http://127.0.0.1:8000/";
 
+  const COLORS = ["#B5D22C", "#73AA2A", "#0995AE", "#04506A"];
+  const [selectedColor, setSelectedColor] = useState(COLORS[0]); 
+
   const [showEventForm, setShowEventForm] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
   const [selectedFeedEventId, setSelectedFeedEventId] = useState(null);
@@ -71,10 +74,12 @@ function Feed() {
   const handleAddEvent = async (e) => {
     e.preventDefault();
     try {
-      const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
+      const response = await axiosInstance.post(`${BASE_URL}api/events/`, {
+        ...newEvent,
+        color: selectedColor,
+      });
       const createdEvent = response.data;
-
-      console.log("Event added to calendar:", createdEvent);
+  
       setAddedEvents((prevState) => ({
         ...prevState,
         [selectedFeedEventId]: true,
@@ -85,8 +90,9 @@ function Feed() {
     setShowEventForm(false);
     setNewEvent({ title: "", start: "", end: "" });
     setSelectedFeedEventId(null);
+    setSelectedColor(COLORS[0]);
   };
-
+  
   const handleCancel = () => {
     setShowEventForm(false);
     setNewEvent({ title: "", start: "", end: "" });
@@ -106,7 +112,7 @@ function Feed() {
           <div className="row">
             {events.map((event, index) => (
               <div
-                key={event.id}
+                key={`${event.id}-${index}`}
                 className="col-12 mb-3"
                 ref={index === events.length - 1 ? lastEventRef : null}
               >
@@ -151,47 +157,59 @@ function Feed() {
 
         
         {showEventForm && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h3>Add Event</h3>
-              <label htmlFor="eventTitle">Title:</label>
-              <input
-                type="text"
-                id="eventTitle"
-                name="title"
-                value={newEvent.title}
-                onChange={handleInputChange}
-                required
-              />
-              <label htmlFor="start">Start Time:</label>
-              <input
-                type="datetime-local"
-                id="start"
-                name="start"
-                value={newEvent.start}
-                onChange={handleInputChange}
-                required
-              />
-              <label htmlFor="end">End Time:</label>
-              <input
-                type="datetime-local"
-                id="end"
-                name="end"
-                value={newEvent.end}
-                onChange={handleInputChange}
-                required
-              />
-              <div className="modal-buttons">
-                <button className="blue-button" onClick={handleAddEvent}>
-                  Save
-                </button>
-                <button className="cancel-button" onClick={handleCancel}>
-                  Cancel
-                </button>
-              </div>
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Add Event</h3>
+            <label htmlFor="eventTitle">Title:</label>
+            <input
+              type="text"
+              id="eventTitle"
+              name="title"
+              value={newEvent.title}
+              onChange={handleInputChange}
+              required
+            />
+            <label htmlFor="start">Start Time:</label>
+            <input
+              type="datetime-local"
+              id="start"
+              name="start"
+              value={newEvent.start}
+              onChange={handleInputChange}
+              required
+            />
+            <label htmlFor="end">End Time:</label>
+            <input
+              type="datetime-local"
+              id="end"
+              name="end"
+              value={newEvent.end}
+              onChange={handleInputChange}
+              required
+            />
+
+            <div className="color-picker">
+              {COLORS.map((color) => (
+                <div
+                  key={color}
+                  className={`color-option ${selectedColor === color ? "selected" : ""}`}
+                  style={{ backgroundColor: color }}
+                  onClick={() => setSelectedColor(color)}
+                ></div>
+              ))}
+            </div>
+
+            <div className="modal-buttons">
+              <button className="blue-button" onClick={handleAddEvent}>
+                Save
+              </button>
+              <button className="cancel-button" onClick={handleCancel}>
+                Cancel
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
       </div>
     </Layout>
   );
