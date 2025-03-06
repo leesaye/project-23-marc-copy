@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import Layout from '../components/Layout';
+import React, { useEffect, useState } from "react";
+import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import axios from "axios";
 import axiosInstance from "../endpoints/api"; 
 import './Calendar.css';
+import Layout from '../components/Layout';
+
 
 const localizer = momentLocalizer(moment);
+const API_BASE_URL = "http://127.0.0.1:8000/api/";
 
-const CalendarPage = () => {
+function GoogleCalendar() {
     const [events, setEvents] = useState([]);
+    const [user, setUser] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [formType, setFormType] = useState(null); 
@@ -23,50 +28,95 @@ const CalendarPage = () => {
     
     const BASE_URL = 'http://127.0.0.1:8000/';
 
+
     useEffect(() => {
-        const fetchEventsAndTasks = async () => {
-            try {
-                const [eventsResponse, tasksResponse, contactsResponse] = await Promise.all([
-                    axiosInstance.get(`${BASE_URL}api/events/`),
-                    axiosInstance.get(`${BASE_URL}api/tasks/`), 
-                    axiosInstance.get(`${BASE_URL}contacts/`)
-                ]);
-                
-                setContacts(contactsResponse.data);
-
-                const eventsData = eventsResponse.data.map(event => ({
-                    ...event,
-                    start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
-                    end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
-                    type: "Event",
-                    style: { backgroundColor: event.color, color: 'white' }
-                }));
-                console.log(eventsData)
-
-                const sortedTasksData = tasksResponse.data.sort((a, b) => 
-                    new Date(a.date) - new Date(b.date)
-                );
-
-                const tasksData = sortedTasksData.map(task => ({
-                    id: `${task.id}`,
-                    title: `${task.title}`,
-                    start: moment(task.date).startOf('day').toDate(),  
-                    end: moment(task.date).startOf('day').toDate(),    
-                    allDay: true,
-                    style: { backgroundColor: task.color, color: 'white' },
-                    type: "Task", 
-                    contact: task.contact || "",
-                }));
-
-                setEvents([...eventsData, ...tasksData]);
-                setTasks(sortedTasksData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
+        fetchEventsFromBackend();
         fetchEventsAndTasks();
     }, []);
+
+    const processEvents = (events) => {
+        return events.map(event => ({
+            ...event,
+            start: new Date(event.start),
+            end: new Date(event.end),
+            style: { backgroundColor: event.color || "#3174ad", color: 'white' },
+            type: "Event"
+        }));
+    };
+    
+    const fetchEventsAndTasks = async () => {
+        try {
+            const [eventsResponse, tasksResponse, contactsResponse] = await Promise.all([
+                axiosInstance.get(`${BASE_URL}api/events/`),
+                axiosInstance.get(`${BASE_URL}api/tasks/`), 
+                axiosInstance.get(`${BASE_URL}contacts/`)
+            ]);
+            
+            setContacts(contactsResponse.data);
+
+            const eventsData = eventsResponse.data.map(event => ({
+                ...event,
+                start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
+                end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
+                type: "Event",
+                style: { backgroundColor: event.color, color: 'white' }
+            }));
+            console.log(eventsData)
+
+            const sortedTasksData = tasksResponse.data.sort((a, b) => 
+                new Date(a.date) - new Date(b.date)
+            );
+
+            const tasksData = sortedTasksData.map(task => ({
+                id: `${task.id}`,
+                title: `${task.title}`,
+                start: moment(task.date).startOf('day').toDate(),  
+                end: moment(task.date).startOf('day').toDate(),    
+                allDay: true,
+                style: { backgroundColor: task.color, color: 'white' },
+                type: "Task", 
+                contact: task.contact || "",
+            }));
+
+            setEvents([...eventsData, ...tasksData]);
+            setTasks(sortedTasksData);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const fetchEventsFromBackend = async () => {
+        try {
+            const response = await axios.get(`${API_BASE_URL}get_google_events/`, {
+                withCredentials: true
+            });
+
+            setEvents(processEvents(response.data));
+        } catch (error) {
+            console.error("Error fetching events from backend:", error);
+        }
+    };
+
+    const login = useGoogleLogin({
+        scope: "https://www.googleapis.com/auth/calendar.readonly",
+        onSuccess: (response) => {
+            setUser({ id: response.userId });
+            syncCalendar(response.access_token);
+        },
+        onError: (error) => console.log("Login Failed:", error),
+    });
+
+    const syncCalendar = async (token) => {
+        try {
+            const response = await axios.post(`${API_BASE_URL}sync_google_calendar/`, {
+                access_token: token
+            }, { withCredentials: true });
+
+            setEvents(processEvents(response.data.events));
+        } catch (error) {
+            console.error("Sync failed:", error);
+        }
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -272,54 +322,65 @@ const CalendarPage = () => {
     return (
         <Layout>
             <div className={`calendar-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
-                <div className={`calendar-container ${sidebarOpen ? 'shrink' : ''}`}>
+                <div className={`calendar-container ${sidebarOpen ? 'shrink' : ''}`}> 
                     <Calendar
-                        localizer={localizer}
-                        events={events}  
-                        startAccessor="start"
-                        endAccessor="end"
-                        style={{ height: "95vh" }} 
-                        views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
-                        defaultView={Views.MONTH}
-                        components={{
-                            event: CustomEvent, 
+                    localizer={localizer}
+                    events={events}
+                    startAccessor="start"
+                    endAccessor="end"
+                    style={{ height: "600px" }}
+                    views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
+                    defaultView={Views.MONTH}
+                    components={{
+                        event: CustomEvent,
+                    }}
+                    eventPropGetter={(event) => ({
+                        style: {
+                            backgroundColor: event.style?.backgroundColor || "#3174ad",
+                            color: "white"
+                        }
+                    })}
+                />
+
+                <div style={{ marginTop: "20px", display: "flex", gap: "20px", justifyContent: "center" }}>
+                    <button 
+                        className="blue-button"
+                        onClick={() => {
+                            setFormType('event');
+                            setSelectedEvent(null);
+                            setSelectedTask(null);
+                            setNewEvent({ title: '', start: '', end: '', type: 'Event' });
+                            setSidebarOpen(true);
                         }}
-                        eventPropGetter={(event) => {
-                            let backgroundColor = event.style.backgroundColor; 
-                            let color = "white";
-                            return { style: { backgroundColor, color } };
-                        }}  
-                                         
-                    />
+                    >
+                        + Add Event
+                    </button>
+                    <button 
+                        className="blue-button"
+                        onClick={() => {
+                            setFormType('task');
+                            setSelectedEvent(null);
+                            setSelectedTask(null);
+                            setNewTask({ title: '', date: '', contact: '', type: 'Task' });
+                            setSidebarOpen(true);
+                        }}
+                    >
+                        + Add Task
+                    </button>
+                </div>
+                
+                <div style={{ marginTop: "40px", textAlign: "center" }}>
+                    <h2 style={{ fontSize: "28px", marginBottom: "20px" }}>📅 Google Calendar Integration</h2>
+
+                    <p style={{ fontSize: "16px", color: "#555", marginBottom: "30px" }}>
+                        Click the button below to securely connect your Google Calendar. After signing in, your Google Calendar events will automatically appear on the calendar above.
+                    </p>
+
+                    <button onClick={login} style={buttonStyle}>Sign In with Google Calendar</button>
                 </div>
 
-                <div className="bottom-right-buttons">
-                <button 
-                    className="blue-button" 
-                    onClick={() => { 
-                        setFormType('event'); 
-                        setSelectedEvent(null); 
-                        setSelectedTask(null);
-                        setNewEvent({ title: '', start: '', end: '', type: 'Event' });  // Reset fields
-                        setSidebarOpen(true); 
-                    }}
-                >
-                    + Add Event
-                </button>
-                <button 
-                    className="blue-button" 
-                    onClick={() => { 
-                        setFormType('task'); 
-                        setSelectedEvent(null); 
-                        setSelectedTask(null);
-                        setNewTask({ title: '', date: '', contact: '', type: 'Task' }); // Reset fields
-                        setSidebarOpen(true); 
-                    }}
-                >
-                    + Add Task
-                </button>
             </div>
-
+        
             <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
                 {formType === 'event' ? (
                     selectedEvent ? (
@@ -362,6 +423,7 @@ const CalendarPage = () => {
                                 ))}
                             </div>
                             <div className="button-group">
+                                <button className="cancel-button" onClick={() => { deleteItem(selectedEvent); setSidebarOpen(false); }}>Delete</button>
                                 <button 
                                     className="save-button" 
                                     onClick={(e) =>{
@@ -371,7 +433,6 @@ const CalendarPage = () => {
                                 >
                                     Save Changes
                                 </button>
-                                <button className="cancel-button" onClick={() => { deleteItem(selectedEvent); setSidebarOpen(false); }}>Delete</button>
                             </div>
                         </>
                     ) : (
@@ -399,6 +460,7 @@ const CalendarPage = () => {
                                 ))}
                             </div>
                             <div className="button-group">
+                                <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
                                 <button 
                                     className="save-button" 
                                     onClick={(e) =>{
@@ -408,7 +470,6 @@ const CalendarPage = () => {
                                 >
                                     Save
                                 </button>
-                                <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
                             </div>
                         </>
                     )
@@ -458,6 +519,7 @@ const CalendarPage = () => {
 
                             </div>
                             <div className="button-group">
+                                <button className="cancel-button" onClick={() => { deleteItem(selectedTask); setSidebarOpen(false); }}>Delete</button>
                                 <button 
                                     className="save-button" 
                                     onClick={(e) =>{
@@ -467,7 +529,6 @@ const CalendarPage = () => {
                                 >
                                     Save Changes
                                 </button>
-                                <button className="cancel-button" onClick={() => { deleteItem(selectedTask); setSidebarOpen(false); }}>Delete</button>
                             </div>
                         </>
                     ) : (
@@ -501,6 +562,7 @@ const CalendarPage = () => {
 
                             </div>
                             <div className="button-group">
+                                <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
                                 <button 
                                     className="save-button" 
                                     onClick={(e) =>{
@@ -510,16 +572,25 @@ const CalendarPage = () => {
                                 >
                                     Save
                                 </button>
-                                <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
                             </div>
                         </>
                     )
                 ) : null}
             </div>
-            </div>
-        </Layout>
+        </div>
+    </Layout>
     );
 };
 
-export default CalendarPage;
+const buttonStyle = {
+    padding: "12px 24px",
+    fontSize: "16px",
+    backgroundColor: "#4285F4",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    boxShadow: "0 3px 6px rgba(0,0,0,0.2)",
+};
 
+export default GoogleCalendar;
