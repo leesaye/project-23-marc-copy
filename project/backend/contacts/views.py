@@ -157,7 +157,7 @@ class UploadLinkedInCSVView(APIView):
                 last_name = row["Last Name"].strip()
                 name = f"{first_name} {last_name}".strip()
 
-                email = row["Email Address"].strip() or "No Email"
+                email = row["Email Address"].strip() or ""
                 job = row["Position"].strip() or "No Job"
                 company = row["Company"].strip() or "No Company"
                 linkedin_url = row["URL"].strip() or "No URL"
