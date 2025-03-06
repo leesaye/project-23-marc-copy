@@ -10,6 +10,7 @@ import Register from '../pages/Register';
 import CalendarPage from '../pages/Calendar';
 import Feed from '../pages/Feed';
 import Notification from '../pages/Notification';
+import CSVUpload from '../pages/CSVUpload';
 
 
 import { AuthProvider } from '../contexts/useAuth'; 
@@ -25,6 +26,7 @@ function Main() {
                 <Route path='/contacts/' element={<PrivateRoute><Contacts/></PrivateRoute>} />
                 <Route path='/contacts/add/' element={<PrivateRoute><AddContact/></PrivateRoute>} />
                 <Route path='/contacts/:contact_id/' element={<PrivateRoute><ContactId/></PrivateRoute>} />
+                <Route path='/contacts/importcsv/' element={<PrivateRoute><CSVUpload/></PrivateRoute>} />
                 <Route path='/calendars/' element={<PrivateRoute><CalendarPage/></PrivateRoute>} />
                 <Route path='/feed/' element={<PrivateRoute><Feed/></PrivateRoute>} />
                 <Route path='/notifications/' element={<PrivateRoute><Notification/></PrivateRoute>} />
