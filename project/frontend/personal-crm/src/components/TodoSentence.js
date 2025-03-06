@@ -49,8 +49,18 @@ function TodoSentence() {
             { 
                 showResult ? (
                     <>
-                        {loading ? <h1>Loading...</h1> : splitResultData}
-                    </>
+                    {loading ? <h1>Loading...</h1> : (
+                        <div className="card" style={{ backgroundColor: 'white', border: '1px solid #ccc', borderRadius: '8px', padding: '15px', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                            <div className="card-body">
+                                <h5 className="card-title" style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>
+                                AI Task Prioritization Summary
+                                </h5>
+                                
+                                {splitResultData}
+                            </div>
+                        </div>
+                    )}
+                </>
                 ) : (
                     <h1></h1>
                 )

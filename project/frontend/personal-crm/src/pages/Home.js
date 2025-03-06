@@ -21,7 +21,7 @@ function Home() {
                     </div>
                 </div>
                 <div className="text-center mx-5">
-                    <h3 className="mb-4">Featured motivational quote:</h3>
+                    <h3 className="mb-4"></h3>
                     {quote && 
                     <blockquote className="blockquote">
                         <h4><em>{quote.quote}</em></h4>
