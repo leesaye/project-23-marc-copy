@@ -1,4 +1,6 @@
 from django.shortcuts import render
+import uuid
+
 from rest_framework.views import APIView
 from . models import Contact
 from rest_framework.response import Response
@@ -81,35 +83,40 @@ class DeleteContactView(APIView):
 
         contact.delete()
         return Response({"message": "Contact deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
-    
+
 
 class AddGoogleContactsView(APIView):
     def post(self, request):
-        if 'contacts' not in request.data:
-            return Response({"error": "No contacts data provided"}, status=status.HTTP_400_BAD_REQUEST)
-        
-        print(request.data)
-        user = request.user
-        contacts = request.data
+        try:
+            user = request.user
+            contacts = request.data
 
-        for contact_data in contacts:
-            name = contact_data.get('name', '').strip()
-            email = contact_data.get('email', '').strip()
-            phone = contact_data.get('phone', '').strip()
-            job = contact_data.get('job', '').strip()
-            relationship = contact_data.get('relationship', '').strip()
+            if not contacts:
+                return Response({"error": "Failed to add Google contacts"}, status=status.HTTP_400_BAD_REQUEST)
 
-            if name:
-                Contact.objects.create(
-                user=user,
-                name=name,
-                email=email if email else "",
-                phone=phone if phone else "",
-                job=job if job else "",
-                relationship_rating=50,
-                relationship=relationship if relationship else "",
-                notes="",
-            )
+            for contact_data in contacts:
+                name = contact_data.get('name', '').strip()
+                email = contact_data.get('email', '').strip()
+                phone = contact_data.get('phone', '').strip()
+                job = contact_data.get('job', '').strip()
+                relationship = contact_data.get('relationship', '').strip()
+
+                if name:
+                    Contact.objects.create(
+                        id=uuid.uuid4(),
+                        user=user,
+                        name=name,
+                        email=email if email else "",
+                        phone=phone if phone else "",
+                        job=job if job else "",
+                        relationship_rating=50,
+                        relationship=relationship if relationship else "",
+                        notes="",
+                    )
+
+            return Response({"message": "Google contacts uploaded successfully"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": "Failed to add Google contacts"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # Relationship quiz
