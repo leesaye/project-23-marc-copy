@@ -77,7 +77,7 @@ function AddContact() {
         }
 
         try {
-            const response = await axiosInstance.post(`${BASE_URL}/contacts/add`, updatedFormData);
+            const response = await axiosInstance.post(`${BASE_URL}contacts/add`, updatedFormData);
             console.log("Contact added:", response.data);
             alert("Contact successfully added!");
             nav('/contacts/');

@@ -63,7 +63,7 @@ function ContactId() {
         };
 
         try {
-            const response = await axiosInstance.post(`${BASE_URL}/contacts/${contact.id}`, updatedFormData);
+            const response = await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, updatedFormData);
             console.log("Contact updated:", response.data);
             alert("Contact successfully updated!");
             nav('/contacts/');
@@ -89,7 +89,7 @@ function ContactId() {
 
     const handleDelete = async () => {
         try {
-            await axiosInstance.delete(`${BASE_URL}/contacts/${contact_id}/delete`);
+            await axiosInstance.delete(`${BASE_URL}contacts/${contact_id}/delete`);
             console.log(`Contact ${contact_id} deleted successfully`);
             alert("Contact successfully deleted!");
             nav('/contacts/');
