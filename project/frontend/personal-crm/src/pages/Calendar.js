@@ -10,7 +10,6 @@ import Layout from '../components/Layout';
 
 
 const localizer = momentLocalizer(moment);
-const API_BASE_URL = "http://127.0.0.1:8000/api/";
 
 function GoogleCalendar() {
     const [events, setEvents] = useState([]);
@@ -70,13 +69,29 @@ function GoogleCalendar() {
     };
             
     const processEvents = (events = []) => {
-        return events.map(event => ({
-            ...event,
-            start: new Date(event.start),
-            end: new Date(event.end),
-            style: { backgroundColor: event.color || "#3174ad", color: 'white' },
-            type: "Event"
-        }));
+        return events.map(event => {
+            // Create new Date objects for the start and end times
+            const startDate = new Date(event.start);
+            const endDate = new Date(event.end);
+            
+            console.log("Processed Event:", {
+                title: event.title,
+                start: startDate,
+                end: endDate,
+                all_day: event.all_day,
+                color: event.color,
+                style: { backgroundColor: event.color || "#3174ad", color: 'white' },
+                type: "Event"
+            });
+
+            return {
+                ...event,
+                start: startDate,
+                end: endDate,
+                style: { backgroundColor: event.color || "#3174ad", color: 'white' },
+                type: "Event"
+            };
+        });
     };
         
     const login = useGoogleLogin({
@@ -90,12 +105,13 @@ function GoogleCalendar() {
 
     const syncCalendar = async (token) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}sync_google_calendar/`, {
+            const response = await axios.post(`${BASE_URL}api/sync_google_calendar/`, {
                 access_token: token
             }, { withCredentials: true });
     
             const eventsData = response.data?.events || [];
             setEvents(processEvents(eventsData));
+            window.location.reload();
         } catch (error) {
             console.error("Sync failed:", error);
         }
@@ -358,7 +374,7 @@ function GoogleCalendar() {
                         Click the button below to securely connect your Google Calendar. After signing in, your Google Calendar events will automatically appear on the calendar above.
                     </p>
 
-                    <button onClick={login} style={buttonStyle}>Sign In with Google Calendar</button>
+                    <button onClick={login} className={"button-style"}>Sign In with Google Calendar</button>
                 </div>
 
             </div>
@@ -562,17 +578,6 @@ function GoogleCalendar() {
         </div>
     </Layout>
     );
-};
-
-const buttonStyle = {
-    padding: "12px 24px",
-    fontSize: "16px",
-    backgroundColor: "#4285F4",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    boxShadow: "0 3px 6px rgba(0,0,0,0.2)",
 };
 
 export default GoogleCalendar;

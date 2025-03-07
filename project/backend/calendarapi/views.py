@@ -147,17 +147,33 @@ class SyncGoogleCalendarView(APIView):
             future_data = future_response.json()
 
             def process_events(data):
-                return [
-                    {
-                        "title": event.get("summary", "No Title"),
-                        "start": event["start"].get("dateTime", event["start"].get("date")),
-                        "end": event["end"].get("dateTime", event["end"].get("date")),
-                        "color": "#4285F4",
-                        "all_day": "date" in event["start"],
-                    }
-                    for event in data.get("items", []) if "start" in event and "end" in event
-                ]
+                events = []  # Initialize an empty list to store the events
 
+                # Loop through each event in the data["items"]
+                for event in data.get("items", []):
+                    # Check if both "start" and "end" keys exist
+                    if "start" in event and "end" in event:
+                        # Extract the start and end times
+                        start_time = event["start"].get("dateTime", event["start"].get("date"))
+                        end_time = event["end"].get("dateTime", event["end"].get("date"))
+                        
+                        # Get the all_day value (default to False if not present)
+                        all_day = event.get("all_day")
+
+                        # Create a dictionary for the event
+                        event_dict = {
+                            "title": event.get("summary", "No Title"),
+                            "start": start_time,
+                            "end": end_time,
+                            "color": "#4285F4",
+                            "all_day": all_day,
+                        }
+
+                        # Append the event dictionary to the events list
+                        events.append(event_dict)
+
+                return events
+            
             all_events = process_events(past_data) + process_events(future_data)
 
             # Clear existing Google-synced events first!
@@ -172,7 +188,7 @@ class SyncGoogleCalendarView(APIView):
                     color=event["color"],
                     source='google'  # Marking Google events
                 )
-
+                
             return Response({"message": "Google Calendar events synced successfully!", "events": all_events})
 
         except requests.RequestException as e:
