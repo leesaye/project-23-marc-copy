@@ -46,8 +46,8 @@ View the following video for a walkthrough and user flow of our website:
 (D3)
 
 ## How the TA can Test the features:
-1. Visit our deployed website here: 
-(D2 snapshot: https://personalcrm.netlify.app/
+1. Visit our deployed website here: D3 snapshot: 
+(D2 snapshot: https://personalcrm.netlify.app/)
 
 	Note: Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity. You may be seeing a loading screen for aprox 1-2 mins or a request may take a while to get sent.
 	   
@@ -57,7 +57,9 @@ View the following video for a walkthrough and user flow of our website:
 		2. password: 123
 	2. You may also register a new account instead by clicking the Sign Up link at the bottom of the Log In page.
 		1. Here you can enter a username, email and password.
-		2. Feel free to use this account instead of the test user above
+		2. Feel free to use this account instead of the test user above.
+  		3. There is also a password strength calculator that shows under the password you created to ensure you are using a strong enough password.
+  	3. You can also test the lockout feature that locks you out of logging in for 30 seconds after 5 failed login attempts
 3. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
 4. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
 5. To test our second use case, click the Contacts tab on the left sidebar.
@@ -90,6 +92,7 @@ View the following video for a walkthrough and user flow of our website:
 		1. This process is similar to adding an event but without an end date
 	4. On the calendar tab you can also change the views by clicking the week, day and agenda views at the top right
 	5. You can navigate back and forth in time using the buttons in the top left.
+ 	6. You can also add contacts through google by clicking the connect with google button. This will import the google calendar events of whatever google accouhnt you select.
 7. To test our fourth use case, click the Feed Tab on the left sidebar.
 	1. This will bring up a view of recent events in your network.
  	2. Events that are already a part of your calendar can be seen with a green checkmark.
