@@ -21,8 +21,10 @@ List process-related (i.e. team organization and how you work) decisions and act
   * Notion was useful to assign and manage the work with Deliverable write-ups and documentation, separately from user stories  
 * Feel free to refer/link to process artifact(s).  
   * Notion Meeting Notes Example:
+
     ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcfNMX7mobOTM6-OsE1x3JkavoxILtU_UAYbXjQCJyRoaLqfmYBMRt-FdC7lv_k5dgdPm2FIPUEzM7L0_Yj2-RIKve82BVNLcqCx-VUNr9TrnzAOzRADUaD9A8_jVKWAyAjMMfLpw?key=osAvPbDJQ-UYLfEeZCyKaose)
   * Discord User Story Channels Example:
+
 	![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXduvzq_uK50Qv4oXsaFS3O3LH_SyRnFWt5yMGvFCtHxy8D0IRlI9YQI3lpksGKwNpC7aLMEcYOOSvMxbxFfYntGdmzwjjjtHpKxWbLqJIGEHsxMhLX4mZYuS7c1AEvovqfdFhUQ9Q?key=osAvPbDJQ-UYLfEeZCyKaose)
     
 
