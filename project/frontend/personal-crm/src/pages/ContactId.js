@@ -80,7 +80,7 @@ function ContactId() {
     };
 
     useEffect(() => {
-        axiosInstance.get(`${BASE_URL}/contacts/${contact_id}`)
+        axiosInstance.get(`${BASE_URL}contacts/${contact_id}`)
         .then(response => {
             setContact(response.data);
         })
