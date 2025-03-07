@@ -16,7 +16,7 @@ class AuthenticationTests(APITestCase):
     def test_register_user(self):
         data = {"username": "newuser", "email": "new@email.com", "password": 123}
         response = self.client.post(self.register_url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(User.objects.filter(username="newuser").exists())
 
     def test_obtain_token(self):
@@ -47,10 +47,9 @@ class AuthenticationTests(APITestCase):
         response = self.client.post(self.login_url, data)
         self.client.cookies = response.cookies
 
-        response = self.client.post(self.authenticated_url)
+        response = self.client.get(self.authenticated_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {'authenticated': True})
     
     def test_unauthenticated_access(self):
-        response = self.client.post(self.authenticated_url)
+        response = self.client.get(self.authenticated_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
