@@ -20,6 +20,26 @@ const Register = () => {
     return re.test(email);
   };
 
+  // Calculate Strength of Password
+  const calculatePasswordStrength = (password) => {
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    return score;
+  };
+
+  // Determine strength label based on score
+  const strengthScore = calculatePasswordStrength(password);
+  const strengthLabel = password
+    ? strengthScore < 2
+      ? "Weak"
+      : strengthScore < 4
+      ? "Medium"
+      : "Strong"
+    : "";
+
   const handleRegister = async () => {
     const errorMessages = [];
 
@@ -150,6 +170,11 @@ const Register = () => {
               if (error.length > 0) setError([]);
             }}
           />
+          {password && (
+            <div className={`password-strength ${strengthLabel.toLowerCase()}`}>
+              Password Strength: {strengthLabel}
+            </div>
+          )}
         </div>
 
         <div className="mb-4">

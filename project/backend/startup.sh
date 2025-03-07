@@ -5,6 +5,10 @@ source ../venv/bin/activate
 python -m pip install djangorestframework
 python -m pip install djangorestframework-simplejwt
 python -m pip install django-cors-headers
+python -m pip install pandas
+python -m pip install google-genai
+python -m pip install google-api-core
+python -m pip install drf-spectacular
 
 #deployment packages
 python -m pip install dj-database-url

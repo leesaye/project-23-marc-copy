@@ -1,0 +1,866 @@
+openapi: 3.0.3
+info:
+  title: PersonalCRM API
+  version: 1.0.0
+  description: The PersonalCRM API is what controls the backend for the PersonalCRM
+    Web App
+paths:
+  /api/authenticated/:
+    get:
+      operationId: api_authenticated_retrieve
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/events/:
+    get:
+      operationId: api_events_list
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Event'
+          description: ''
+    post:
+      operationId: api_events_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Event'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Event'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+  /api/events/{event_id}/:
+    get:
+      operationId: api_events_retrieve
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: api_events_create_2
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/events/{event_id}/delete/:
+    delete:
+      operationId: api_events_delete_destroy
+      parameters:
+      - in: path
+        name: event_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '204':
+          description: No response body
+  /api/events/{id}/:
+    get:
+      operationId: api_events_retrieve_2
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+    put:
+      operationId: api_events_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Event'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Event'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Event'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+    patch:
+      operationId: api_events_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEvent'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+          description: ''
+    delete:
+      operationId: api_events_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      responses:
+        '204':
+          description: No response body
+  /api/logout/:
+    post:
+      operationId: api_logout_create
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/register/:
+    post:
+      operationId: api_register_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRegister'
+          description: ''
+  /api/tasks/:
+    get:
+      operationId: api_tasks_list
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+          description: ''
+    post:
+      operationId: api_tasks_create
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Task'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Task'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+  /api/tasks/{id}/:
+    get:
+      operationId: api_tasks_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+    put:
+      operationId: api_tasks_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Task'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Task'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+    patch:
+      operationId: api_tasks_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTask'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+    delete:
+      operationId: api_tasks_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - api
+      responses:
+        '204':
+          description: No response body
+  /api/tasks/{task_id}/:
+    get:
+      operationId: api_tasks_retrieve_2
+      parameters:
+      - in: path
+        name: task_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: api_tasks_create_2
+      parameters:
+      - in: path
+        name: task_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '200':
+          description: No response body
+  /api/tasks/{task_id}/delete/:
+    delete:
+      operationId: api_tasks_delete_destroy
+      parameters:
+      - in: path
+        name: task_id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - api
+      responses:
+        '204':
+          description: No response body
+  /api/token/:
+    post:
+      operationId: api_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/token/refresh/:
+    post:
+      operationId: api_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - api
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /contacts/:
+    get:
+      operationId: contacts_retrieve
+      tags:
+      - contacts
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contact'
+          description: ''
+  /contacts/{contact_id}:
+    get:
+      operationId: contacts_retrieve_2
+      parameters:
+      - in: path
+        name: contact_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - contacts
+      responses:
+        '200':
+          description: No response body
+    post:
+      operationId: contacts_create
+      parameters:
+      - in: path
+        name: contact_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - contacts
+      responses:
+        '200':
+          description: No response body
+  /contacts/{contact_id}/delete:
+    delete:
+      operationId: contacts_delete_destroy
+      parameters:
+      - in: path
+        name: contact_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - contacts
+      responses:
+        '204':
+          description: No response body
+  /contacts/{contact_id}/relationship-quiz:
+    post:
+      operationId: contacts_relationship_quiz_create
+      parameters:
+      - in: path
+        name: contact_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - contacts
+      responses:
+        '200':
+          description: No response body
+  /contacts/add:
+    post:
+      operationId: contacts_add_create
+      tags:
+      - contacts
+      responses:
+        '200':
+          description: No response body
+  /contacts/googlesync:
+    post:
+      operationId: contacts_googlesync_create
+      tags:
+      - contacts
+      responses:
+        '200':
+          description: No response body
+  /contacts/importcsv/:
+    post:
+      operationId: contacts_importcsv_create
+      tags:
+      - contacts
+      responses:
+        '200':
+          description: No response body
+  /feed/externalevents/:
+    get:
+      operationId: feed_externalevents_list
+      tags:
+      - feed
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ExternalEvent'
+          description: ''
+    post:
+      operationId: feed_externalevents_create
+      tags:
+      - feed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalEvent'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalEvent'
+          description: ''
+  /feed/externalevents/{id}/:
+    get:
+      operationId: feed_externalevents_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - feed
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalEvent'
+          description: ''
+    put:
+      operationId: feed_externalevents_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - feed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExternalEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ExternalEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ExternalEvent'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalEvent'
+          description: ''
+    patch:
+      operationId: feed_externalevents_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - feed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalEvent'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalEvent'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedExternalEvent'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExternalEvent'
+          description: ''
+    delete:
+      operationId: feed_externalevents_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - feed
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Contact:
+      type: object
+      description: Serializer for Contact model.
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        user:
+          type: integer
+        name:
+          type: string
+          maxLength: 100
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+          pattern: ^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$
+        job:
+          type: string
+          maxLength: 100
+        relationship_rating:
+          type: integer
+          maximum: 100
+          minimum: 0
+        relationship:
+          type: string
+          maxLength: 100
+        notes:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+      - user
+    Event:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        color:
+          type: string
+          maxLength: 7
+      required:
+      - end
+      - id
+      - start
+      - title
+    ExternalEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        added:
+          type: boolean
+        contact:
+          type: string
+          format: uuid
+      required:
+      - contact
+      - id
+    PatchedEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        start:
+          type: string
+          format: date-time
+        end:
+          type: string
+          format: date-time
+        color:
+          type: string
+          maxLength: 7
+    PatchedExternalEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+        description:
+          type: string
+        added:
+          type: boolean
+        contact:
+          type: string
+          format: uuid
+    PatchedTask:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        date:
+          type: string
+          format: date
+        color:
+          type: string
+          maxLength: 7
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        title:
+          type: string
+          maxLength: 200
+        date:
+          type: string
+          format: date
+        color:
+          type: string
+          maxLength: 7
+      required:
+      - date
+      - id
+      - title
+    TokenObtainPair:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - password
+      - refresh
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    UserRegister:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - password
+      - username
