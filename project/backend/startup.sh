@@ -8,6 +8,7 @@ python -m pip install django-cors-headers
 python -m pip install pandas
 python -m pip install google-genai
 python -m pip install google-api-core
+python -m pip install drf-spectacular
 
 python manage.py makemigrations
 python manage.py migrate
