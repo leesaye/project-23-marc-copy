@@ -1,121 +1,173 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, momentLocalizer, Views } from 'react-big-calendar';
-import moment from 'moment';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import Layout from '../components/Layout';
+import React, { useEffect, useState } from "react";
+import { useGoogleLogin, googleLogout } from "@react-oauth/google";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
+import moment from "moment";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import axios from "axios";
 import axiosInstance from "../endpoints/api"; 
 import './Calendar.css';
+import Layout from '../components/Layout';
+
 
 const localizer = momentLocalizer(moment);
 
-const CalendarPage = () => {
+function GoogleCalendar() {
     const [events, setEvents] = useState([]);
+    const [user, setUser] = useState(null);
     const [tasks, setTasks] = useState([]);
-    const [showEventForm, setShowEventForm] = useState(false);
-    const [showTaskForm, setShowTaskForm] = useState(false);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [formType, setFormType] = useState(null); 
     const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
-    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task' });
+    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '' });
+    const [selectedEvent, setSelectedEvent] = useState(null);
+    const [selectedTask, setSelectedTask] = useState(null);
+    const [contacts, setContacts] = useState([]);
+
+    const COLORS = ["#B5D22C", "#73AA2A", "#0995AE", "#04506A"]
+    
     const BASE_URL = 'http://127.0.0.1:8000/';
 
+
     useEffect(() => {
-        const fetchEventsAndTasks = async () => {
-            try {
-                const [eventsResponse, tasksResponse] = await Promise.all([
-                    axiosInstance.get(`${BASE_URL}api/events/`),
-                    axiosInstance.get(`${BASE_URL}api/tasks/`)
-                ]);
-
-                const eventsData = eventsResponse.data.map(event => ({
-                    ...event,
-                    start: moment(event.start).add(5, 'hours').toDate(),
-                    end: moment(event.end).add(5, 'hours').toDate(),
-                    type: "Event"
-                }));
-
-                const sortedTasksData = tasksResponse.data.sort((a, b) => 
-                    new Date(a.date) - new Date(b.date)
-                );
-
-                const tasksData = sortedTasksData.map(task => ({
-                    id: `${task.id}`,
-                    title: `Task: ${task.title}`,
-                    start: moment(task.date).startOf('day').toDate(),  
-                    end: moment(task.date).startOf('day').toDate(),    
-                    allDay: true,
-                    style: { backgroundColor: '#014F86', color: 'white' },
-                    type: "Task"
-                }));
-
-                setEvents([...eventsData, ...tasksData]);
-                setTasks(sortedTasksData);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
         fetchEventsAndTasks();
     }, []);
+    
+    const fetchEventsAndTasks = async () => {
+        try {
+            const [eventsResponse, tasksResponse, contactsResponse] = await Promise.all([
+                axiosInstance.get(`${BASE_URL}api/events/`),
+                axiosInstance.get(`${BASE_URL}api/tasks/`),
+                axiosInstance.get(`${BASE_URL}contacts/`)
+            ]);
+    
+            setContacts(contactsResponse.data);
+    
+            const eventsData = eventsResponse.data.map(event => ({
+                ...event,
+                start: new Date(event.start),
+                end: new Date(event.end),
+                type: event.source === "google" ? "Google Event" : "Event",
+                style: { backgroundColor: event.color || "#3174ad", color: 'white' }
+            }));
+    
+            const tasksData = tasksResponse.data.map(task => ({
+                id: task.id,
+                title: task.title,
+                start: moment(task.date).startOf('day').toDate(),
+                end: moment(task.date).startOf('day').toDate(),
+                allDay: true,
+                type: "Task",
+                style: { backgroundColor: task.color || "#014F86", color: 'white' },
+                contact: task.contact || ""
+            }));
+    
+            setEvents([...eventsData, ...tasksData]);
+            setTasks(tasksResponse.data);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
+            
+    const processEvents = (events = []) => {
+        return events.map(event => {
+            // Create new Date objects for the start and end times
+            const startDate = new Date(event.start);
+            const endDate = new Date(event.end);
+            
+            console.log("Processed Event:", {
+                title: event.title,
+                start: startDate,
+                end: endDate,
+                all_day: event.all_day,
+                color: event.color,
+                style: { backgroundColor: event.color || "#3174ad", color: 'white' },
+                type: "Event"
+            });
 
+            return {
+                ...event,
+                start: startDate,
+                end: endDate,
+                style: { backgroundColor: event.color || "#3174ad", color: 'white' },
+                type: "Event"
+            };
+        });
+    };
+        
+    const login = useGoogleLogin({
+        scope: "https://www.googleapis.com/auth/calendar.readonly",
+        onSuccess: (response) => {
+            setUser({ id: response.userId });
+            syncCalendar(response.access_token);
+        },
+        onError: (error) => console.log("Login Failed:", error),
+    });
+
+    const syncCalendar = async (token) => {
+        try {
+            const response = await axios.post(`${BASE_URL}api/sync_google_calendar/`, {
+                access_token: token
+            }, { withCredentials: true });
+    
+            const eventsData = response.data?.events || [];
+            setEvents(processEvents(eventsData));
+            window.location.reload();
+        } catch (error) {
+            console.error("Sync failed:", error);
+        }
+    };
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        if (showEventForm) {
+        if (formType === 'event') {
             setNewEvent({ ...newEvent, [name]: value });
-        } else if (showTaskForm) {
+        } else if (formType === 'task') {
             setNewTask({ ...newTask, [name]: value });
         }
     };
 
-    const handleAddEvent = async (e) => {
+    const handleAddEvent = async (e, selectedColor) => {
         e.preventDefault();
-
-        const startDate = new Date(newEvent.start);
-        const endDate = new Date(newEvent.end);
-
-        if (endDate < startDate) {
-            alert("Error: End date/time cannot be earlier than start date/time.");
-            return;
-        }
 
         if (newEvent.title.trim() !== '' && newEvent.start && newEvent.end) {
             try {
+                newEvent.color = selectedColor;
                 const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
                 const createdEvent = response.data;
 
-                console.log("Event added:", createdEvent);
-
                 setEvents([...events, {
                     ...createdEvent,
-                    start: moment(createdEvent.start).toDate(),
-                    end: moment(createdEvent.end).toDate(),
-                    type: 'Event'
+                    start: new Date(moment.utc(createdEvent.start).format("YYYY-MM-DDTHH:mm:ss")),
+                    end: new Date(moment.utc(createdEvent.end).format("YYYY-MM-DDTHH:mm:ss")), 
+                    type: 'Event',
+                    style: { backgroundColor: selectedColor, color: 'white' }
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
             }
 
             setNewEvent({ title: '', start: '', end: '' });
-            setShowEventForm(false);
+            setSidebarOpen(false);
         }
     };
 
-    const handleAddTask = async (e) => {
+    const handleAddTask = async (e, selectedColor) => {
         e.preventDefault();
         if (newTask.title.trim() !== '' && newTask.date) {
             try {
+                newTask.color = selectedColor;
                 const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, newTask);
                 const createdTask = response.data;
-
-                console.log("Task added:", createdTask);
-
                 const taskEvent = {
                     id: `${createdTask.id}`,
-                    title: `Task: ${createdTask.title}`,
+                    title: `${createdTask.title}`,
                     start: moment(createdTask.date).startOf('day').toDate(),  
                     end: moment(createdTask.date).startOf('day').toDate(),    
                     allDay: true,
-                    style: { backgroundColor: '#014F86', color: 'white' },
-                    type: "Task"
+                    style: { backgroundColor: selectedColor, color: 'white' },
+                    type: "Task",
+                    contact: createdTask.contact || ""
                 };
 
                 setTasks([...tasks, createdTask]);
@@ -124,23 +176,118 @@ const CalendarPage = () => {
                 console.error('Error adding task:', error);
             }
 
-            setNewTask({ title: '', date: '' });
-            setShowTaskForm(false);
+            setNewTask({ title: '', date: '' , contact: ''});
+            setSidebarOpen(false);
         }
     };
-
-    const eventPropGetter = (event) => {
-        let backgroundColor = event.type === "Task" ? '#014F86' : '#4A90E2';
-        let color = 'white';
-
-        return {
-            style: {
-                backgroundColor,
-                color
-            }
-        };
+    
+    const handleUpdateEvent = async (e, selectedColor) => {
+        e.preventDefault();
+    
+        if (!selectedEvent) return;
+    
+        try {
+            const updatedEventData = {
+                title: selectedEvent.title,
+                start: selectedEvent.start,
+                end: selectedEvent.end,
+                color: selectedColor
+            };
+    
+            await axiosInstance.put(`${BASE_URL}api/events/${selectedEvent.id}/`, updatedEventData);
+    
+            const updatedEvents = events.map(event =>
+                event.id === selectedEvent.id
+                    ? { 
+                        ...event, 
+                        title: updatedEventData.title,
+                        start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
+                        end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
+                        style: { backgroundColor: selectedColor, color: 'white' }
+                    } 
+                    : event
+            );
+    
+            setEvents(updatedEvents);
+    
+            setSelectedEvent(null);
+            setSidebarOpen(false);
+        } catch (error) {
+            console.error('Error updating event:', error);
+        }
     };
-
+            
+    const handleUpdateTask = async (e, selectedColor) => {
+        e.preventDefault();
+    
+        if (!selectedTask) return;
+    
+        try {
+            const updatedTaskData = {
+                title: selectedTask.title,
+                date: moment(selectedTask.start).format("YYYY-MM-DD"),
+                contact: selectedTask.contact || "",
+                color: selectedColor
+            };
+    
+            await axiosInstance.put(`${BASE_URL}api/tasks/${selectedTask.id}/`, updatedTaskData);
+    
+            const updatedTasks = tasks.map(task =>
+                task.id === selectedTask.id ? { ...task, ...updatedTaskData } : task
+            );
+    
+            setTasks(updatedTasks);
+    
+            const updatedEvents = events.map(event =>
+                event.id === selectedTask.id
+                    ? { 
+                        ...event, 
+                        title: `${updatedTaskData.title}`,
+                        start: moment(updatedTaskData.date).startOf('day').toDate(),
+                        end: moment(updatedTaskData.date).startOf('day').toDate(),
+                        contact: updatedTaskData.contact, 
+                        style: { backgroundColor: selectedColor, color: 'white' }
+                    } 
+                    : event
+            );
+    
+            setEvents(updatedEvents);
+    
+            setSelectedTask(null);
+            setSidebarOpen(false);
+        } catch (error) {
+            console.error('Error updating task:', error);
+        }
+    };
+                
+    const CustomEvent = ({ event }) => { 
+        return (
+            <div className="custom-event" onClick={() => {
+                setFormType(event.type.toLowerCase());
+    
+                if (event.type === "Event") {
+                    setSelectedEvent(event);
+                    setNewEvent({ 
+                        title: event.title, 
+                        start: moment(event.start).format("YYYY-MM-DDTHH:mm"), 
+                        end: moment(event.end).format("YYYY-MM-DDTHH:mm") 
+                    });
+                } else if (event.type === "Task") {
+                    setSelectedTask(event);
+                    setNewTask({ 
+                        title: event.title, 
+                        date: moment(event.start).format("YYYY-MM-DD"),
+                        contact: event.contact ? event.contact : ""   
+                    });
+                }
+    
+                setSidebarOpen(true);  
+            }}>
+                <span>{event.title}</span>
+            </div>
+        );
+    };    
+            
     const deleteItem = async (event) => {
         if (event.type === "Event") {
             try {
@@ -168,92 +315,269 @@ const CalendarPage = () => {
         } else {
             console.error("Trying to delete invalid item, shouldn't end up here")
         }
-    };
-
-    const CustomEvent = ({ event }) => {
-        return (
-            <div className="custom-event">
-                <button className="delete-icon" onClick={() => deleteItem(event)}>❌</button>
-                <span>{event.title}</span>
-            </div>
-        );
-    };
+    };    
 
     return (
         <Layout>
-            <div className="calendar-container">
-                <Calendar
+            <div className={`calendar-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
+                <div className={`calendar-container ${sidebarOpen ? 'shrink' : ''}`}> 
+                    <Calendar
                     localizer={localizer}
-                    events={events.map(event => ({
-                        ...event,
-                        start: moment(event.start).add(5, 'hours').toDate(),
-                        end: moment(event.end).add(5, 'hours').toDate(),
-                    }))} 
+                    events={events}
                     startAccessor="start"
                     endAccessor="end"
-                    style={{ height: "80vh" }}
-                    views={{ month: true, week: true, day: true, agenda: true }} 
+                    style={{ height: "500px" }}
+                    views={[Views.MONTH, Views.WEEK, Views.DAY, Views.AGENDA]}
                     defaultView={Views.MONTH}
-                    eventPropGetter={eventPropGetter}
                     components={{
-                        event: CustomEvent,  
+                        event: CustomEvent,
                     }}
+                    eventPropGetter={(event) => ({
+                        style: {
+                            backgroundColor: event.style?.backgroundColor || "#3174ad",
+                            color: "white"
+                        }
+                    })}
                 />
 
-                {tasks?.length > 0 && (
-                    <div className="task-list">
-                        <h3>Tasks</h3>
-                        <ul>
-                            {tasks.map((task) => (
-                                <li key={task.id}>
-                                    <strong>{task.title}</strong> - {moment(task.date).format('MMM DD, YYYY')}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
+                <div style={{ marginTop: "20px", display: "flex", gap: "20px", justifyContent: "center" }}>
+                    <button 
+                        className="blue-button"
+                        onClick={() => {
+                            setFormType('event');
+                            setSelectedEvent(null);
+                            setSelectedTask(null);
+                            setNewEvent({ title: '', start: '', end: '', type: 'Event' });
+                            setSidebarOpen(true);
+                        }}
+                    >
+                        + Add Event
+                    </button>
+                    <button 
+                        className="blue-button"
+                        onClick={() => {
+                            setFormType('task');
+                            setSelectedEvent(null);
+                            setSelectedTask(null);
+                            setNewTask({ title: '', date: '', contact: '', type: 'Task' });
+                            setSidebarOpen(true);
+                        }}
+                    >
+                        + Add Task
+                    </button>
+                </div>
+                
+                <div style={{ marginTop: "40px", textAlign: "center" }}>
+                    <h2 style={{ fontSize: "28px", marginBottom: "20px" }}>📅 Google Calendar Integration</h2>
 
-                <div className="bottom-right-buttons">
-                    <button className="blue-button" onClick={() => setShowEventForm(true)}>+ Add Event</button>
-                    <button className="blue-button" onClick={() => setShowTaskForm(true)}>+ Add Task</button>
+                    <p style={{ fontSize: "16px", color: "#555", marginBottom: "30px" }}>
+                        Click the button below to securely connect your Google Calendar. After signing in, your Google Calendar events will automatically appear on the calendar above.
+                    </p>
+
+                    <button onClick={login} className={"button-style"}>Sign In with Google Calendar</button>
                 </div>
 
-                {showEventForm && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <h3>Add Event</h3>
-                            <label htmlFor="eventTitle">Title:</label>
-                            <input type="text" id="eventTitle" name="title" value={newEvent.title} onChange={handleInputChange} required />
-                            <label htmlFor="start">Start Time:</label>
-                            <input type="datetime-local" id="start" name="start" value={newEvent.start} onChange={handleInputChange} required />
-                            <label htmlFor="end">End Time:</label>
-                            <input type="datetime-local" id="end" name="end" value={newEvent.end} onChange={handleInputChange} required />
-                            <div className="modal-buttons">
-                                <button className="blue-button" onClick={handleAddEvent}>Save</button>
-                                <button className="cancel-button" onClick={() => setShowEventForm(false)}>Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {showTaskForm && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <h3>Add Task</h3>
-                            <label htmlFor="taskTitle">Title:</label>
-                            <input type="text" id="taskTitle" name="title" value={newTask.title} onChange={handleInputChange} required />
-                            <label htmlFor="taskDate">Date:</label>
-                            <input type="date" id="taskDate" name="date" value={newTask.date} onChange={handleInputChange} required />
-                            <div className="modal-buttons">
-                                <button className="blue-button" onClick={handleAddTask}>Save</button>
-                                <button className="cancel-button" onClick={() => setShowTaskForm(false)}>Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
-        </Layout>
+        
+            <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+                {formType === 'event' ? (
+                    selectedEvent ? (
+                        <>
+                            <h3>Edit Event</h3>
+                            <label>Title:</label>
+                            <input 
+                                type="text" 
+                                name="title" 
+                                value={selectedEvent.title} 
+                                onChange={(e) => setSelectedEvent({ ...selectedEvent, title: e.target.value })} 
+                            />
+                            <label>Start Time:</label>
+                            <input 
+                                type="datetime-local" 
+                                name="start" 
+                                value={moment(selectedEvent.start).format("YYYY-MM-DDTHH:mm")} 
+                                onChange={(e) => setSelectedEvent({ ...selectedEvent, start: e.target.value })}
+                            />
+                            <label>End Time:</label>
+                            <input 
+                                type="datetime-local" 
+                                name="end" 
+                                value={moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm")} 
+                                onChange={(e) => setSelectedEvent({ ...selectedEvent, end: e.target.value })}
+                            />
+                            <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+                                        e.target.classList.add("selected");
+                                        e.target.dataset.selectedColor = color;
+                                    }}
+                                >
+                                </div>
+                                ))}
+                            </div>
+                            <div className="button-group">
+                                <button className="cancel-button" onClick={() => { deleteItem(selectedEvent); setSidebarOpen(false); }}>Delete</button>
+                                <button 
+                                    className="save-button" 
+                                    onClick={(e) =>{
+                                        const selectedColor = document.querySelector(".color-option.selected")?.dataset.selectedColor || "#3174ad";
+                                        handleUpdateEvent(e, selectedColor);
+                                    }}
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <h3>Add Event</h3>
+                            <label>Title:</label>
+                            <input type="text" name="title" value={newEvent.title} onChange={handleInputChange} />
+                            <label>Start Time:</label>
+                            <input type="datetime-local" name="start" value={newEvent.start} onChange={handleInputChange} />
+                            <label>End Time:</label>
+                            <input type="datetime-local" name="end" value={newEvent.end} onChange={handleInputChange} />
+                            <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+                                        e.target.classList.add("selected");
+                                        e.target.dataset.selectedColor = color;
+                                    }}
+                                >
+                                </div>
+                                ))}
+                            </div>
+                            <div className="button-group">
+                                <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
+                                <button 
+                                    className="save-button" 
+                                    onClick={(e) =>{
+                                        const selectedColor = document.querySelector(".color-option.selected")?.dataset.selectedColor || "#3174ad";
+                                        handleAddEvent(e, selectedColor);
+                                    }}
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </>
+                    )
+                ) : formType === 'task' ? (
+                    selectedTask ? (
+                        <>
+                            <h3>Edit Task</h3>
+                            <label>Title:</label>
+                            <input 
+                                type="text" 
+                                name="title" 
+                                value={selectedTask.title} 
+                                onChange={(e) => setSelectedTask({ ...selectedTask, title: e.target.value })} 
+                            />
+                            <label>Date:</label>
+                            <input 
+                                type="date" 
+                                name="date" 
+                                value={moment(selectedTask.start).format("YYYY-MM-DD")} 
+                                onChange={(e) => setSelectedTask({ ...selectedTask, start: e.target.value })}
+                            />
+                            <label>Contact:</label>
+                            <select 
+                                name="contact" 
+                                value={selectedTask.contact} 
+                                onChange={(e) => setSelectedTask({ ...selectedTask, contact: e.target.value })}
+                            >
+                                <option value="">Select a contact (optional)</option>
+                                {contacts.map(contact => (
+                                    <option key={contact.id} value={contact.id}>{contact.name}</option>
+                                ))}
+                            </select>
+                            <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+                                        e.target.classList.add("selected");
+                                        e.target.dataset.selectedColor = color;
+                                    }}
+                                >
+                                </div>
+                                ))}
+
+                            </div>
+                            <div className="button-group">
+                                <button className="cancel-button" onClick={() => { deleteItem(selectedTask); setSidebarOpen(false); }}>Delete</button>
+                                <button 
+                                    className="save-button" 
+                                    onClick={(e) =>{
+                                        const selectedColor = document.querySelector(".color-option.selected")?.dataset.selectedColor || "#014F86";
+                                        handleUpdateTask(e, selectedColor);
+                                    }}
+                                >
+                                    Save Changes
+                                </button>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <h3>Add Task</h3>
+                            <label>Title:</label>
+                            <input type="text" name="title" value={newTask.title} onChange={handleInputChange} />
+                            <label>Date:</label>
+                            <input type="date" name="date" value={newTask.date} onChange={handleInputChange} />
+                            <label>Contact:</label>
+                            <select name="contact" value={newTask.contact} onChange={handleInputChange}>
+                                <option value="">Select a contact (optional)</option>
+                                {contacts.map(contact => (
+                                    <option key={contact.id} value={contact.id}>{contact.name}</option>
+                                ))}
+                            </select>
+                            <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={(e) => {
+                                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
+                                        e.target.classList.add("selected");
+                                        e.target.dataset.selectedColor = color;
+                                    }}
+                                >
+                                </div>
+                                ))}
+
+                            </div>
+                            <div className="button-group">
+                                <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
+                                <button 
+                                    className="save-button" 
+                                    onClick={(e) =>{
+                                        const selectedColor = document.querySelector(".color-option.selected")?.dataset.selectedColor || "#014F86";
+                                        handleAddTask(e, selectedColor);
+                                    }}
+                                >
+                                    Save
+                                </button>
+                            </div>
+                        </>
+                    )
+                ) : null}
+            </div>
+        </div>
+    </Layout>
     );
 };
 
-export default CalendarPage;
+export default GoogleCalendar;
