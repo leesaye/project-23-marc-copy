@@ -16,7 +16,8 @@ function Contacts() {
     const [sortValue, setSearchValue] = useState("Name (asc)");
 
     // const BASE_URL = `http://127.0.0.1:8000/`;
-    const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
+    // const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
+    const BASE_URL = `https://project-23-marc.onrender.com/`;
 
     const [user, setUser] = useState(null);
     const csvInputRef = useRef();

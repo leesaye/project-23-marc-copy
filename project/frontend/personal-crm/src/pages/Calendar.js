@@ -20,7 +20,8 @@ function GoogleCalendar() {
     const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
 
     // const BASE_URL = 'http://127.0.0.1:8000/';
-    const BASE_URL = 'https://project-23-marc-backend-deployment.onrender.com/';
+    // const BASE_URL = 'https://project-23-marc-backend-deployment.onrender.com/';
+    const BASE_URL = `https://project-23-marc.onrender.com/`;
 
     const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '' });
     const [selectedEvent, setSelectedEvent] = useState(null);

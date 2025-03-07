@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import Layout from "../components/Layout";
 import axiosInstance from "../endpoints/api";
 import moment from "moment";
-import "./Calendar.css"; 
+import "./Calendar.css";
 
 function Feed() {
   const [events, setEvents] = useState([]);
@@ -10,10 +10,11 @@ function Feed() {
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const observer = useRef();
-  const BASE_URL = "http://127.0.0.1:8000/";
+  // const BASE_URL = "http://127.0.0.1:8000/";
+  const BASE_URL = `https://project-23-marc.onrender.com/`;
 
   const COLORS = ["#B5D22C", "#73AA2A", "#0995AE", "#04506A"];
-  const [selectedColor, setSelectedColor] = useState(COLORS[0]); 
+  const [selectedColor, setSelectedColor] = useState(COLORS[0]);
 
   const [showEventForm, setShowEventForm] = useState(false);
   const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
@@ -79,7 +80,7 @@ function Feed() {
         color: selectedColor,
       });
       const createdEvent = response.data;
-  
+
       setAddedEvents((prevState) => ({
         ...prevState,
         [selectedFeedEventId]: true,
@@ -92,7 +93,7 @@ function Feed() {
     setSelectedFeedEventId(null);
     setSelectedColor(COLORS[0]);
   };
-  
+
   const handleCancel = () => {
     setShowEventForm(false);
     setNewEvent({ title: "", start: "", end: "" });
@@ -155,7 +156,7 @@ function Feed() {
           {loading && <p>Loading more events...</p>}
         </div>
 
-        
+
         {showEventForm && (
         <div className="modal-overlay">
           <div className="modal-content">

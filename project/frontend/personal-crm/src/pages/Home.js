@@ -5,9 +5,10 @@ import TodoSentence from "../components/TodoSentence";
 import AIContextProvider from "../contexts/AIContext";
 import TaskAIContextProvider from "../contexts/TaskAI";
 import axiosInstance from "../endpoints/api";
-import TaskMessage from "../components/TaskMessages"; 
+import TaskMessage from "../components/TaskMessages";
 
-const BASE_URL = "http://127.0.0.1:8000/"
+// const BASE_URL = "http://127.0.0.1:8000/"
+const BASE_URL = `https://project-23-marc.onrender.com/`;
 const TASK_URL =  `${BASE_URL}api/tasks/`;
 const CONTACT_URL = `${BASE_URL}contacts/`;
 
@@ -39,8 +40,8 @@ function Home() {
                         ...task,
                         contactName: contactsMap[task.contact] || "Not specified"
                     }))
-                    .sort((a, b) => new Date(a.date) - new Date(b.date)) 
-                    .slice(0, 5); 
+                    .sort((a, b) => new Date(a.date) - new Date(b.date))
+                    .slice(0, 5);
 
                 setContacts(contactsResponse.data);
                 setTasks(sortedTasks);

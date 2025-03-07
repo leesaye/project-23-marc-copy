@@ -4,10 +4,11 @@ import axiosInstance from "../endpoints/api";
 import { useNavigate } from "react-router-dom";
 
 function CSVUpload() {
-    const BASE_URL = `http://127.0.0.1:8000/`;
+    // const BASE_URL = `http://127.0.0.1:8000/`;
+    const BASE_URL = `https://project-23-marc.onrender.com/`;
     const csvInputRef = useRef();
     const nav = useNavigate();
-    
+
     // CSV upload
     const handleCSVUploadClick = () => {
         if (csvInputRef.current) {
@@ -45,7 +46,7 @@ function CSVUpload() {
             alert("Error uploading CSV");
         }
     };
-    
+
     return (
         <Layout>
             <div className="container bg-primary-subtle rounded p-3 min-vh-100">

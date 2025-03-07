@@ -1,7 +1,8 @@
 import axios from 'axios'
 
 // const BASE_URL = "http://127.0.0.1:8000/api/"
-const BASE_URL = "https://project-23-marc-backend-deployment.onrender.com/api/"
+// const BASE_URL = "https://project-23-marc-backend-deployment.onrender.com/api/"
+const BASE_URL = `https://project-23-marc.onrender.com/`;
 
 
 const LOGIN_URL = `${BASE_URL}token/`
@@ -10,7 +11,7 @@ const LOGOUT_URL = `${BASE_URL}logout/`
 const AUTH_URL = `${BASE_URL}authenticated/`
 const REGISTER_URL = `${BASE_URL}register/`
 
-axios.defaults.withCredentials = true; 
+axios.defaults.withCredentials = true;
 
 const axiosInstance = axios.create({
     withCredentials: true, //ensure cookies and tokens are sent all the time
@@ -45,7 +46,7 @@ export default axiosInstance
 
 export const login = async (username, password) => {
     await axios.post(
-        LOGIN_URL, 
+        LOGIN_URL,
         { username, password },  // Object shorthand for cleaner syntax
         { withCredentials: true }  // Ensures cookies are included
     );

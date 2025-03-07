@@ -12,7 +12,8 @@ function AddContact() {
     const [quizVisible, setQuizVisible] = useState(false);
     const [errors, setErrors] = useState({});
     // const BASE_URL = `http://127.0.0.1:8000/`;
-    const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com`;
+    // const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com`;
+    const BASE_URL = `https://project-23-marc.onrender.com/`;
 
 
     const QUIZ_QUESTIONS = [
