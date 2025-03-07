@@ -1,8 +1,9 @@
 from django.shortcuts import render
 import pandas as pd
 import uuid
+import io
+import csv
 
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views import APIView
 from . models import Contact
 from rest_framework.response import Response
@@ -36,8 +37,13 @@ class AddContactView(APIView):
             data = request.data.copy()
 
             if quiz_answers:
-                relationship_rating = get_rating_of_contact(request)
-                data["relationship_rating"] = relationship_rating
+                quiz_used = False
+                for question in quiz_answers:
+                    if question['answer'] is not None and question['answer'] != "":
+                        quiz_used = True
+                if quiz_used:
+                    relationship_rating = get_rating_of_contact(request)
+                    data["relationship_rating"] = relationship_rating
 
             data["user"] = request.user.id
             serializer = ContactSerializer(data=data)
@@ -80,8 +86,13 @@ class IndividualContactView(APIView):
             quiz_answers = request.data.get("quiz_answers", None)
 
             if quiz_answers:
-                relationship_rating = get_rating_of_contact(request)
-                request.data["relationship_rating"] = relationship_rating
+                quiz_used = False
+                for question in quiz_answers:
+                    if question['answer'] is not None and question['answer'] != "":
+                        quiz_used = True
+                if quiz_used:
+                    relationship_rating = get_rating_of_contact(request)
+                    request.data["relationship_rating"] = relationship_rating
 
             # Update contact fields and serialize
             serializer = ContactSerializer(contact, data=request.data,
@@ -117,6 +128,40 @@ class DeleteContactView(APIView):
         return Response({"message": "Contact deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
 
 
+class AddGoogleContactsView(APIView):
+    def post(self, request):
+        try:
+            user = request.user
+            contacts = request.data
+
+            if not contacts:
+                return Response({"error": "Failed to add Google contacts"}, status=status.HTTP_400_BAD_REQUEST)
+
+            for contact_data in contacts:
+                name = contact_data.get('name', '').strip()
+                email = contact_data.get('email', '').strip()
+                phone = contact_data.get('phone', '').strip()
+                job = contact_data.get('job', '').strip()
+                relationship = contact_data.get('relationship', '').strip()
+
+                if name:
+                    Contact.objects.create(
+                        id=uuid.uuid4(),
+                        user=user,
+                        name=name,
+                        email=email if email else "",
+                        phone=phone if phone else "",
+                        job=job if job else "",
+                        relationship_rating=50,
+                        relationship=relationship if relationship else "",
+                        notes="",
+                    )
+
+            return Response({"message": "Google contacts uploaded successfully"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": "Failed to add Google contacts"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 # POST
 class UploadLinkedInCSVView(APIView):
     permission_classes = [IsAuthenticated]
@@ -125,12 +170,18 @@ class UploadLinkedInCSVView(APIView):
         if 'csv' not in request.FILES:
             return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
         file = request.FILES['csv']
+        required_columns = ["First Name", "Last Name", "URL", "Email Address", "Company", "Position", "Connected On"]
 
         try:
             # Detect the header row first because LinkedIn adds rows at the top with useless info
             header_row = find_header_row(file)
             if header_row is None:
                 return Response({"error": "Invalid CSV format, headers not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Check for inconsistent col length
+            if not validate_csv(file, header_row, len(required_columns)):
+                return Response({"error": "Inconsistent column length in csv"},
+                                status=status.HTTP_400_BAD_REQUEST)
 
             # Read CSV from the detected header row
             file.seek(0)
@@ -139,7 +190,6 @@ class UploadLinkedInCSVView(APIView):
             if df is None or df.empty:
                 return Response({"error": "Uploaded CSV file is empty or invalid"}, status=status.HTTP_400_BAD_REQUEST)
 
-            required_columns = ["First Name", "Last Name", "URL", "Email Address", "Company", "Position", "Connected On"]
             if not all(col in df.columns for col in required_columns):
                 return Response({"error": "Invalid CSV format"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -152,7 +202,12 @@ class UploadLinkedInCSVView(APIView):
 
             contacts_to_create = []
 
+            # Currently setting an upper limit of 20 contacts we can pull so we don't overload the server
+            contact_counter = 0
             for _, row in df.iterrows():
+                if contact_counter >= 20:
+                    break
+
                 first_name = row["First Name"].strip()
                 last_name = row["Last Name"].strip()
                 name = f"{first_name} {last_name}".strip()
@@ -177,6 +232,8 @@ class UploadLinkedInCSVView(APIView):
                     linkedin_url=linkedin_url,
                     notes=""
                 )
+
+                contact_counter += 1
                 contacts_to_create.append(contact)
 
             # Bulk create (supposedly faster)
@@ -230,12 +287,7 @@ def get_rating_of_contact(request):
 
 
 def find_header_row(file):
-    # """Detects the correct header row dynamically."""
-    # sample = pd.read_csv(file, header=None, nrows=10)  # Read first 10 rows to check for header line
-    # for i, row in sample.iterrows():
-    #     if "First Name" in row.values and "Last Name" in row.values:
-    #         return i  # Return row index where headers are found
-    # return None
+    # Detects the correct header row dynamically.
     header_idx = 0
     for line in file:
         decoded = line.decode('utf-8').strip()
@@ -243,3 +295,22 @@ def find_header_row(file):
             return header_idx
         header_idx += 1
     return None
+
+
+def validate_csv(file, header_row, num_req_cols):
+    # Check that number of cols on all rows is consistent
+    file.seek(0)
+    decoded_file = file.read().decode('utf-8')
+    text_file = io.StringIO(decoded_file)
+    reader = csv.reader(text_file)
+
+    # Skip to the header row
+    for _ in range(header_row):
+        next(reader, None)
+
+    # Check if the number of columns matches exactly
+    for row in reader:
+        if len(row) != num_req_cols:
+            return False
+
+    return True
