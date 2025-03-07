@@ -46,7 +46,7 @@ View the following video for a walkthrough and user flow of our website:
 (D3)
 
 ## How the TA can Test the features:
-1. Visit our deployed website here: D3 snapshot: 
+1. Visit our deployed website here: D3 snapshot: https://personalcrm-d3.netlify.app/
 (D2 snapshot: https://personalcrm.netlify.app/)
 
 	Note: Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity. You may be seeing a loading screen for aprox 1-2 mins or a request may take a while to get sent.
