@@ -28,7 +28,7 @@ Primary Features and functionalities currently implemented for D3:
 4. A user can view and interact with recent events and tasks from their network (Feed Tab)
 	1. A user can view all recent events and tasks from their network in a consolidated view.
  	2. A user can add an event taken from activity on a linked site that is not already on their calendar to their calendar through the feed page.
-  	3. A user can see an AI summary of their recent tasks and events and what it recommends that they prioritize.
+  	3. A user can see an AI summary of their recent tasks and events and what it recommends that they prioritize. (Added to Home Tab)
 
 
 The Final MVP for Personal CRM should accomplish the following 3 main user stories:

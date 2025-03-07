@@ -63,7 +63,7 @@ def get_relationship_rating(user_data):
         if relationship_rating > 100 or relationship_rating < 0:
             raise ValueError("relationship_rating is not between 0 and 100")
 
-        print(response.text)
+        # print(response.text)
         return relationship_rating
 
     except ValueError as ve:
