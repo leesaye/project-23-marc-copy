@@ -2,7 +2,8 @@ import React, { useState, useContext, useEffect } from "react";
 import axiosInstance from "../endpoints/api";
 import { Context } from "../contexts/AIContext";
 
-const BASE_URL = "http://127.0.0.1:8000/api/";
+//const BASE_URL = "http://127.0.0.1:8000/api/";
+const BASE_URL = `https://project-23-marc.onrender.com/`;
 const EVENT_URL = `${BASE_URL}events/`;
 const TASK_URL = `${BASE_URL}tasks/`;
 
@@ -46,7 +47,7 @@ function TodoSentence() {
 
     return (
         <div>
-            { 
+            {
                 showResult ? (
                     <>
                     {loading ? <h1>Loading...</h1> : (
@@ -55,7 +56,7 @@ function TodoSentence() {
                                 <h5 className="card-title" style={{ fontWeight: 'bold', fontSize: '1.25rem' }}>
                                 AI Task Prioritization Summary
                                 </h5>
-                                
+
                                 {splitResultData}
                             </div>
                         </div>
