@@ -1,6 +1,6 @@
 # **Team 3:15 AM (Team \#23)**
 
-## **Iteration XX \- Review & Retrospect**
+## **Iteration 1 \- Review & Retrospect**
 
 * When: March 7th, 2025  
 * Where: Online Zoom Call
