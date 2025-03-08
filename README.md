@@ -165,6 +165,11 @@ Repo has been forked and changed slightly to allow for deployment.
   	- Build command: pip install -r requirements.txt
    	- Start command: gunicorn backend.wsgi
 
+## API Endpoint Documentation
+We use Swagger to generate API documentation that can be used to aid development.
+
+Refer to this link for our API design, specification, models, and for testing it yourself:
+https://project-23-marc.onrender.com/api/schema/swagger-ui/
 
 ## Prototype
 Our prototype is on Figma and is a work in progress.
