@@ -43,7 +43,7 @@ View the following video for a walkthrough and user flow of our website:
 (D2)
 [https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link](https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link)
 
-(D3)
+(D3) https://drive.google.com/file/d/1JW90mKkOl3xHRIIyQfsKz_y9BK-xlQT-/view?usp=sharing
 
 ## How the TA can Test the features:
 1. Visit our deployed website here: D3 snapshot: https://personalcrm-d3.netlify.app/
