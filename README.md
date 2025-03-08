@@ -152,7 +152,7 @@ Repo has been forked and changed slightly to allow for deployment.
  	- NODE_VERSION=23.7.0 (anything above 20 should work)
   	- CI=false (prevents netlify from treating warnings as errors)
      	- REACT_APP_GEMINI_API_KEY and REACT_APP_GOOGLE_CLIENT_ID, set to generated values
-        	- Note: REACT_APP_GOOGLE_CLIENT_ID must enable the People API GCal API
+        	- Note: REACT_APP_GOOGLE_CLIENT_ID must enable the People API and the GCal API
 
 **Backend Deployment Using Render:**
 - Create an account on Render.com
