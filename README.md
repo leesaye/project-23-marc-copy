@@ -45,7 +45,7 @@ View the following video for a walkthrough and user flow of our website:
 
 (D3) https://drive.google.com/file/d/1JW90mKkOl3xHRIIyQfsKz_y9BK-xlQT-/view?usp=sharing
 
-## How the TA can Test the features:
+## How the TA can test the features:
 1. Visit our deployed website here: D3 snapshot: https://personalcrm-d3.netlify.app/
 (D2 snapshot: https://personalcrm.netlify.app/)
 
@@ -112,11 +112,14 @@ Developers can test the project locally
 
 Dependencies: 
 - Frontend Dependencies: Node package manager initially required and all dependencies will be installed automatically when doing steps below.
-- Backend Dependencies: Python required and all other dependencies will be installed during steps below.
+- Backend Dependencies: Python required and all other dependencies will be installed using the steps below.
 	- djangorestframework
 	- djangorestframework-simplejwt
 	- django-cors-headers
  	- pandas
+  	- google-genai
+  	- google-api-core
+  	- drf-spectacular	 
 
 Steps to Install Dependencies and Get local server running
 1. Clone the repo
@@ -148,6 +151,8 @@ Repo has been forked and changed slightly to allow for deployment.
  - Below are some ENV variables required
  	- NODE_VERSION=23.7.0 (anything above 20 should work)
   	- CI=false (prevents netlify from treating warnings as errors)
+     	- REACT_APP_GEMINI_API_KEY and REACT_APP_GOOGLE_CLIENT_ID, set to generated values
+        	- Note: REACT_APP_GOOGLE_CLIENT_ID must enable the People API GCal API
 
 **Backend Deployment Using Render:**
 - Create an account on Render.com
