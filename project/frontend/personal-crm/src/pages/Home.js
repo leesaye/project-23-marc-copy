@@ -35,11 +35,19 @@ function Home() {
                     contactsMap[contact.id] = contact.name;
                 });
 
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                const yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1);
+                yesterday.setHours(0, 0, 0, 0);
+
                 let sortedTasks = tasksResponse.data
                     .map(task => ({
                         ...task,
                         contactName: contactsMap[task.contact] || "Not specified"
                     }))
+                    .filter(task => new Date(task.date) >= yesterday)
                     .sort((a, b) => new Date(a.date) - new Date(b.date))
                     .slice(0, 5);
 

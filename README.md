@@ -53,7 +53,7 @@ View the following video for a walkthrough and user flow of our website:
 	   
 2. After clicking the link above you will be brought to the log in page.
 	1. You can use the following test user to login
-		1. username: newuser
+		1. username: testuser
 		2. password: 123
 	2. You may also register a new account instead by clicking the Sign Up link at the bottom of the Log In page.
 		1. Here you can enter a username, email and password.
@@ -165,6 +165,11 @@ Repo has been forked and changed slightly to allow for deployment.
   	- Build command: pip install -r requirements.txt
    	- Start command: gunicorn backend.wsgi
 
+## API Endpoint Documentation
+We use Swagger to generate API documentation that can be used to aid development.
+
+Refer to this link for our API design, specification, models, and for testing it yourself:
+https://project-23-marc.onrender.com/api/schema/swagger-ui/
 
 ## Prototype
 Our prototype is on Figma and is a work in progress.
