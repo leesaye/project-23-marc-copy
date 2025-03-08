@@ -49,7 +49,9 @@ function GoogleCalendar() {
                 type: event.source === "google" ? "Google Event" : "Event",
                 style: { backgroundColor: event.color || "#3174ad", color: 'white' }
             }));
-    
+            
+            console.log(tasksResponse.data)
+
             const tasksData = tasksResponse.data.map(task => ({
                 id: task.id,
                 title: task.title,
@@ -58,7 +60,8 @@ function GoogleCalendar() {
                 allDay: true,
                 type: "Task",
                 style: { backgroundColor: task.color || "#014F86", color: 'white' },
-                contact: task.contact || ""
+                contact: task.contact || "",
+                completed: task.completed
             }));
     
             setEvents([...eventsData, ...tasksData]);
@@ -221,13 +224,14 @@ function GoogleCalendar() {
         e.preventDefault();
     
         if (!selectedTask) return;
-    
+        console.log(selectedTask);
         try {
             const updatedTaskData = {
                 title: selectedTask.title,
                 date: moment(selectedTask.start).format("YYYY-MM-DD"),
                 contact: selectedTask.contact || "",
-                color: selectedColor
+                color: selectedColor,
+                completed: selectedTask.completed
             };
     
             await axiosInstance.put(`${BASE_URL}api/tasks/${selectedTask.id}/`, updatedTaskData);
@@ -246,7 +250,8 @@ function GoogleCalendar() {
                         start: moment(updatedTaskData.date).startOf('day').toDate(),
                         end: moment(updatedTaskData.date).startOf('day').toDate(),
                         contact: updatedTaskData.contact, 
-                        style: { backgroundColor: selectedColor, color: 'white' }
+                        style: { backgroundColor: selectedColor, color: 'white' },
+                        completed: updatedTaskData.completed
                     } 
                     : event
             );
@@ -332,12 +337,20 @@ function GoogleCalendar() {
                     components={{
                         event: CustomEvent,
                     }}
-                    eventPropGetter={(event) => ({
-                        style: {
-                            backgroundColor: event.style?.backgroundColor || "#3174ad",
-                            color: "white"
-                        }
-                    })}
+                    eventPropGetter={(event) => {
+                        console.log("Event:", event);
+                    
+                        return {
+                            style: {
+                                backgroundColor: event.completed ? "#808080" : event.style?.backgroundColor || "#3174ad",
+                                color: "white",
+                                textDecoration: event.completed ? "line-through" : "none",
+                                backgroundImage: event.completed? 
+                                    "repeating-linear-gradient(45deg, #808080, #808080 10px, #7a7a7a 10px, #7a7a7a 20px)"
+                                    : "none",
+                            }
+                        };
+                    }}
                 />
 
                 <div style={{ marginTop: "20px", display: "flex", gap: "20px", justifyContent: "center" }}>
@@ -500,6 +513,16 @@ function GoogleCalendar() {
                                     <option key={contact.id} value={contact.id}>{contact.name}</option>
                                 ))}
                             </select>
+                            <div className="completed-toggle">
+                                <label htmlFor="completed">Mark as Complete:</label>
+                                <input
+                                    id="completed"
+                                    type="checkbox"
+                                    checked={selectedTask.completed}
+                                    onChange={(e) => setSelectedTask({ ...selectedTask, completed: e.target.checked })}
+                                />
+                                
+                            </div>
                             <div className="color-picker">
                             {COLORS.map((color) => (
                                 <div
