@@ -218,3 +218,15 @@
     cursor: pointer;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
+
+.completed-toggle {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.completed-toggle input[type="checkbox"] {
+    translate: -65px 7.2px;
+
+}
+
