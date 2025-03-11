@@ -23,6 +23,7 @@ db.sqlite3
 **/migrations/*.pyc
 **/migrations/__pycache__/
 **/migrations/*
+**/migrations/*initial.py
 
 # Ignore system files (macOS, Windows, Linux)
 .DS_Store
