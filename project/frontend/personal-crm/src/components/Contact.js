@@ -4,11 +4,10 @@ import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 
 function Contact({contact}) {
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' }) || false;
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
 
     return (
         <div className="d-flex flex-column">
-            {/* For desktop screen size */}
             {!isSmallScreen ? (
                 <div className="row" key={contact.id}>
                     <hr />
@@ -32,9 +31,7 @@ function Contact({contact}) {
                         <Link className="link-primary link-underline-opacity-0" to={`/contacts/${contact.id}/`}>Edit</Link>
                     </div>
                 </div>
-            ) : 
-            {/* For ipad/phone screen (not smallest phone size) */}
-            (
+            ) : (
                 <div className="row" key={contact.id}>
                     <hr />
                     <div className="col-4">

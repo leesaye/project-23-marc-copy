@@ -19,7 +19,7 @@ import { logout } from "../endpoints/api";
 
 function CRMSidebar() {
     const [collapsed, setCollapsed] = useState(false);
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' }) || false;
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
     const nav = useNavigate();
 
     const handleCollapseToggle = () => {
@@ -35,7 +35,6 @@ function CRMSidebar() {
 
     return (
         <div>
-            {/* For desktop screen size */}
             {!isSmallScreen ? (
                 <Sidebar collapsed={collapsed}>
                     <Menu>
@@ -69,10 +68,8 @@ function CRMSidebar() {
                         > Logout </MenuItem>
                     </Menu>
                 </Sidebar>
-            ) : 
-            {/* For ipad/phone screen (not smallest phone size) */}
-            (
-                <Sidebar collapsed="true">
+            ) : (
+                <Sidebar collapsed={true}>
                     <Menu>
                         <MenuItem
                             className="mt-2"
@@ -83,7 +80,6 @@ function CRMSidebar() {
                             </IconButton>
                             }
                         >
-                            {!collapsed && <h4 className="mt-1">Personal CRM</h4>}
                         </MenuItem>
                         <hr className="mx-3" style={{borderWidth: "3px"}} />
                         <MenuItem component={<Link />} to="/" icon={<HomeIcon />}> Home </MenuItem>
@@ -106,7 +102,6 @@ function CRMSidebar() {
                 </Sidebar>
             )}
         </div>
-        
     );
 }
 

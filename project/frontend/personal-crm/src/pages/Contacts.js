@@ -16,8 +16,8 @@ function Contacts() {
     const [contacts, setContacts] = useState([]);
     const [sortValue, setSearchValue] = useState("Name (asc)");
     const [user, setUser] = useState(null);
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' }) || false;
-    const isTinyScreen = useMediaQuery({ query: '(max-width: 450px)' }) || false;
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
+    const isTinyScreen = useMediaQuery({ query: '(max-width: 450px)' });
     const BASE_URL = `http://127.0.0.1:8000/`;
     const csvInputRef = useRef();
     const nav = useNavigate();
@@ -108,7 +108,6 @@ function Contacts() {
 
     return (
         <Layout>
-            {/* For desktop screen size */}
             {!isSmallScreen ? (
                 <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                     <div className="row">
@@ -181,9 +180,7 @@ function Contacts() {
 
                 </div>
 
-            ) : 
-            {/* For ipad/phone screen (not smallest phone size) */}
-            (
+            ) : (
 
                 <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                     <div className="row text-center">
@@ -197,7 +194,6 @@ function Contacts() {
                             </Paper>
                         </div>
                     </div>
-                        {/* For small (not tiny) screen */}
                         {!isTinyScreen ? ( 
                             <div className="row text-center">
                                 <div className="col-4 mt-1">
@@ -239,9 +235,7 @@ function Contacts() {
                                     </div>
                                 </div>
                             </div>
-                        ) : 
-                        {/* For tiny screen (smallest phone size) */}
-                        ( 
+                        ) : ( 
                             <div className="row text-center">
                                 <div className="col-3 mt-1">
                                     <Link to="/contacts/add/">
