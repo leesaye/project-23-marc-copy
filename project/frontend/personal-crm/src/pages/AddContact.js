@@ -382,7 +382,7 @@ function AddContact() {
                             </div>
                         </div>
                         <div className="row justify-content-center my-2">
-                            <button className="btn btn-primary mt-1 w-75" onClick={() => setQuizVisible(!quizVisible)}>Relationship rating quiz</button>
+                            <button className="btn btn-primary mt-1 w-75" type="button" onClick={() => setQuizVisible(!quizVisible)}>Relationship rating quiz</button>
                         </div>
                         <Collapse in={quizVisible} >
                             <div className="row my-4">

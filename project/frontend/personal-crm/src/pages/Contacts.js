@@ -169,7 +169,7 @@ function Contacts() {
                         <div className="col-3">
                             <p>Relationship Rating</p>
                         </div>
-                        <div className="col-2">
+                        <div className="col-3">
                             <p>Relationship</p>
                         </div>
                     </div>

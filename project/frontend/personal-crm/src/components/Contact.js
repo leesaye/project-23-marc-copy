@@ -11,7 +11,7 @@ function Contact({contact}) {
             {!isSmallScreen ? ( /*For desktop screen size*/
                 <div className="row" key={contact.id}>
                     <hr />
-                    <div className="col-4">
+                    <div className="col-3">
                         <p>{contact.name}</p>
                     </div>
                     <div className="col-2">
@@ -24,7 +24,7 @@ function Contact({contact}) {
                             sx={{ height: 10, borderRadius: 5 }}
                         />
                     </div>
-                    <div className="col-2">
+                    <div className="col-3">
                         <p>{contact.relationship}</p>
                     </div>
                     <div className="col-1">
