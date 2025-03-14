@@ -19,7 +19,7 @@ import { logout } from "../endpoints/api";
 
 function CRMSidebar() {
     const [collapsed, setCollapsed] = useState(false);
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' }) || false;
     const nav = useNavigate();
 
     const handleCollapseToggle = () => {

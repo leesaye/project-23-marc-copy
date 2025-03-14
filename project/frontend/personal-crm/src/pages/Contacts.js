@@ -16,8 +16,8 @@ function Contacts() {
     const [contacts, setContacts] = useState([]);
     const [sortValue, setSearchValue] = useState("Name (asc)");
     const [user, setUser] = useState(null);
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
-    const isTinyScreen = useMediaQuery({ query: '(max-width: 450px)' });
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' }) || false;
+    const isTinyScreen = useMediaQuery({ query: '(max-width: 450px)' }) || false;
     const BASE_URL = `http://127.0.0.1:8000/`;
     const csvInputRef = useRef();
     const nav = useNavigate();
@@ -176,7 +176,7 @@ function Contacts() {
                     </div>
                     {!contacts ? <p>Loading...</p>:
                     sortedContacts.map(contact =>
-                        <Contact contact={contact} />
+                        <Contact key={contact.id} contact={contact} />
                     )}
 
                 </div>
@@ -291,7 +291,7 @@ function Contacts() {
                     </div>
                     {!contacts ? <p>Loading...</p>:
                     sortedContacts.map(contact =>
-                        <Contact contact={contact} />
+                        <Contact key={contact.id} contact={contact} />
                     )}
 
                 </div>

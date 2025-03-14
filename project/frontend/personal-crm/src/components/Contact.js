@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 
 function Contact({contact}) {
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' }) || false;
 
     return (
         <div className="d-flex flex-column">
