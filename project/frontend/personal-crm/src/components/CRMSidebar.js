@@ -35,7 +35,7 @@ function CRMSidebar() {
 
     return (
         <div>
-            {!isSmallScreen ? (
+            {!isSmallScreen ? (/*For desktop screen size*/
                 <Sidebar collapsed={collapsed}>
                     <Menu>
                         <MenuItem
@@ -68,7 +68,7 @@ function CRMSidebar() {
                         > Logout </MenuItem>
                     </Menu>
                 </Sidebar>
-            ) : (
+            ) : ( /*For laptop/phone screen (not smallest size)*/
                 <Sidebar collapsed={true}>
                     <Menu>
                         <MenuItem

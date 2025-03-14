@@ -108,7 +108,7 @@ function Contacts() {
 
     return (
         <Layout>
-            {!isSmallScreen ? (
+            {!isSmallScreen ? ( /*For desktop screen size*/
                 <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                     <div className="row">
                         <div className="col-2">
@@ -180,7 +180,7 @@ function Contacts() {
 
                 </div>
 
-            ) : (
+            ) : ( /*For laptop/phone screen (not smallest size)*/
 
                 <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                     <div className="row text-center">
@@ -194,7 +194,7 @@ function Contacts() {
                             </Paper>
                         </div>
                     </div>
-                        {!isTinyScreen ? ( 
+                        {!isTinyScreen ? ( /*For laptop/phone screen (not smallest size)*/
                             <div className="row text-center">
                                 <div className="col-4 mt-1">
                                     <Link to="/contacts/add/">
@@ -235,7 +235,7 @@ function Contacts() {
                                     </div>
                                 </div>
                             </div>
-                        ) : ( 
+                        ) : ( /*For smallest phone size*/
                             <div className="row text-center">
                                 <div className="col-3 mt-1">
                                     <Link to="/contacts/add/">

@@ -8,7 +8,7 @@ function Contact({contact}) {
 
     return (
         <div className="d-flex flex-column">
-            {!isSmallScreen ? (
+            {!isSmallScreen ? ( /*For desktop screen size*/
                 <div className="row" key={contact.id}>
                     <hr />
                     <div className="col-4">
@@ -31,7 +31,7 @@ function Contact({contact}) {
                         <Link className="link-primary link-underline-opacity-0" to={`/contacts/${contact.id}/`}>Edit</Link>
                     </div>
                 </div>
-            ) : (
+            ) : ( /*For laptop/phone screen (not smallest size)*/
                 <div className="row" key={contact.id}>
                     <hr />
                     <div className="col-4">
