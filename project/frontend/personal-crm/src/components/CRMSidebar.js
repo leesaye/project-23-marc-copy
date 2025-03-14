@@ -51,14 +51,14 @@ function CRMSidebar() {
                             {!collapsed && <h4 className="mt-1">Personal CRM</h4>}
                         </MenuItem>
                         <hr className="mx-3" style={{borderWidth: "3px"}} />
-                        <MenuItem component={<Link to="/" />} icon={<HomeIcon />}> Home </MenuItem>
-                        <MenuItem component={<Link to="/contacts/" />} icon={<ContactsIcon />}> Contacts </MenuItem>
-                        <MenuItem component={<Link to="/notifications/" />} icon={<NotificationsActiveIcon />}> Notifications </MenuItem>
-                        <MenuItem component={<Link to="/calendars/" />} icon={<CalendarMonthIcon />}> Calendar </MenuItem>
-                        <MenuItem component={<Link to="/feed/" />} icon={<RocketLaunchIcon />}> Feed </MenuItem>
+                        <MenuItem component={<Link />} to="/" icon={<HomeIcon />}> Home </MenuItem>
+                        <MenuItem component={<Link />} to="/contacts/" icon={<ContactsIcon />}> Contacts </MenuItem>
+                        <MenuItem component={<Link />} to="/notifications/" icon={<NotificationsActiveIcon />}> Notifications </MenuItem>
+                        <MenuItem component={<Link />} to="/calendars/" icon={<CalendarMonthIcon />}> Calendar </MenuItem>
+                        <MenuItem component={<Link />} to="/feed/" icon={<RocketLaunchIcon />}> Feed </MenuItem>
                         <hr className="mx-3" style={{borderWidth: "3px"}} />
-                        <MenuItem component={<Link to="/profile/" />} icon={<PersonIcon />}> Profile </MenuItem>
-                        <MenuItem component={<Link to="/settings/" />} icon={<SettingsIcon />}> Settings </MenuItem>
+                        <MenuItem component={<Link />} to="/profile/" icon={<PersonIcon />}> Profile </MenuItem>
+                        <MenuItem component={<Link />} to="/settings/" icon={<SettingsIcon />}> Settings </MenuItem>
                         <MenuItem
                             onClick={()=>handleLogout()}
                             icon={
@@ -86,14 +86,14 @@ function CRMSidebar() {
                             {!collapsed && <h4 className="mt-1">Personal CRM</h4>}
                         </MenuItem>
                         <hr className="mx-3" style={{borderWidth: "3px"}} />
-                        <MenuItem component={<Link to="/" />} icon={<HomeIcon />}> Home </MenuItem>
-                        <MenuItem component={<Link to="/contacts/" />} icon={<ContactsIcon />}> Contacts </MenuItem>
-                        <MenuItem component={<Link to="/notifications/" />} icon={<NotificationsActiveIcon />}> Notifications </MenuItem>
-                        <MenuItem component={<Link to="/calendars/" />} icon={<CalendarMonthIcon />}> Calendar </MenuItem>
-                        <MenuItem component={<Link to="/feed/" />} icon={<RocketLaunchIcon />}> Feed </MenuItem>
+                        <MenuItem component={<Link />} to="/" icon={<HomeIcon />}> Home </MenuItem>
+                        <MenuItem component={<Link />} to="/contacts/" icon={<ContactsIcon />}> Contacts </MenuItem>
+                        <MenuItem component={<Link />} to="/notifications/" icon={<NotificationsActiveIcon />}> Notifications </MenuItem>
+                        <MenuItem component={<Link />} to="/calendars/" icon={<CalendarMonthIcon />}> Calendar </MenuItem>
+                        <MenuItem component={<Link />} to="/feed/" icon={<RocketLaunchIcon />}> Feed </MenuItem>
                         <hr className="mx-3" style={{borderWidth: "3px"}} />
-                        <MenuItem component={<Link to="/profile/" />} icon={<PersonIcon />}> Profile </MenuItem>
-                        <MenuItem component={<Link to="/settings/" />} icon={<SettingsIcon />}> Settings </MenuItem>
+                        <MenuItem component={<Link />} to="/profile/" icon={<PersonIcon />}> Profile </MenuItem>
+                        <MenuItem component={<Link />} to="/settings/" icon={<SettingsIcon />}> Settings </MenuItem>
                         <MenuItem
                             onClick={()=>handleLogout()}
                             icon={
