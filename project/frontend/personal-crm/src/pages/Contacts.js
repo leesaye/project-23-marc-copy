@@ -15,6 +15,7 @@ function Contacts() {
     const [contacts, setContacts] = useState([]);
     const [sortValue, setSearchValue] = useState("Name (asc)");
     const [user, setUser] = useState(null);
+    const [googleConnection, setGoogleConnection] = useState(null);
     const BASE_URL = `http://127.0.0.1:8000/`;
     const csvInputRef = useRef();
     const nav = useNavigate();
@@ -22,6 +23,19 @@ function Contacts() {
     useEffect(() => {
         // Fetch contacts from the Django backend on mount
         fetchContacts();
+        axiosInstance.get(`${BASE_URL}api/googleToken/`)
+            .then((response) => {
+                if (response.data) {
+                    const decoded_token = atob(response.data.googleToken);
+                    setGoogleConnection(decoded_token);
+                    setUser(response.data.user);
+                } else {
+                    setUser(null);
+                }
+            }).catch((error) => {
+                console.error('Error fetching Google connection:', error);
+                setUser(null);
+            })
     }, []);
 
     const fetchContacts = () => {
@@ -46,22 +60,28 @@ function Contacts() {
     });
 
     // Google Login Function
-    const login = useGoogleLogin({
+    const googleLogin = useGoogleLogin({
         scope: "https://www.googleapis.com/auth/contacts.readonly",
         onSuccess: (response) => {
-            console.log("Google OAuth Token:", response.access_token);
+            const encoded_token = btoa(response.access_token);
+            axiosInstance.post(`${BASE_URL}api/googleToken/`, { googleToken: encoded_token });
             setUser(response);
+            setGoogleConnection(response.access_token);
             fetchGoogleContacts(response.access_token);
         },
         onError: (error) => console.log("Login Failed:", error),
     });
 
-    // Logout Function
-    const logout = () => {
-        googleLogout();
+    const handleSync = () => {
+        fetchGoogleContacts(googleConnection);
+    }
+
+    const handleLogout = () => {
+        axiosInstance.delete(`${BASE_URL}api/googleLogout/`);
         setUser(null);
-        //setEvents([]); // Clear events on logout
-    };
+        setGoogleConnection(null);
+        googleLogout();
+    }
 
     const fetchGoogleContacts = async (accessToken) => {
         const response = await fetch(
@@ -146,9 +166,12 @@ function Contacts() {
                             <ul className="dropdown-menu" aria-labelledby="sortDropdown">
                                 <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
                                 {!user ? (
-                                    <li><button onClick={login} className="dropdown-item">Connect with Google</button></li>
+                                    <li><button onClick={googleLogin} className="dropdown-item">Connect with Google</button></li>
                                 ) : (
-                                    <li><button onClick={logout} className="dropdown-item">Log out of Google</button></li>
+                                    <div>
+                                        <li><button onClick={handleSync} className="dropdown-item">Sync Google contacts</button></li>
+                                        <li><button onClick={handleLogout} className="dropdown-item">Disconnect from Google</button></li>
+                                    </div>
                                 )
                                 }
                             </ul>

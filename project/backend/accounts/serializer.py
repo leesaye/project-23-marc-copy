@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
+from .models import GoogleConnection
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,3 +23,10 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
+    
+class GoogleConnectionSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = GoogleConnection
+        fields = ['user', 'googleToken']
