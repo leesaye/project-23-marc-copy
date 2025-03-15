@@ -6,12 +6,17 @@ function InteractiveFeed() {
     const { onSent, recentPrompt, showResult, loading, resultData, setInput, input } = useContext(Context);
     const promptStart = "Give me a mock event that is happening with some random contact that I may have that I could join. Only give json of format { title: \"Event 1\", description: \"This is the first event\", date: \"2025-03-10\", contact: \"Contact Name\"} in plain text no code block";
     const [eventData, setEventData] = useState("");
+    
     const generateEvent = async () => {
         try {
             onSent(promptStart);
         } catch (error) {
             console.error("Error fetching data:", error);
         }
+    };
+
+    const placeholderFunction = () => {
+        console.log("Placeholder function called");
     };
 
     useEffect(() => {
@@ -32,12 +37,12 @@ function InteractiveFeed() {
     
     return (
         <Layout>
-          <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
-                <div className="card shadow-sm rounded" style={{ backgroundColor: 'white', width: '50%', minWidth: "300px"}}>
+            <div className="d-flex flex-column justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
+                <div className="card shadow-sm rounded" style={{ backgroundColor: 'white', width: '50%', minWidth: "300px" }}>
                     <div className="card-body">
                         {eventData ? (
                             <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
-                                <div className = "mb-5">
+                                <div className="mb-5">
                                     <h1 className="card-title">{eventData.title}</h1>
                                     <p className="card-text">{eventData.description}</p>
                                 </div>
@@ -51,6 +56,15 @@ function InteractiveFeed() {
                         )}
                     </div>
                 </div>
+                 {/* Buttons section */}
+                 {eventData ? (
+                    <div className="mt-4 d-flex justify-content-between" style={{ width: '50%', minWidth: "300px" }}>
+                        <button className="btn btn-primary" onClick={generateEvent}>Next</button>
+                        <button className="btn btn-secondary" onClick={placeholderFunction}>Add</button>
+                    </div>
+                 ): (
+                    <h1></h1>
+                 )}
             </div>
         </Layout>
     );
