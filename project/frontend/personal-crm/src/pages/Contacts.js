@@ -26,7 +26,8 @@ function Contacts() {
         axiosInstance.get(`${BASE_URL}api/googleToken/`)
             .then((response) => {
                 if (response.data) {
-                    setGoogleConnection(response.data.googleToken);
+                    const decoded_token = atob(response.data.googleToken);
+                    setGoogleConnection(decoded_token);
                     setUser(response.data.user);
                 } else {
                     setUser(null);
@@ -62,7 +63,8 @@ function Contacts() {
     const googleLogin = useGoogleLogin({
         scope: "https://www.googleapis.com/auth/contacts.readonly",
         onSuccess: (response) => {
-            axiosInstance.post(`${BASE_URL}api/googleToken/`, { googleToken: response.access_token });
+            const encoded_token = btoa(response.access_token);
+            axiosInstance.post(`${BASE_URL}api/googleToken/`, { googleToken: encoded_token });
             setUser(response);
             setGoogleConnection(response.access_token);
             fetchGoogleContacts(response.access_token);
