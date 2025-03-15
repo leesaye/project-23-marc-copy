@@ -14,6 +14,8 @@ import CSVUpload from '../pages/CSVUpload';
 
 
 import { AuthProvider } from '../contexts/useAuth'; 
+import InteractiveFeed from '../pages/InteractiveFeed';
+import AIContextProvider from '../contexts/AIContext';
 
 function Main() {
     return (
@@ -28,7 +30,7 @@ function Main() {
                 <Route path='/contacts/:contact_id/' element={<PrivateRoute><ContactId/></PrivateRoute>} />
                 <Route path='/contacts/importcsv/' element={<PrivateRoute><CSVUpload/></PrivateRoute>} />
                 <Route path='/calendars/' element={<PrivateRoute><CalendarPage/></PrivateRoute>} />
-                <Route path='/feed/' element={<PrivateRoute><Feed/></PrivateRoute>} />
+                <Route path='/feed/' element={<PrivateRoute><AIContextProvider><InteractiveFeed/></AIContextProvider></PrivateRoute>} />
                 <Route path='/notifications/' element={<PrivateRoute><Notification/></PrivateRoute>} />
             </Routes>
         </Fragment>
