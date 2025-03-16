@@ -411,10 +411,10 @@ function ContactId() {
                         <Collapse in={quizVisible} >
                             <div className="row my-4">
                                 {QUIZ_QUESTIONS.map((question, index) => (
-                                    <div key={index} className="col-6">
+                                    <div key={index} className="col-12">
                                         <div className="mb-3">
+                                            <InputLabel htmlFor={`quiz-${index}-s`}>{question}</InputLabel>
                                             <FormControl className="w-100">
-                                                <InputLabel htmlFor={`quiz-${index}-s`}>{question}</InputLabel>
                                                 <OutlinedInput
                                                     id={`quiz-${index}-s`}
                                                     name={`quiz-${index}`}
