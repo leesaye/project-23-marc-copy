@@ -207,10 +207,10 @@ function AddContact() {
                             <Collapse in={quizVisible} >
                                 <div className="row my-4">
                                     {QUIZ_QUESTIONS.map((question, index) => (
-                                        <div key={index} className="col-6">
+                                        <div key={index} className={isSmallScreen ? "col-12" : "col-6"}>
                                             <div className="mb-3">
-                                                <FormControl className="w-100">
-                                                    <InputLabel htmlFor={`quiz-${index}`}>{question}</InputLabel>
+                                                <FormControl className="w-100" style={{ minWidth: 0 }}>
+                                                    <InputLabel htmlFor={`quiz-${index}`} >{question}</InputLabel>
                                                     <OutlinedInput
                                                         id={`quiz-${index}`}
                                                         name={`quiz-${index}`}
@@ -387,7 +387,7 @@ function AddContact() {
                         <Collapse in={quizVisible} >
                             <div className="row my-4">
                                 {QUIZ_QUESTIONS.map((question, index) => (
-                                    <div key={index} className="col-6">
+                                    <div key={index} className={isSmallScreen ? "col-12" : "col-6"}>
                                         <div className="mb-3">
                                             <FormControl className="w-100">
                                                 <InputLabel htmlFor={`quiz-${index}-s`}>{question}</InputLabel>
