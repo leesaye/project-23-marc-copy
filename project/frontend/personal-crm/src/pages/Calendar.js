@@ -14,6 +14,7 @@ const localizer = momentLocalizer(moment);
 function GoogleCalendar() {
     const [events, setEvents] = useState([]);
     const [user, setUser] = useState(null);
+    const [googleConnection, setGoogleConnection] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [formType, setFormType] = useState(null); 
@@ -30,6 +31,19 @@ function GoogleCalendar() {
 
     useEffect(() => {
         fetchEventsAndTasks();
+        axiosInstance.get(`${BASE_URL}api/googleToken/`)
+            .then((response) => {
+                if (response.data) {
+                    const decoded_token = atob(response.data.googleToken);
+                    setGoogleConnection(decoded_token);
+                    setUser(response.data.user);
+                } else {
+                    setUser(null);
+                }
+            }).catch((error) => {
+                console.error('Error fetching Google connection:', error);
+                setUser(null);
+            })
     }, []);
     
     const fetchEventsAndTasks = async () => {
@@ -97,14 +111,28 @@ function GoogleCalendar() {
         });
     };
         
-    const login = useGoogleLogin({
+    const googleLogin = useGoogleLogin({
         scope: "https://www.googleapis.com/auth/calendar.readonly",
         onSuccess: (response) => {
-            setUser({ id: response.userId });
+            const encoded_token = btoa(response.access_token)
+            axiosInstance.post(`${BASE_URL}api/googleToken/`, { googleToken: encoded_token });
+            setUser(response);
+            setGoogleConnection(response.access_token);
             syncCalendar(response.access_token);
         },
         onError: (error) => console.log("Login Failed:", error),
     });
+
+    const handleSync = () => {
+        syncCalendar(googleConnection);
+    }
+
+    const handleLogout = () => {
+        axiosInstance.delete(`${BASE_URL}api/googleLogout/`);
+        setUser(null);
+        setGoogleConnection(null);
+        googleLogout();
+    }
 
     const syncCalendar = async (token) => {
         try {
@@ -386,8 +414,17 @@ function GoogleCalendar() {
                     <p style={{ fontSize: "16px", color: "#555", marginBottom: "30px" }}>
                         Click the button below to securely connect your Google Calendar. After signing in, your Google Calendar events will automatically appear on the calendar above.
                     </p>
-
-                    <button onClick={login} className={"button-style"}>Sign In with Google Calendar</button>
+                    
+                    {!user ? (
+                        <button onClick={googleLogin} className={"button-style"}>Sign In with Google Calendar</button>
+                    ) : (
+                        <div>
+                            <button onClick={handleSync} className={"button-style"}>Sync Google calendar</button>
+                            <button onClick={handleLogout} className={"button-style"}>Disconnect from Google</button>
+                        </div>
+                    )
+                    }
+                    
                 </div>
 
             </div>
