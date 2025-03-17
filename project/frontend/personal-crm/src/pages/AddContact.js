@@ -224,7 +224,7 @@ function AddContact() {
                                     ))}
                                 </div>
                             </Collapse>
-                            <FormControlLabel control={<Checkbox />} label="Consent to add this contact" required="required" onChange={handleConsentChange} />
+                            <FormControlLabel control={<Checkbox />} label="Consent to add this contact" required="required" checked={consent} onChange={handleConsentChange} />
                             {errors.consent && <p className="text-danger">{errors.consent}</p>}
                             <button className="btn btn-success float-end my-4">Submit</button>
                         </Box>
@@ -404,7 +404,7 @@ function AddContact() {
                                 ))}
                             </div>
                         </Collapse>
-                        <FormControlLabel control={<Checkbox />} label="Consent to add contact" required="required" onChange={handleConsentChange} />
+                        <FormControlLabel control={<Checkbox />} label="Consent to add contact" required="required" checked={consent} onChange={handleConsentChange} />
                         {errors.consent && <p className="text-danger">{errors.consent}</p>}
                         <button className="btn btn-success float-end my-4">Submit</button>
                     </Box>
