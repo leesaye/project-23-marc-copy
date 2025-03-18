@@ -5,7 +5,7 @@ from contacts.models import Contact
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
-        fields = ['id', 'user', 'title', 'start', 'end', 'color']
+        fields = ['id', 'user', 'title', 'start', 'end', 'color', 'contact']
 
 class TaskSerializer(serializers.ModelSerializer):
     contact_name = serializers.CharField(source='contact.name', read_only=True)  
