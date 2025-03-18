@@ -18,7 +18,7 @@ function GoogleCalendar() {
     const [tasks, setTasks] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [formType, setFormType] = useState(null); 
-    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', type: 'Event' });
+    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', contact: '', type: 'Event' });
     const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '' });
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -61,6 +61,7 @@ function GoogleCalendar() {
                 start: new Date(event.start),
                 end: new Date(event.end),
                 type: event.source === "google" ? "Google Event" : "Event",
+                contact: event.contact || "",
                 style: { backgroundColor: event.color || "#3174ad", color: 'white' }
             }));
             
@@ -172,7 +173,8 @@ function GoogleCalendar() {
                     start: new Date(moment.utc(createdEvent.start).format("YYYY-MM-DDTHH:mm:ss")),
                     end: new Date(moment.utc(createdEvent.end).format("YYYY-MM-DDTHH:mm:ss")), 
                     type: 'Event',
-                    style: { backgroundColor: selectedColor, color: 'white' }
+                    style: { backgroundColor: selectedColor, color: 'white' },
+                    contact: createdEvent.contact || ""
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
@@ -222,6 +224,7 @@ function GoogleCalendar() {
                 title: selectedEvent.title,
                 start: selectedEvent.start,
                 end: selectedEvent.end,
+                contact: selectedEvent.contact || "",
                 color: selectedColor
             };
     
@@ -234,6 +237,7 @@ function GoogleCalendar() {
                         title: updatedEventData.title,
                         start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
                         end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
+                        contact: updatedEventData.contact, 
                         style: { backgroundColor: selectedColor, color: 'white' }
                     } 
                     : event
@@ -388,7 +392,7 @@ function GoogleCalendar() {
                             setFormType('event');
                             setSelectedEvent(null);
                             setSelectedTask(null);
-                            setNewEvent({ title: '', start: '', end: '', type: 'Event' });
+                            setNewEvent({ title: '', start: '', end: '', contact: '', type: 'Event' });
                             setSidebarOpen(true);
                         }}
                     >
@@ -455,6 +459,19 @@ function GoogleCalendar() {
                                 value={moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm")} 
                                 onChange={(e) => setSelectedEvent({ ...selectedEvent, end: e.target.value })}
                             />
+
+                            <label>Contact:</label>
+                            <select 
+                                name="contact" 
+                                value={selectedEvent.contact} 
+                                onChange={(e) => setSelectedEvent({ ...selectedEvent, contact: e.target.value })}
+                            >
+                                <option value="">Select a contact (optional)</option>
+                                {contacts.map(contact => (
+                                    <option key={contact.id} value={contact.id}>{contact.name}</option>
+                                ))}
+                            </select>
+
                             <div className="color-picker">
                             {COLORS.map((color) => (
                                 <div
@@ -492,6 +509,14 @@ function GoogleCalendar() {
                             <input type="datetime-local" name="start" value={newEvent.start} onChange={handleInputChange} />
                             <label>End Time:</label>
                             <input type="datetime-local" name="end" value={newEvent.end} onChange={handleInputChange} />
+                            <label>Contact:</label>
+                            <select name="contact" value={newEvent.contact} onChange={handleInputChange}>
+                                <option value="">Select a contact (optional)</option>
+                                {contacts.map(contact => (
+                                    <option key={contact.id} value={contact.id}>{contact.name}</option>
+                                ))}
+                            </select>
+
                             <div className="color-picker">
                             {COLORS.map((color) => (
                                 <div
