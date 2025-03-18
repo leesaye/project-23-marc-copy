@@ -88,7 +88,6 @@ function GoogleCalendar() {
             
     const processEvents = (events = []) => {
         return events.map(event => {
-            // Create new Date objects for the start and end times
             const startDate = new Date(event.start);
             const endDate = new Date(event.end);
             
@@ -180,7 +179,7 @@ function GoogleCalendar() {
                 console.error('Error adding event:', error);
             }
 
-            setNewEvent({ title: '', start: '', end: '' });
+            setNewEvent({ title: '', start: '', end: '' , contact: '' });
             setSidebarOpen(false);
         }
     };
@@ -307,7 +306,8 @@ function GoogleCalendar() {
                     setNewEvent({ 
                         title: event.title, 
                         start: moment(event.start).format("YYYY-MM-DDTHH:mm"), 
-                        end: moment(event.end).format("YYYY-MM-DDTHH:mm") 
+                        end: moment(event.end).format("YYYY-MM-DDTHH:mm"), 
+                        contact: event.contact ? event.contact : ""   
                     });
                 } else if (event.type === "Task") {
                     setSelectedTask(event);
