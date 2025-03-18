@@ -1,15 +1,18 @@
 import Layout from "../components/Layout";
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../endpoints/api";
+import "./Calendar.css";
 
 const BASE_URL = "http://127.0.0.1:8000/";
 
 function AccountSettings() {
-    const [user, setUser] = useState({ username: "", email: "", old_password: "", new_password: "" });
+    const [user, setUser] = useState({ username: "", email: "", new_password: "" });
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [usernameError, setUsernameError] = useState("");
+    const [showModal, setShowModal] = useState(false);
 
+    // Autofills User textfills with info
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -28,14 +31,10 @@ function AccountSettings() {
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
+    // Checks if Username entered is already taken
     const checkUsername = async (e) => {
         const newUsername = e.target.value;
         setUser({ ...user, username: newUsername });
-
-        if (newUsername.length < 3) {
-           // setUsernameError("Username must be at least 3 characters.");
-            return;
-        }
 
         try {
             const response = await axiosInstance.get(`/user/check-username/?username=${newUsername}`);
@@ -46,10 +45,10 @@ function AccountSettings() {
             }
         } catch (error) {
             console.error("Error checking username:", error);
-           // setUsernameError("Could not verify username.");
         }
     };
 
+    // Updates Account Info on Form Submit
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -59,6 +58,18 @@ function AccountSettings() {
         } catch (error) {
             console.error("Error updating profile:", error);
             setMessage("Failed to update profile.");
+        }
+    };
+
+    // Deletes Account and Logs out User
+    const handleDeleteAccount = async () => {
+        try {
+            await axiosInstance.delete("/user/profile/");
+            alert("Account deleted successfully.");
+            window.location.href = "/login"; 
+        } catch (error) {
+            console.error("Error deleting account:", error);
+            alert("Failed to delete account.");
         }
     };
 
@@ -98,17 +109,7 @@ function AccountSettings() {
                         </div>
 
                         <div className="mb-3 w-25 mx-auto">
-                            <label className="form-label fw-bold" style={{ marginBottom: "5px" }}>Old Password</label>
-                            <input 
-                                type="password" 
-                                name="old_password" 
-                                value={user.old_password} 
-                                onChange={handleChange} 
-                                className="form-control" 
-                                required 
-                            />
-
-                            <label className="form-label fw-bold mt-3" style={{ marginBottom: "5px" }}>New Password</label>
+                            <label className="form-label fw-bold" style={{ marginBottom: "5px" }}>New Password</label>
                             <input 
                                 type="password" 
                                 name="new_password" 
@@ -120,9 +121,22 @@ function AccountSettings() {
                         </div>
 
                         <button type="submit" className="btn btn-primary w-25 mx-auto d-block">Save Changes</button>
+                        <button type="button" className="btn btn-danger w-25 mx-auto d-block mt-3" onClick={() => setShowModal(true)}>Delete Account</button>
                     </form>
                 )}
             </div>
+            
+            {showModal && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h4>Are you sure you want to delete your account? </h4>
+                        <div className="modal-buttons">
+                            <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
+                            <button className="btn btn-danger" onClick={handleDeleteAccount}>Delete</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     );
 }
