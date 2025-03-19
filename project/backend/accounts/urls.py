@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CustomTokenObtainPairView, CustomRefreshTokenView, Logout, IsAuthenticated, Register, GoogleTokenView, GoogleLogoutView
+from .views import CustomTokenObtainPairView, CustomRefreshTokenView, Logout, IsAuthenticated, Register, GoogleTokenView, GoogleLogoutView, UpdateAccountView
 
 urlpatterns = [
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
@@ -9,5 +9,6 @@ urlpatterns = [
     path('authenticated/', IsAuthenticated.as_view(), name='is_authenticated'),
     path('register/', Register.as_view(), name='register'),
     path('googleToken/', GoogleTokenView.as_view(), name='google_token'),
-    path('googleLogout/', GoogleLogoutView.as_view(), name='google_logout')
+    path('googleLogout/', GoogleLogoutView.as_view(), name='google_logout'),
+    path("update/", UpdateAccountView.as_view(), name='account_update')
 ]
