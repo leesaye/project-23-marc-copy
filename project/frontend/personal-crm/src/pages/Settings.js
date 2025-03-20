@@ -1,9 +1,8 @@
 import Layout from "../components/Layout";
 import React, { useState, useEffect } from "react";
-import axiosInstance from "../endpoints/api";
 import "./Calendar.css";
 
-const BASE_URL = "http://127.0.0.1:8000/";
+const BASE_URL = "http://127.0.0.1:8000";
 
 function AccountSettings() {
     const [user, setUser] = useState({ username: "", email: "", new_password: "" });
@@ -12,12 +11,12 @@ function AccountSettings() {
     const [usernameError, setUsernameError] = useState("");
     const [showModal, setShowModal] = useState(false);
 
-    // Autofills User textfills with info
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await axiosInstance.get("/user/profile/");
-                setUser({ ...user, username: response.data.username, email: response.data.email });
+                const response = await fetch(`${BASE_URL}/api/update/`, { credentials: "include" });
+                const data = await response.json();
+                setUser({ username: data.username, email: data.email, new_password: "" });
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -29,49 +28,54 @@ function AccountSettings() {
 
     const handleChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
+        setMessage(""); // Reset success message when user starts typing
     };
 
-    // Checks if Username entered is already taken
-    const checkUsername = async (e) => {
-        const newUsername = e.target.value;
-        setUser({ ...user, username: newUsername });
-
-        try {
-            const response = await axiosInstance.get(`/user/check-username/?username=${newUsername}`);
-            if (response.data.available) {
-                setUsernameError("");
-            } else {
-                setUsernameError("Username is already taken.");
-            }
-        } catch (error) {
-            console.error("Error checking username:", error);
-        }
-    };
-
-    // Updates Account Info on Form Submit
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
-            await axiosInstance.put("/user/profile/", user);
-            setMessage("Profile updated successfully!");
+            const response = await fetch(`${BASE_URL}/api/update/`, {
+                method: "PUT",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: user.username,
+                    email: user.email,
+                    password: user.new_password || undefined,
+                }),
+            });
+
+            if (response.ok) {
+                setMessage({ text: "Profile updated successfully!", isError: false });
+            } else {
+                setMessage({ text: "Failed to update profile.", isError: true });
+            }
         } catch (error) {
             console.error("Error updating profile:", error);
             setMessage("Failed to update profile.");
         }
     };
 
-    // Deletes Account and Logs out User
     const handleDeleteAccount = async () => {
-        try {
-            await axiosInstance.delete("/user/profile/");
-            alert("Account deleted successfully.");
-            window.location.href = "/login"; 
-        } catch (error) {
-            console.error("Error deleting account:", error);
-            alert("Failed to delete account.");
+    try {
+        const response = await fetch(`${BASE_URL}/api/update/`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        if (response.ok) {
+            setMessage("Account deleted successfully.");
+            window.location.href = "/login";
+        } else {
+            setMessage({ text: "Failed to delete account.", isError: true });
         }
-    };
+    } catch (error) {
+        console.error("Error deleting account:", error);
+        setMessage("Failed to delete account.");
+    }
+};
+
 
     return (
         <Layout>
@@ -81,15 +85,18 @@ function AccountSettings() {
                     <p className="text-center">Loading...</p>
                 ) : (
                     <form className="mt-4" onSubmit={handleSubmit}>
-                        {message && <p className="text-center text-success">{message}</p>}
-
+                       {message && (
+                        <p className={`text-center ${message.isError ? 'text-danger' : 'text-success'}`}>
+                            {message.text}
+                        </p>
+                         )}
                         <div className="mb-3 w-25 mx-auto">
-                            <label className="form-label fw-bold" style={{ marginBottom: "5px" }}>Username</label>
+                            <label className="form-label fw-bold">Username</label>
                             <input 
                                 type="text" 
                                 name="username" 
                                 value={user.username} 
-                                onChange={checkUsername} 
+                                onChange={handleChange} 
                                 className="form-control" 
                                 required
                             />
@@ -97,7 +104,7 @@ function AccountSettings() {
                         </div>
 
                         <div className="mb-3 w-25 mx-auto">
-                            <label className="form-label fw-bold" style={{ marginBottom: "5px" }}>Email</label>
+                            <label className="form-label fw-bold">Email</label>
                             <input 
                                 type="email" 
                                 name="email" 
@@ -109,14 +116,13 @@ function AccountSettings() {
                         </div>
 
                         <div className="mb-3 w-25 mx-auto">
-                            <label className="form-label fw-bold" style={{ marginBottom: "5px" }}>New Password</label>
+                            <label className="form-label fw-bold">New Password</label>
                             <input 
                                 type="password" 
                                 name="new_password" 
                                 value={user.new_password} 
                                 onChange={handleChange} 
                                 className="form-control" 
-                                required 
                             />
                         </div>
 
@@ -129,7 +135,7 @@ function AccountSettings() {
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal-content">
-                        <h4>Are you sure you want to delete your account? </h4>
+                        <h4>Are you sure you want to delete your account?</h4>
                         <div className="modal-buttons">
                             <button className="btn btn-secondary" onClick={() => setShowModal(false)}>Cancel</button>
                             <button className="btn btn-danger" onClick={handleDeleteAccount}>Delete</button>
