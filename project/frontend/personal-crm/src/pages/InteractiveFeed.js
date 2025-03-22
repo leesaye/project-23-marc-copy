@@ -83,7 +83,6 @@ function InteractiveFeed() {
                         </div>
                     </div>
                     {/* Buttons section */}
-                    {eventData ? (
                         <div>
                             <div className="mt-4 d-flex justify-content-between align-items-center" style={{ width: '50%', minWidth: "300px" }}>
                                 <button className="btn btn-primary" onClick={generateEvent}>Next</button>
@@ -94,9 +93,6 @@ function InteractiveFeed() {
                             </div>
                             <div className="d-flex justify-content-center align-items-center" style={{width:'100%'}}>{currentDailyCount} / {dailyGoal}</div>
                         </div>
-                    ): (
-                        <h1></h1>
-                    )}
                 </div>
             </div>
         </Layout>
