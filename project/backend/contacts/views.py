@@ -6,6 +6,8 @@ import csv
 import base64
 from PIL import Image
 import json
+import os
+from django.conf import settings
 
 from rest_framework.views import APIView
 from . models import Contact
@@ -57,7 +59,9 @@ class AddContactView(APIView):
                 validate_img(pfp_file)
                 pfp_bin = encode_img(pfp_file)
             else:
-                pfp_bin = None
+                default_pfp_path = os.path.join(settings.BASE_DIR, 'default_pfp.jpg')
+                default_pfp_file = open(default_pfp_path, 'rb')
+                pfp_bin = encode_img(default_pfp_file)
 
             # Serializing
             data['user'] = request.user.id
@@ -184,6 +188,9 @@ class AddGoogleContactsView(APIView):
         try:
             user = request.user
             contacts = request.data
+            default_pfp_path = os.path.join(settings.BASE_DIR, 'default_pfp.jpg')
+            default_pfp_file = open(default_pfp_path, 'rb')
+            pfp = encode_img(default_pfp_file)
 
             if not contacts:
                 return Response({"error": "Failed to add Google contacts"}, status=status.HTTP_400_BAD_REQUEST)
@@ -199,6 +206,7 @@ class AddGoogleContactsView(APIView):
                     Contact.objects.create(
                         id=uuid.uuid4(),
                         user=user,
+                        pfp=pfp,
                         name=name,
                         email=email if email else "",
                         phone=phone if phone else "",
@@ -268,12 +276,17 @@ class UploadLinkedInCSVView(APIView):
                 company = row["Company"].strip() or "No Company"
                 linkedin_url = row["URL"].strip() or "No URL"
 
+                default_pfp_path = os.path.join(settings.BASE_DIR, 'default_pfp.jpg')
+                default_pfp_file = open(default_pfp_path, 'rb')
+                pfp = encode_img(default_pfp_file)
+
                 if not name:
                     return Response({"error": "Contact name cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
 
                 contact = Contact(
                     id=uuid.uuid4(),
                     user=request.user,
+                    pfp=pfp,
                     name=name,
                     email=email,
                     job=job,
