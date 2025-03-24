@@ -25,6 +25,7 @@ class UserStatsViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        user_stats, created = UserStats.objects.get_or_create(user=self.request.user)
         return UserStats.objects.filter(user=self.request.user)
 
     def perform_create(self, serializer):
