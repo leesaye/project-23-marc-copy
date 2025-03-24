@@ -18,12 +18,13 @@ function Log() {
     useEffect(() => {
         axiosInstance.get(`${BASE_URL}log/`)
         .then(response => {
+            console.log(response.data);
             setMissionItems(response.data);
         })
         .catch(error => {
             console.error("Error fetching mission log:", error);
         });
-    });
+    }, []);
 
     const filteredLogItems = logItems.filter((logItems) =>
         (logItems.title.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
@@ -40,13 +41,13 @@ function Log() {
         <Layout>
             <div>
                 <h2>Mission Data:</h2>
-                {missionItems ? <p>No mission items</p>:
+                {!missionItems ? <p>No mission items</p>:
                 missionItems.map(missionItem =>
-                    <div>
+                    <div key={missionItem.id}>
                         <p>text: {missionItem.mission_text}</p>
-                        <p>last_rest: {missionItem.last_reset}</p>
-                        <p>actions_required: {missionItem.actions_required}</p>
-                        <p>completed: {missionItem.completed}</p>
+                        <p>completed: {missionItem.completed ? 1 : 0}</p>
+                        <p>progress: {missionItem.progress}</p>
+                        <p>total_required: {missionItem.total_required}</p>
                     </div>
                 )}
             </div>

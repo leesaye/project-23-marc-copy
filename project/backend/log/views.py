@@ -11,15 +11,15 @@ class MissionLogView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        try:
+        #try:
             task_mission_status = MissionLog.check_task_mission_completion(request.user)
             contact_mission_status = MissionLog.check_contact_mission_completion(request.user)
 
             missions = [task_mission_status, contact_mission_status]
 
-            return Response({missions}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": "Failed to get mission log"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(missions, status=status.HTTP_200_OK)
+        # except Exception as e:
+        #     return Response({"error": "Failed to get mission log"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # class ActivityLogView(APIView):
