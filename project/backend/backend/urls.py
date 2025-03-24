@@ -20,11 +20,12 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, Spec
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('accounts.urls')), 
+    path('api/', include('accounts.urls')),
     path('api/', include('calendarapi.urls')),
     path('contacts/', include('contacts.urls')),
     path('feed/', include('feed.urls')),
-    
+    path('log/', include('log.urls')),
+
     # Endpoints for Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     # Optional UI:
