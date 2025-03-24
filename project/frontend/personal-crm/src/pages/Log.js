@@ -13,6 +13,18 @@ function Log() {
     const [logItems, setLogItems] = useState([]); // The list of log items to be set in the api get call
     const [missionItems, setMissionItems] = useState([]); // The list of mission items to be set in the api get call
     const [sortValue, setSortValue] = useState("Newest");
+    const [mission, setMission] = useState(null);
+    const BASE_URL = "http://127.0.0.1:8000/";
+
+    useEffect(() => {
+        axiosInstance.get(`${BASE_URL}log/`)
+        .then(response => {
+            setMission(JSON.stringify(response.data, null, 2));
+        })
+        .catch(error => {
+            console.error("Error fetching mission log:", error);
+        });
+    });
 
     const filteredLogItems = logItems.filter((logItems) =>
         (logItems.title.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
@@ -27,6 +39,10 @@ function Log() {
 
     return (
         <Layout>
+            <div>
+                <h2>Mission Data:</h2>
+                <pre>{mission ? mission : "Rip..."}</pre>
+            </div>
             <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                 <div className="row">
                     <div className="col-8">
@@ -77,7 +93,7 @@ function Log() {
                         </div>
                         <br />
                     </div>
-                    
+
 
                     <div className="row mt-5">
                         <div className="col-3">
