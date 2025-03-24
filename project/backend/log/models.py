@@ -66,7 +66,7 @@ class MissionLog(models.Model):
         # If mission doesn't exist for some reason, assign it
         if not mission:
             MissionLog.assign_task_mission(user)
-            mission = MissionLog.objects.filter(user=user, mission_text="Add one new contact").first()
+            mission = MissionLog.objects.filter(user=user, mission_text="Add two tasks to your calendar").first()
 
         mission.reset_if_new_week()
 
