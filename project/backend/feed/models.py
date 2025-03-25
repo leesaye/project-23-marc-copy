@@ -17,7 +17,7 @@ class ExternalEvent(models.Model):
 class UserStats(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     current_daily_count = models.PositiveIntegerField(default=0)
-    daily_goal = models.PositiveIntegerField(default=1)
+    daily_goal = models.PositiveIntegerField(default=3)
     running_streak_count = models.PositiveIntegerField(default=0)
     last_updated = models.DateField(auto_now=True)
 
