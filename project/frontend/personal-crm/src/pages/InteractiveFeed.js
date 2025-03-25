@@ -1,8 +1,10 @@
 import Layout from "../components/Layout";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Context } from "../contexts/AIContext";
 import { LinearProgress } from "@mui/material";
 import axiosInstance from "../endpoints/api"; 
+import moment from "moment";  
+
 
 function InteractiveFeed() {
     const { onSent, recentPrompt, showResult, loading, resultData, setInput, input } = useContext(Context);
@@ -12,7 +14,75 @@ function InteractiveFeed() {
     const [currentDailyCount, setCurrentDailyCount] = useState();
     const [dailyGoal, setDailyGoal] = useState();
     const [streak, setStreak] = useState();
+    // New
+    const COLORS = ["#B5D22C", "#73AA2A", "#0995AE", "#04506A"];
+    const [selectedColor, setSelectedColor] = useState(COLORS[0]); 
+    const [showEventForm, setShowEventForm] = useState(false);
+    const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
+    const [selectedFeedEventId, setSelectedFeedEventId] = useState(null);
 
+    // Modal Handlers
+
+    const handleOpenEventModal = (event) => {
+        if (!event || !event.title) {
+            console.error("Invalid event data:", event);
+            return;
+        }
+    
+        setNewEvent({
+            title: event.title,
+            start: moment(event.date).set({ hour: 9, minute: 0 }).format("YYYY-MM-DDTHH:mm"),
+            end: moment(event.date).set({ hour: 17, minute: 0 }).format("YYYY-MM-DDTHH:mm"),
+        });
+    
+        setSelectedFeedEventId(event.id || Date.now());
+        setShowEventForm(true);
+    };
+    
+    
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setNewEvent((prev) => ({ ...prev, [name]: value }));
+    };
+    
+    const handleAddEvent = async (e) => {
+        e.preventDefault();
+        try {
+            await axiosInstance.post(`${BASE_URL}api/events/`, {
+                ...newEvent,
+                color: selectedColor,
+            });
+            // Increment Current Daily Count
+            if (currentDailyCount !== dailyGoal) {
+                setCurrentDailyCount((prevCount) => {
+                    const updatedCount = (prevCount || 0) + 1;
+
+                    // If the count reaches the daily goal, increment the streak count
+                    if (updatedCount === dailyGoal) {
+                        setStreak((prevStreak) => (prevStreak || 0) + 1);
+                    }
+
+                    return updatedCount;
+                });
+            }
+
+    
+        } catch (error) {
+            console.error("Error adding event:", error);
+        }
+    
+        setShowEventForm(false);
+        setNewEvent({ title: "", start: "", end: "" });
+        setSelectedFeedEventId(null);
+        setSelectedColor(COLORS[0]);
+    };
+    
+    
+    const handleCancel = () => {
+        setShowEventForm(false);
+        setNewEvent({ title: "", start: "", end: "" });
+        setSelectedFeedEventId(null);
+    };
     
     const generateEvent = async () => {
         try {
@@ -82,21 +152,76 @@ function InteractiveFeed() {
                             )}
                         </div>
                     </div>
-                    {/* Buttons section */}
-                        <div>
-                            <div className="mt-4 d-flex justify-content-between align-items-center" style={{ width: '50%', minWidth: "300px" }}>
-                                <button className="btn btn-primary" onClick={generateEvent}>Next</button>
-                                <div class="progress"  style={{width:'50%'}}>
-                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style={{width: (currentDailyCount / dailyGoal) * 100 + '%', ariaValuenow:currentDailyCount/dailyGoal * 100, ariaValuemin:'0', ariaValuemax:dailyGoal}}></div>
-                                </div>
-                                <button className="btn btn-secondary" onClick={placeholderFunction}>Add</button>
+                    <div>
+                        <div className="mt-4 d-flex justify-content-between align-items-center" style={{ width: '50%', minWidth: "300px" }}>
+                            <button className="btn btn-primary" onClick={generateEvent}>Next</button>
+                            <div class="progress"  style={{width:'50%'}}>
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style={{width: (currentDailyCount / dailyGoal) * 100 + '%', ariaValuenow:currentDailyCount/dailyGoal * 100, ariaValuemin:'0', ariaValuemax:dailyGoal}}></div>
                             </div>
-                            <div className="d-flex justify-content-center align-items-center" style={{width:'100%'}}>{currentDailyCount} / {dailyGoal}</div>
+                            <button className="btn btn-success" onClick={() => handleOpenEventModal(eventData)}>Add</button>
                         </div>
+                        <div className="d-flex justify-content-center align-items-center" style={{width:'100%'}}>{currentDailyCount} / {dailyGoal}</div>
+                    </div>
                 </div>
             </div>
+    
+            {showEventForm && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h3>Add Event</h3>
+                        <label htmlFor="eventTitle">Title:</label>
+                        <input
+                            type="text"
+                            id="eventTitle"
+                            name="title"
+                            value={newEvent.title}
+                            onChange={handleInputChange}
+                            required
+                        />
+                        <label htmlFor="start">Start Time:</label>
+                        <input
+                            type="datetime-local"
+                            id="start"
+                            name="start"
+                            value={newEvent.start}
+                            onChange={handleInputChange}
+                            required
+                        />
+                        <label htmlFor="end">End Time:</label>
+                        <input
+                            type="datetime-local"
+                            id="end"
+                            name="end"
+                            value={newEvent.end}
+                            onChange={handleInputChange}
+                            required
+                        />
+    
+                        <div className="color-picker">
+                            {COLORS.map((color) => (
+                                <div
+                                    key={color}
+                                    className={`color-option ${selectedColor === color ? "selected" : ""}`}
+                                    style={{ backgroundColor: color }}
+                                    onClick={() => setSelectedColor(color)}
+                                ></div>
+                            ))}
+                        </div>
+    
+                        <div className="modal-buttons">
+                            <button className="cancel-button" onClick={handleCancel}>
+                                Cancel
+                            </button>
+                            <button className="blue-button" onClick={handleAddEvent}>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     );
+    
 }
 
 export default InteractiveFeed;
