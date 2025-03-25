@@ -11,6 +11,7 @@ function ContactId() {
     const isSmallScreen = useMediaQuery({ query: '(max-width: 800px)' });
     const nav = useNavigate();
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
+    const [imageFile, setImageFile] = useState(null);
     const imageInputRef = useRef();
     const [quizVisible, setQuizVisible] = useState(false);
     const [errors, setErrors] = useState({});
@@ -50,6 +51,25 @@ function ContactId() {
         setQuizAnswers({ ...quizAnswers, [question]: e.target.value });
     };
 
+    // Convert to FormData instance so we can send pic and data in one req
+    function createFormData(updatedFormData, formattedQuizAnswers, imageFile) {
+        const newFormData = new FormData();
+
+        Object.entries(updatedFormData).forEach(([key, value]) => {
+            if (value !== undefined) {
+                newFormData.append(key, value);
+            }
+        });
+
+        newFormData.append("quiz_answers", JSON.stringify(formattedQuizAnswers));
+
+        if (imageFile) {
+            newFormData.append("pfp", imageFile);
+        }
+
+        return newFormData;
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent page reload
 
@@ -61,17 +81,22 @@ function ContactId() {
 
         const updatedFormData = {
             ...formData,
-            quiz_answers: formattedQuizAnswers
         };
 
         try {
-            const response = await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, updatedFormData);
+            const newFormData = createFormData(updatedFormData, formattedQuizAnswers, imageFile);
+            const response = await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, newFormData);
             console.log("Contact updated:", response.data);
             alert("Contact successfully updated!");
             nav('/contacts/');
         } catch (error) {
             if (error.response && error.response.data) {
-                setErrors(error.response.data);
+                 // Image validation error checker
+                if (error.response.status === 400 && error.response.data.error) {
+                    alert(error.response.data.error);
+                } else {
+                    setErrors(error.response.data);
+                }
             } else {
                 console.error("Error updating contact", error);
                 alert("Failed to update contact.");
@@ -83,6 +108,9 @@ function ContactId() {
         axiosInstance.get(`${BASE_URL}contacts/${contact_id}`)
         .then(response => {
             setContact(response.data);
+            if (response.data.pfp) {
+                setImage(`data:image/png;base64,${response.data.pfp}`);
+            }
         })
         .catch(error => {
             console.error("Error fetching contact:", error);
@@ -268,6 +296,7 @@ function ContactId() {
                                         if (e.target.files[0].type.startsWith("image/")) {
                                             console.log(e.target.files[0]);
                                             setImage(URL.createObjectURL(e.target.files[0]));
+                                            setImageFile(e.target.files[0])
                                         }else {
                                             alert("Please upload a valid image file");
                                         }
@@ -298,6 +327,7 @@ function ContactId() {
                                 if (e.target.files[0].type.startsWith("image/")) {
                                     console.log(e.target.files[0]);
                                     setImage(URL.createObjectURL(e.target.files[0]));
+                                    setImageFile(e.target.files[0])
                                 }else {
                                     alert("Please upload a valid image file");
                                 }

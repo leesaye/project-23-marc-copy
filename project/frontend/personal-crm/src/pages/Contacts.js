@@ -183,7 +183,8 @@ function Contacts() {
                         </div>
                     </div>
                     <div className="row mt-4">
-                        <div className="col-3">
+                        <div className="col-1"></div>
+                        <div className="col-2">
                             <p>Name</p>
                         </div>
                         <div className="col-2">

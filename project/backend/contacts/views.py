@@ -3,9 +3,15 @@ import pandas as pd
 import uuid
 import io
 import csv
+import base64
+from PIL import Image
+import json
+import os
+from django.conf import settings
 
 from rest_framework.views import APIView
 from . models import Contact
+from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
 from . serializer import ContactSerializer
@@ -31,10 +37,11 @@ class AddContactView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
         try:
-            # Quiz logic
-            quiz_answers = request.data.get("quiz_answers", None)
-
             data = request.data.copy()
+
+            # Quiz logic
+            quiz_answers_str = request.data.get("quiz_answers", None)
+            quiz_answers = json.loads(quiz_answers_str)  # Convert back to dictionary
 
             if quiz_answers:
                 quiz_used = False
@@ -42,14 +49,26 @@ class AddContactView(APIView):
                     if question['answer'] is not None and question['answer'] != "":
                         quiz_used = True
                 if quiz_used:
-                    relationship_rating = get_rating_of_contact(request)
+                    relationship_rating = get_rating_of_contact(quiz_answers)
                     data["relationship_rating"] = relationship_rating
 
-            data["user"] = request.user.id
+            # validate pfp
+            pfp_file = request.FILES.get("pfp")
+
+            if pfp_file:
+                validate_img(pfp_file)
+                pfp_bin = encode_img(pfp_file)
+            else:
+                default_pfp_path = os.path.join(settings.BASE_DIR, 'default_pfp.jpg')
+                default_pfp_file = open(default_pfp_path, 'rb')
+                pfp_bin = encode_img(default_pfp_file)
+
+            # Serializing
+            data['user'] = request.user.id
             serializer = ContactSerializer(data=data)
 
             if serializer.is_valid(raise_exception=True):
-                serializer.save()
+                serializer.save(pfp=pfp_bin)
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -60,6 +79,10 @@ class AddContactView(APIView):
         except GeminiAPIError as e:
             return Response({"error": f"Failed to generate relationship rating: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except ValidationError as e:
+            return Response({"error": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": f"Failed to edit contact: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # GET/POST
@@ -76,6 +99,11 @@ class IndividualContactView(APIView):
 
         # Serialize
         serializer = ContactSerializer(contact)
+
+        # Decode only if image is available
+        if serializer.data['pfp']:
+            pfp_img = decode_img(serializer.data.get('pfp'))
+            serializer.data['pfp'] = pfp_img
         return Response(serializer.data)
 
     def post(self, request, contact_id):
@@ -83,22 +111,45 @@ class IndividualContactView(APIView):
             contact = Contact.objects.get(id=contact_id, user=request.user)
 
             # Quiz logic
-            quiz_answers = request.data.get("quiz_answers", None)
+            quiz_answers_str = request.data.get("quiz_answers", None)
 
+            if quiz_answers_str:
+                quiz_answers = json.loads(quiz_answers_str)  # Convert back to dictionary
+            else:
+                quiz_answers = {}
+
+            # Flag for if quiz was used
+            quiz_used = False
             if quiz_answers:
-                quiz_used = False
                 for question in quiz_answers:
                     if question['answer'] is not None and question['answer'] != "":
                         quiz_used = True
-                if quiz_used:
-                    relationship_rating = get_rating_of_contact(request)
-                    request.data["relationship_rating"] = relationship_rating
+
+            if quiz_used:
+                relationship_rating = get_rating_of_contact(quiz_answers)
+            else:
+                relationship_rating = contact.relationship_rating
+
+            # validate pfp
+            pfp_file = request.FILES.get("pfp")
+
+            if pfp_file:
+                validate_img(pfp_file)
+                pfp_bin = encode_img(pfp_file)
+            else:
+                pfp_bin = None
 
             # Update contact fields and serialize
             serializer = ContactSerializer(contact, data=request.data,
                                            partial=True)  # partial=True allows partial updates
             if serializer.is_valid(raise_exception=True):
-                serializer.save()
+                if quiz_used:
+                    serializer.save(pfp=pfp_bin, relationship_rating=relationship_rating)
+                else:
+                    if pfp_bin:
+                        serializer.save(pfp=pfp_bin)
+                    else:
+                        serializer.save()
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -109,6 +160,10 @@ class IndividualContactView(APIView):
         except GeminiAPIError as e:
             return Response({"error": f"Failed to generate relationship rating: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except ValidationError as e:
+            return Response({"error": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({"error": f"Failed to edit contact: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 # DELETE
@@ -133,6 +188,9 @@ class AddGoogleContactsView(APIView):
         try:
             user = request.user
             contacts = request.data
+            default_pfp_path = os.path.join(settings.BASE_DIR, 'default_pfp.jpg')
+            default_pfp_file = open(default_pfp_path, 'rb')
+            pfp = encode_img(default_pfp_file)
 
             if not contacts:
                 return Response({"error": "Failed to add Google contacts"}, status=status.HTTP_400_BAD_REQUEST)
@@ -148,6 +206,7 @@ class AddGoogleContactsView(APIView):
                     Contact.objects.create(
                         id=uuid.uuid4(),
                         user=user,
+                        pfp=pfp,
                         name=name,
                         email=email if email else "",
                         phone=phone if phone else "",
@@ -217,12 +276,17 @@ class UploadLinkedInCSVView(APIView):
                 company = row["Company"].strip() or "No Company"
                 linkedin_url = row["URL"].strip() or "No URL"
 
+                default_pfp_path = os.path.join(settings.BASE_DIR, 'default_pfp.jpg')
+                default_pfp_file = open(default_pfp_path, 'rb')
+                pfp = encode_img(default_pfp_file)
+
                 if not name:
                     return Response({"error": "Contact name cannot be empty"}, status=status.HTTP_400_BAD_REQUEST)
 
                 contact = Contact(
                     id=uuid.uuid4(),
                     user=request.user,
+                    pfp=pfp,
                     name=name,
                     email=email,
                     job=job,
@@ -267,11 +331,52 @@ class RelationshipQuizView(APIView):
         return Response({"relationship_rating": relationship_rating}, status=status.HTTP_200_OK)
 
 
-def get_rating_of_contact(request):
+##### Helpers for quiz, image and csv parsing/validation #####
+def encode_img(file):
+    if file:
+        return file.read()  # Read and return binary data
+    return None
+
+
+def decode_img(bin_data):
+    if bin_data:
+        try:
+            if isinstance(bin_data, str):
+                bin_data = base64.b64decode(bin_data)  # Decode Base64 string to bytes
+
+            # Open image and detect format
+            image = Image.open(io.BytesIO(bin_data))
+            format = image.format.lower()
+
+            encoded_img = base64.b64encode(bin_data).decode('utf-8')
+            return f"data:image/{format};base64,{encoded_img}"
+        except Exception as e:
+            print("Error decoding image:", e)
+            return None  # Return None if Pillow fails to read it
+
+
+MAX_IMG_SIZE = 200 * 1024  # 200 KB limit
+
+def validate_img(file):
+    if not file:
+        return
+
+    if file.size > MAX_IMG_SIZE:
+        raise ValidationError("Image size must be under 200KB")
+
+    try:
+        img = Image.open(file)
+        if img.format not in ["JPEG", "PNG"]:
+            raise ValidationError("Only JPEG and PNG formats are allowed")
+    except Exception as e:
+        raise ValidationError(f"Invalid image data: {e}")
+
+    file.seek(0)
+
+
+def get_rating_of_contact(quiz_answers):
     """Helper function for Gemini api getting relationship rating"""
     try:
-        quiz_answers = request.data.get("quiz_answers", [])
-
         user_data = {
             "responses": [{"question": qa["question"], "answer": qa["answer"]} for qa in quiz_answers]
         }
