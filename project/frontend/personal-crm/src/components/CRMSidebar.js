@@ -5,7 +5,6 @@ import HomeIcon from '@mui/icons-material/Home';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
-import PersonIcon from '@mui/icons-material/Person';
 import SettingsIcon from '@mui/icons-material/Settings';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -56,7 +55,6 @@ function CRMSidebar() {
                         <MenuItem component={<Link />} to="/calendars/" icon={<CalendarMonthIcon />}> Calendar </MenuItem>
                         <MenuItem component={<Link />} to="/feed/" icon={<RocketLaunchIcon />}> Feed </MenuItem>
                         <hr className="mx-3" style={{borderWidth: "3px"}} />
-                        <MenuItem component={<Link />} to="/profile/" icon={<PersonIcon />}> Profile </MenuItem>
                         <MenuItem component={<Link />} to="/settings/" icon={<SettingsIcon />}> Settings </MenuItem>
                         <MenuItem
                             onClick={()=>handleLogout()}
@@ -88,7 +86,6 @@ function CRMSidebar() {
                         <MenuItem component={<Link />} to="/calendars/" icon={<CalendarMonthIcon />}> Calendar </MenuItem>
                         <MenuItem component={<Link />} to="/feed/" icon={<RocketLaunchIcon />}> Feed </MenuItem>
                         <hr className="mx-3" style={{borderWidth: "3px"}} />
-                        <MenuItem component={<Link />} to="/profile/" icon={<PersonIcon />}> Profile </MenuItem>
                         <MenuItem component={<Link />} to="/settings/" icon={<SettingsIcon />}> Settings </MenuItem>
                         <MenuItem
                             onClick={()=>handleLogout()}
