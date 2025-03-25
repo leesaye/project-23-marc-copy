@@ -4,9 +4,8 @@ import Paper from '@mui/material/Paper';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
-import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { LinearProgress } from '@mui/material';
+import LogMission from "../components/LogMission";
 
 function Log() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -39,18 +38,6 @@ function Log() {
 
     return (
         <Layout>
-            <div>
-                <h2>Mission Data:</h2>
-                {!missionItems ? <p>No mission items</p>:
-                missionItems.map(missionItem =>
-                    <div key={missionItem.id}>
-                        <p>text: {missionItem.mission_text}</p>
-                        <p>completed: {missionItem.completed ? 1 : 0}</p>
-                        <p>progress: {missionItem.progress}</p>
-                        <p>total_required: {missionItem.total_required}</p>
-                    </div>
-                )}
-            </div>
             <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                 <div className="row">
                     <div className="col-8">
@@ -72,34 +59,10 @@ function Log() {
                                 <h5>Weekly quests</h5>
                             </div>
                         </div>
-                        <div className="row bg-light">
-                            <div>
-                                <p>Here is where the mission info goes</p>
-                            </div>
-                        </div>
-                        <div className="row bg-light justify-content-center">
-                            <div className="col-8">
-                                <LinearProgress variant="determinate" value="75" sx={{ height: 25, borderRadius: 5 }}></LinearProgress>
-                            </div>
-                            <div className="col-4">
-                                <p>3/4</p>
-                            </div>
-                        </div>
-                        <br />
-                        <div className="row bg-light">
-                            <div>
-                                <p>Here is where the mission info goes</p>
-                            </div>
-                        </div>
-                        <div className="row bg-light justify-content-center">
-                            <div className="col-8">
-                                <LinearProgress variant="determinate" value="75" sx={{ height: 25, borderRadius: 5 }}></LinearProgress>
-                            </div>
-                            <div className="col-4">
-                                <p>3/4</p>
-                            </div>
-                        </div>
-                        <br />
+                        {!missionItems ? <p>Loading...</p>:
+                        missionItems.map(missionItem =>
+                            <LogMission key={missionItem.id} missionItem={missionItem}></LogMission>
+                        )}
                     </div>
 
 
