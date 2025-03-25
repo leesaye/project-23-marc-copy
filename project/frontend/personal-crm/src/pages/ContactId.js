@@ -1,6 +1,6 @@
 import Layout from "../components/Layout";
 import axiosInstance from "../endpoints/api";
-import { FormControl, InputLabel, OutlinedInput, Box, Collapse } from "@mui/material";
+import { FormControl, InputLabel, OutlinedInput, Box, Collapse, Select, MenuItem } from "@mui/material";
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useMediaQuery } from 'react-responsive';
@@ -13,21 +13,37 @@ function ContactId() {
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
     const [imageFile, setImageFile] = useState(null);
     const imageInputRef = useRef();
-    const [quizVisible, setQuizVisible] = useState(false);
+    const [openQuizVisible, setOpenQuizVisible] = useState(false);
+    const [staticQuizVisible, setStaticQuizVisible] = useState(false);
     const [errors, setErrors] = useState({});
     const BASE_URL = "http://127.0.0.1:8000/";
 
-    const QUIZ_QUESTIONS = [
+    const OPEN_QUIZ_QUESTIONS = [
         "Have they ever supported you in a meaningful way? How?",
         "How well do you click with them?",
         "How often do you communicate with this person?",
         "Would you feel comfortable asking them for a favor? What kind?"
     ];
 
-    const [quizAnswers, setQuizAnswers] = useState(
-        Object.fromEntries(QUIZ_QUESTIONS.map((question) => [question, ""]))
-    );
+    const STATIC_QUIZ_QUESTIONS = [
+        "How long have you known this person?",
+        "How close is your working relationship?",
+        "How was this relationship established?",
+        "How often do you communicate with this person?"
+    ];
 
+    const STATIC_QUIZ_OPTIONS = [
+        ["1-2 years", "2-4 years", "4+ years"],
+        ["Very close (weekly/monthly interactions)", "Close (talked within the last year", "Neutral", "Somewhat distant", "Distant"],
+        ["Co-workers", "Met at a conference", "Mutual connection", "Online introduction"],
+        ["Weekly", "Monthly", "Annually", "Rarely", "Never"]
+    ];
+
+    const ALL_QUIZ_QUESTIONS = OPEN_QUIZ_QUESTIONS.concat(STATIC_QUIZ_QUESTIONS);
+
+    const [quizAnswers, setQuizAnswers] = useState(
+        Object.fromEntries(ALL_QUIZ_QUESTIONS.map((question) => [question, ""]))
+    );
 
     const [formData, setFormData] = useState({
         name: "",
@@ -74,7 +90,9 @@ function ContactId() {
         event.preventDefault(); // Prevent page reload
 
         // Convert quizAnswers to list of { question, answer }
-        const formattedQuizAnswers = Object.entries(quizAnswers).map(([question, answer]) => ({
+        const formattedQuizAnswers = Object.entries(quizAnswers)
+        .filter(([question, answer]) => answer !== "")
+        .map(([question, answer]) => ({
             question,
             answer
         }));
@@ -152,8 +170,16 @@ function ContactId() {
                         <div className="col-5">
                             <h2>Edit contact: {contact.name}</h2>
                         </div>
-                        <div className="col-5">
-                            <button className="btn btn-primary mt-1" onClick={() => setQuizVisible(!quizVisible)}>Relationship rating quiz</button>
+                        <div className="dropdown col-5">
+                            <button className="btn btn-primary dropdown-toggle mt-1" type="button" id="quizDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Relationship rating quiz
+                            </button>
+                            <ul className="dropdown-menu" aria-labelledby="quizDropdown">
+                                <li><button className="dropdown-item" onClick={() => {setOpenQuizVisible(true); setStaticQuizVisible(false);}} type="button">Open-ended</button></li>
+                                <li><button className="dropdown-item" onClick={() => {setOpenQuizVisible(false); setStaticQuizVisible(true);}} type="button">Multiple choice</button></li>
+                                <li><button className="dropdown-item" onClick={() => {setOpenQuizVisible(true); setStaticQuizVisible(true);}} type="button">Both</button></li>
+                                <li><button className="dropdown-item" onClick={() => {setOpenQuizVisible(false); setStaticQuizVisible(false);}} type="button">No quiz</button></li>
+                            </ul>
                         </div>
                     </div>
                     <div className="row">
@@ -237,7 +263,7 @@ function ContactId() {
                                     </FormControl>
                                 </div>
                             </div>
-                            <div className="row">
+                            <div className="row mb-2">
                                 <div className="col-12">
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="notes">Notes</InputLabel>
@@ -256,20 +282,46 @@ function ContactId() {
                                     </FormControl>
                                 </div>
                             </div>
-                            <Collapse in={quizVisible} >
-                                <div className="row my-4">
-                                    {QUIZ_QUESTIONS.map((question, index) => (
-                                        <div key={index} className="col-6">
-                                            <div className="mb-3">
-                                                <FormControl className="w-100">
-                                                    <InputLabel htmlFor={`quiz-${index}`}>{question}</InputLabel>
+                            <Collapse in={openQuizVisible} >
+                                <div className="row">
+                                    {OPEN_QUIZ_QUESTIONS.map((question, index) => (
+                                        <div key={index} className={"col-6"}>
+                                            <div className="my-2">
+                                                <FormControl className="w-100" style={{ minWidth: 0 }}>
+                                                    <InputLabel htmlFor={`open-quiz-${index}`} >{question}</InputLabel>
                                                     <OutlinedInput
-                                                        id={`quiz-${index}`}
-                                                        name={`quiz-${index}`}
+                                                        id={`open-quiz-${index}`}
+                                                        name={`open-quiz-${index}`}
                                                         label={question}
                                                         value={quizAnswers[question]}
                                                         onChange={(e) => handleQuizChange(e, question)}
                                                     />
+                                                </FormControl>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Collapse>
+                            <Collapse in={staticQuizVisible} >
+                                <div className="row">
+                                    {STATIC_QUIZ_QUESTIONS.map((question, index) => (
+                                        <div key={index} className={"col-6"}>
+                                            <div className="my-2">
+                                                <FormControl className="w-100" style={{ minWidth: 0 }}>
+                                                    <InputLabel htmlFor={`static-quiz-${index}`} >{question}</InputLabel>
+                                                    <Select
+                                                        id={`static-quiz-${index}`}
+                                                        labelId={`static-quiz-${index}`}
+                                                        label={question}
+                                                        value={quizAnswers[question]}
+                                                        onChange={(e) => handleQuizChange(e, question)}
+                                                    >
+                                                        {STATIC_QUIZ_OPTIONS[index].map((option, option_index) => (
+                                                            <MenuItem key={option_index} value={option}>
+                                                                {option}
+                                                            </MenuItem>
+                                                        ))}
+                                                    </Select>
                                                 </FormControl>
                                             </div>
                                         </div>
@@ -435,23 +487,57 @@ function ContactId() {
                                 </FormControl>
                             </div>
                         </div>
-                        <div className="row justify-content-center my-2">
-                            <button className="btn btn-primary mt-1 w-75" type="button" onClick={() => setQuizVisible(!quizVisible)}>Relationship rating quiz</button>
+                        <div className="dropdown row my-2 justify-content-center">
+                            <button className="btn btn-primary dropdown-toggle mt-1 w-75" type="button" id="quizDropdownSmall" data-bs-toggle="dropdown" aria-expanded="false">
+                                Relationship rating quiz
+                            </button>
+                            <ul className="dropdown-menu" aria-labelledby="quizDropdownSmall">
+                                <li><button className="dropdown-item" onClick={() => setOpenQuizVisible(true)} type="button">Open-ended</button></li>
+                                <li><button className="dropdown-item" onClick={() => setStaticQuizVisible(true)} type="button">Multiple choice</button></li>
+                                <li><button className="dropdown-item" onClick={() => {setOpenQuizVisible(true); setStaticQuizVisible(true);}} type="button">Both</button></li>
+                                <li><button className="dropdown-item" onClick={() => {setOpenQuizVisible(false); setStaticQuizVisible(false);}} type="button">No quiz</button></li>
+                            </ul>
                         </div>
-                        <Collapse in={quizVisible} >
-                            <div className="row my-4">
-                                {QUIZ_QUESTIONS.map((question, index) => (
-                                    <div key={index} className="col-12">
-                                        <div className="mb-3">
-                                            <InputLabel htmlFor={`quiz-${index}-s`}>{question}</InputLabel>
+                        <Collapse in={openQuizVisible} >
+                            <div className="row">
+                                {OPEN_QUIZ_QUESTIONS.map((question, index) => (
+                                    <div key={index} className={"col-12"}>
+                                        <div className="my-2">
+                                            <InputLabel htmlFor={`open-quiz-${index}-s`}>{question}</InputLabel>
                                             <FormControl className="w-100">
                                                 <OutlinedInput
-                                                    id={`quiz-${index}-s`}
-                                                    name={`quiz-${index}`}
+                                                    id={`open-quiz-${index}-s`}
+                                                    name={`open-quiz-${index}-s`}
                                                     label={question}
                                                     value={quizAnswers[question]}
                                                     onChange={(e) => handleQuizChange(e, question)}
                                                 />
+                                            </FormControl>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </Collapse>
+                        <Collapse in={staticQuizVisible} >
+                            <div className="row">
+                                {STATIC_QUIZ_QUESTIONS.map((question, index) => (
+                                    <div key={index} className={"col-12"}>
+                                        <div className="my-2">
+                                            <InputLabel htmlFor={`static-quiz-${index}-s`}>{question}</InputLabel>
+                                            <FormControl className="w-100">
+                                            <Select
+                                                id={`static-quiz-${index}-s`}
+                                                labelId={`static-quiz-${index}-s`}
+                                                label={question}
+                                                value={quizAnswers[question]}
+                                                onChange={(e) => handleQuizChange(e, question)}
+                                            >
+                                                {STATIC_QUIZ_OPTIONS[index].map((option, option_index) => (
+                                                    <MenuItem key={option_index} value={option}>
+                                                        {option}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
                                             </FormControl>
                                         </div>
                                     </div>
