@@ -131,78 +131,87 @@ function Home() {
 
                     {/* Upcoming Tasks */}
                     <div className="col-md-6">
-                        <h4 className="fw-bold ms-3">Upcoming Tasks</h4>
+                    <div className="p-4 bg-white rounded shadow border" style={{ minHeight: '100%', marginLeft: '1rem' }}>
+                        <h4 className="fw-bold mb-3">Upcoming Tasks</h4>
+
+                        <div className="d-flex align-items-start bg-light rounded p-3 mb-4" style={{ gap: '10px' }}>
+                        <div style={{ fontSize: '1.5rem', color: '#0d6efd' }}>💡</div>
+                        <div style={{ fontWeight: '500', fontSize: '1rem' }}>
+                            <span style={{ color: '#0d6efd', fontWeight: '600' }}>Tip:</span> Completing tasks boosts your relationship score and helps you build stronger connections!
+                        </div>
+                        </div>
+
                         <TaskAIContextProvider>
                         {tasks.length > 0 ? (
-                        tasks.map((task) => {
+                            tasks.map((task) => {
                             const isCompleted = task.completed;
 
                             return (
-                            <div
+                                <div
                                 key={task.id}
-                                className={`card shadow-sm border-0 rounded ms-3 ${isCompleted ? "completed-task" : ""}`}
+                                className={`card shadow-sm border-0 rounded mb-3 ${isCompleted ? "completed-task" : ""}`}
                                 style={{
-                                cursor: "pointer",
-                                transition: "0.3s ease",
-                                padding: "15px",
-                                backgroundColor: isCompleted ? "#f0f0f0" : "white",
-                                opacity: isCompleted ? 0.7 : 1
+                                    cursor: "pointer",
+                                    transition: "0.3s ease",
+                                    padding: "15px",
+                                    backgroundColor: isCompleted ? "#f0f0f0" : "white",
+                                    opacity: isCompleted ? 0.7 : 1
                                 }}
                                 onClick={(event) => handleTaskClick(task.id, event)}
-                            >
+                                >
                                 <div className="card-body">
-                                <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
                                     <h5
-                                    className="fw-bold mb-0"
-                                    style={{
+                                        className="fw-bold mb-0"
+                                        style={{
                                         color: isCompleted ? "#6c757d" : "#212529",
                                         textDecoration: isCompleted ? "line-through" : "none"
-                                    }}
+                                        }}
                                     >
-                                    {task.title}
+                                        {task.title}
                                     </h5>
                                     {isCompleted && (
-                                    <span className="badge bg-success" style={{ fontSize: "0.8rem" }}>
+                                        <span className="badge bg-success" style={{ fontSize: "0.8rem" }}>
                                         Completed
-                                    </span>
+                                        </span>
                                     )}
-                                </div>
+                                    </div>
 
-                                <p className="card-text mb-1">
+                                    <p className="card-text mb-1">
                                     <strong>📆 Date:</strong> {task.date}
-                                </p>
-                                <p className="card-text mb-1">
+                                    </p>
+                                    <p className="card-text mb-1">
                                     <strong>👤 Contact:</strong> {task.contactName}
-                                </p>
+                                    </p>
 
-                                <div className="form-check mt-2">
+                                    <div className="form-check mt-2">
                                     <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    checked={task.completed}
-                                    onChange={() => handleTaskCompletion(task)}
-                                    id={`complete-check-${task.id}`}
-                                    onClick={(e) => e.stopPropagation()}
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        checked={task.completed}
+                                        onChange={() => handleTaskCompletion(task)}
+                                        id={`complete-check-${task.id}`}
+                                        onClick={(e) => e.stopPropagation()}
                                     />
                                     <label className="form-check-label" htmlFor={`complete-check-${task.id}`}>
-                                    Mark as complete
+                                        Mark as complete
                                     </label>
-                                </div>
-
-                                {selectedTask === task.id && (
-                                    <div className="task-message-container mt-3">
-                                    <TaskMessage task={task} />
                                     </div>
-                                )}
-                                </div>
-                            </div>
-                            );
-                        })
-                        ) : (
-                        <div className="text-muted ms-3">No tasks available.</div>
-                        )}
 
+                                    {selectedTask === task.id && (
+                                    <div className="task-message-container mt-3">
+                                        <TaskMessage task={task} />
+                                    </div>
+                                    )}
+                                </div>
+                                </div>
+                            );
+                            })
+                        ) : (
+                            <div className="text-muted">No tasks available.</div>
+                        )}
                         </TaskAIContextProvider>
+                    </div>
                     </div>
 
                 </div>
