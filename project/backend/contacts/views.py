@@ -144,7 +144,10 @@ class IndividualContactView(APIView):
                                            partial=True)  # partial=True allows partial updates
             if serializer.is_valid(raise_exception=True):
                 if quiz_used:
-                    serializer.save(pfp=pfp_bin, relationship_rating=relationship_rating)
+                    if pfp_bin:
+                        serializer.save(pfp=pfp_bin, relationship_rating=relationship_rating)
+                    else:
+                        serializer.save(relationship_rating=relationship_rating)
                 else:
                     if pfp_bin:
                         serializer.save(pfp=pfp_bin)
