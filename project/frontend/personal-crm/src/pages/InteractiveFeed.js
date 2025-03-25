@@ -8,7 +8,9 @@ import moment from "moment";
 
 function InteractiveFeed() {
     const { onSent, recentPrompt, showResult, loading, resultData, setInput, input } = useContext(Context);
-    const promptStart = "Give me a mock event that is happening with some random contact that I may have that I could join. Only give json of format { title: \"Event 1\", description: \"This is the first event\", date: \"2025-03-10\", contact: \"Contact Name\"} in plain text no code block. Must start and stop with {}";
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const promptStart = "Give me a mock event that is happening with some random contact that I may have that I could join. Only give json of format { title: \"Event 1\", description: \"This is the first event\", date: \"2025-03-10\", contact: \"Contact Name\"} in plain text no code block. Ensure that the date given is 1 to 7 days after:" + today + ". Also make sure the JSON starts with { and ends with }";
     const [eventData, setEventData] = useState("");
     const BASE_URL = 'http://127.0.0.1:8000/';
     const [currentDailyCount, setCurrentDailyCount] = useState();
@@ -21,7 +23,7 @@ function InteractiveFeed() {
     const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
     const [selectedFeedEventId, setSelectedFeedEventId] = useState(null);
 
-    // Modal Handlers
+
 
     const handleOpenEventModal = (event) => {
         if (!event || !event.title) {
@@ -93,10 +95,6 @@ function InteractiveFeed() {
         } catch (error) {
             console.error("Error fetching data:", error);
         }
-    };
-
-    const placeholderFunction = () => {
-        console.log("Placeholder function called");
     };
 
     useEffect(() => {
