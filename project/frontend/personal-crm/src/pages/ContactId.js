@@ -21,7 +21,7 @@ function ContactId() {
     const OPEN_QUIZ_QUESTIONS = [
         "Have they ever supported you in a meaningful way? How?",
         "How well do you click with them?",
-        "How often do you communicate with this person?",
+        "What is the most meaningful interaction you've had with them?",
         "Would you feel comfortable asking them for a favor? What kind?"
     ];
 
