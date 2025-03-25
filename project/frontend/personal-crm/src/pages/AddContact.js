@@ -7,6 +7,7 @@ import { useMediaQuery } from 'react-responsive';
 
 function AddContact() {
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
+    const [imageFile, setImageFile] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
     const imageInputRef = useRef();
     const isSmallScreen = useMediaQuery({ query: '(max-width: 800px)' });
     const nav = useNavigate();
@@ -53,6 +54,25 @@ function AddContact() {
         setConsent(!consent);
     }
 
+    // Convert to FormData instance so we can send pic and data in one req
+    function createFormData(updatedFormData, formattedQuizAnswers, imageFile) {
+        const newFormData = new FormData();
+
+        Object.entries(updatedFormData).forEach(([key, value]) => {
+            if (value !== undefined) {
+                newFormData.append(key, value);
+            }
+        });
+
+        newFormData.append("quiz_answers", JSON.stringify(formattedQuizAnswers));
+
+        if (imageFile) {
+            newFormData.append("pfp", imageFile);
+        }
+
+        return newFormData;
+    }
+
     const handleSubmit = async (event) => {
         event.preventDefault(); // Prevent page reload
 
@@ -63,8 +83,7 @@ function AddContact() {
         }));
 
         const updatedFormData = {
-            ...formData,
-            quiz_answers: formattedQuizAnswers
+            ...formData
         };
 
         setErrors({});
@@ -79,13 +98,19 @@ function AddContact() {
         }
 
         try {
-            const response = await axiosInstance.post(`${BASE_URL}contacts/add`, updatedFormData);
+            const newFormData = createFormData(updatedFormData, formattedQuizAnswers, imageFile);
+            const response = await axiosInstance.post(`${BASE_URL}contacts/add`, newFormData);
             console.log("Contact added:", response.data);
             alert("Contact successfully added!");
             nav('/contacts/');
         } catch (error) {
             if (error.response && error.response.data) {
-                setErrors(error.response.data);
+                 // Image validation error checker
+                if (error.response.status === 400 && error.response.data.error) {
+                    alert(error.response.data.error);
+                } else {
+                    setErrors(error.response.data);
+                }
             } else {
                 console.error("Error adding contact", error);
                 alert("Failed to add contact.");
@@ -245,6 +270,7 @@ function AddContact() {
                                         if (e.target.files[0].type.startsWith("image/")) {
                                             console.log(e.target.files[0]);
                                             setImage(URL.createObjectURL(e.target.files[0]));
+                                            setImageFile(e.target.files[0])
                                         }else {
                                             alert("Please upload a valid image file");
                                         }
@@ -275,6 +301,7 @@ function AddContact() {
                                 if (e.target.files[0].type.startsWith("image/")) {
                                     console.log(e.target.files[0]);
                                     setImage(URL.createObjectURL(e.target.files[0]));
+                                    setImageFile(e.target.files[0])
                                 }else {
                                     alert("Please upload a valid image file");
                                 }

@@ -7,6 +7,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 class Contact(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pfp = models.BinaryField(null=True, blank=True)     # storing in db as binary
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100, default="")    # manual add is required, default empty for csv upload
     phone = models.CharField(max_length=15, blank=True, default="")
