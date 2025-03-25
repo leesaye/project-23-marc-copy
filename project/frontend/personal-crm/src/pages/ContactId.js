@@ -11,7 +11,7 @@ function ContactId() {
     const isSmallScreen = useMediaQuery({ query: '(max-width: 800px)' });
     const nav = useNavigate();
     const [image, setImage] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
-    const [imageFile, setImageFile] = useState(null);
+    const [imageFile, setImageFile] = useState("https://cdn.vectorstock.com/i/500p/95/56/user-profile-icon-avatar-or-person-vector-45089556.jpg");
     const imageInputRef = useRef();
     const [openQuizVisible, setOpenQuizVisible] = useState(false);
     const [staticQuizVisible, setStaticQuizVisible] = useState(false);
