@@ -62,6 +62,7 @@ function Home() {
 
     const handleTaskCompletion = async (task) => {
         try {
+            const wasPreviouslyCompleted = task.completed;
             const updatedTask = { ...task, completed: !task.completed };
     
             await axiosInstance.patch(`${TASK_URL}${task.id}/`, {
@@ -71,22 +72,28 @@ function Home() {
             const updatedTasks = tasks.map(t => t.id === task.id ? updatedTask : t);
             setTasks(updatedTasks);
     
-            if (updatedTask.completed && task.contact) {
+            if (!wasPreviouslyCompleted && updatedTask.completed && task.contact) {
                 const contact = contacts.find(c => c.id === task.contact);
+
                 if (contact && contact.relationship_rating < 100) {
                     const updatedRating = Math.min(contact.relationship_rating + 5, 100);
-                    await axiosInstance.patch(`${CONTACT_URL}${contact.id}/`, {
-                        relationship_rating: updatedRating,
-                    });
-                }
+                    console.log(contact.relationship_rating);
+
+                    const formData = new FormData();
+                    formData.append("relationship_rating", updatedRating);
     
-                alert(`Task marked complete! ${contact.name}'s relationship rating increased.`);
+                    await axiosInstance.post(`${CONTACT_URL}${contact.id}`, formData, {
+                        headers: { "Content-Type": "multipart/form-data" },
+                    });
+    
+                    // alert(`Task marked complete! ${contact.name}'s relationship rating increased.`);
+                }
             }
         } catch (error) {
             console.error("Error completing task:", error);
         }
     };
-    
+                
     const handleTaskClick = (taskId, event) => {
         if (event.target.closest(".task-message-container")) {
             return;
