@@ -4,12 +4,13 @@ from rest_framework import status
 from django.contrib.auth.models import User
 from .models import GoogleConnection
 from .serializer import GoogleConnectionSerializer
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView
 
 #imports for class based view
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import permissions
 
 #stuff for adding token to cookie
 from rest_framework_simplejwt.views import (
@@ -18,7 +19,7 @@ from rest_framework_simplejwt.views import (
 )
 
 #Serializers
-from .serializer import UserSerializer, UserRegisterSerializer
+from .serializer import UserSerializer, UserRegisterSerializer, UpdateUserSerializer
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):
@@ -153,3 +154,16 @@ class GoogleLogoutView(APIView):
 
         connection.delete()
         return Response({"message": "Google connection deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+    
+
+class UpdateAccountView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UpdateUserSerializer
+    permission_classes = [permissions.IsAuthenticated]  # Ensure user is authenticated
+
+    def get_object(self):
+        # Automatically return the logged-in user, so they can't update someone else's account
+        return self.request.user
+
+    def perform_update(self, serializer):
+        # Perform the update, including password hashing if the password is provided
+        serializer.save()
