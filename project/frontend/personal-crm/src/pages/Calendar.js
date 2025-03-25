@@ -255,8 +255,11 @@ function GoogleCalendar() {
         e.preventDefault();
     
         if (!selectedTask) return;
-        console.log(selectedTask);
+    
         try {
+            const wasPreviouslyCompleted = tasks.find(task => task.id === selectedTask.id)?.completed;
+            const isNowCompleted = selectedTask.completed;
+    
             const updatedTaskData = {
                 title: selectedTask.title,
                 date: moment(selectedTask.start).format("YYYY-MM-DD"),
@@ -270,24 +273,32 @@ function GoogleCalendar() {
             const updatedTasks = tasks.map(task =>
                 task.id === selectedTask.id ? { ...task, ...updatedTaskData } : task
             );
-    
             setTasks(updatedTasks);
     
             const updatedEvents = events.map(event =>
                 event.id === selectedTask.id
-                    ? { 
-                        ...event, 
+                    ? {
+                        ...event,
                         title: `${updatedTaskData.title}`,
                         start: moment(updatedTaskData.date).startOf('day').toDate(),
                         end: moment(updatedTaskData.date).startOf('day').toDate(),
-                        contact: updatedTaskData.contact, 
+                        contact: updatedTaskData.contact,
                         style: { backgroundColor: selectedColor, color: 'white' },
                         completed: updatedTaskData.completed
-                    } 
+                    }
                     : event
             );
-    
             setEvents(updatedEvents);
+    
+            if (!wasPreviouslyCompleted && isNowCompleted && selectedTask.contact) {
+                const contact = contacts.find(c => c.id === selectedTask.contact);
+                if (contact && contact.relationship_rating < 100) {
+                    const updatedRating = Math.min(contact.relationship_rating + 5, 100);
+                    await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, {
+                        relationship_rating: updatedRating
+                    });
+                }
+            }
     
             setSelectedTask(null);
             setSidebarOpen(false);
@@ -295,7 +306,7 @@ function GoogleCalendar() {
             console.error('Error updating task:', error);
         }
     };
-                
+                    
     const CustomEvent = ({ event }) => { 
         return (
             <div className="custom-event" onClick={() => {
@@ -576,7 +587,7 @@ function GoogleCalendar() {
                                 ))}
                             </select>
                             <div className="completed-toggle">
-                                <label htmlFor="completed">Mark as Complete:</label>
+                                <label htmlFor="completed">Mark Completed:</label>
                                 <input
                                     id="completed"
                                     type="checkbox"

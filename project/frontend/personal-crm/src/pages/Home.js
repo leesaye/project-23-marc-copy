@@ -85,8 +85,6 @@ function Home() {
                     await axiosInstance.post(`${CONTACT_URL}${contact.id}`, formData, {
                         headers: { "Content-Type": "multipart/form-data" },
                     });
-    
-                    // alert(`Task marked complete! ${contact.name}'s relationship rating increased.`);
                 }
             }
         } catch (error) {
@@ -154,7 +152,7 @@ function Home() {
                                     cursor: "pointer",
                                     transition: "0.3s ease",
                                     padding: "15px",
-                                    backgroundColor: isCompleted ? "#f0f0f0" : "white",
+                                    backgroundColor: "#f8f9fa",
                                     opacity: isCompleted ? 0.7 : 1
                                 }}
                                 onClick={(event) => handleTaskClick(task.id, event)}
@@ -194,8 +192,13 @@ function Home() {
                                         onClick={(e) => e.stopPropagation()}
                                     />
                                     <label className="form-check-label" htmlFor={`complete-check-${task.id}`}>
-                                        Mark as complete
+                                        Mark completed
                                     </label>
+                                    {!task.completed && task.contact && (
+                                        <span className="ms-3 badge bg-primary-subtle text-primary fw-semibold">
+                                        +5 Relationship Rating
+                                        </span>
+                                    )}
                                     </div>
 
                                     {selectedTask === task.id && (
