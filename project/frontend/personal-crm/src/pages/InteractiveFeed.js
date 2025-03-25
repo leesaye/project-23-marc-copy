@@ -52,20 +52,23 @@ function InteractiveFeed() {
                 ...newEvent,
                 color: selectedColor,
             });
-            // Increment Current Daily Count
-            if (currentDailyCount !== dailyGoal) {
+    
+            // Increment Current Daily Count only if it's below the Daily Goal
+            if (currentDailyCount < dailyGoal) {
                 setCurrentDailyCount((prevCount) => {
                     const updatedCount = (prevCount || 0) + 1;
-
-                    // If the count reaches the daily goal, increment the streak count
-                    if (updatedCount === dailyGoal) {
-                        setStreak((prevStreak) => (prevStreak || 0) + 1);
-                    }
-
+    
+                    axiosInstance.post(`${BASE_URL}feed/user-stats/increment_count/`)
+                        .then((response) => {
+                            console.log("Daily Count incremented:", response.data);
+                        })
+                        .catch((error) => {
+                            console.error("Error incrementing Daily Count:", error);
+                        });
+    
                     return updatedCount;
                 });
             }
-
     
         } catch (error) {
             console.error("Error adding event:", error);
