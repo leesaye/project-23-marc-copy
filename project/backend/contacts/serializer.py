@@ -3,13 +3,14 @@ from rest_framework.serializers import ModelSerializer
 from django.core.validators import RegexValidator
 from . models import Contact
 
+MAX_IMG_SIZE = 200 * 1024  # 200 KB limit
 
 # Serializer for Contact
 class ContactSerializer(ModelSerializer):
     """Serializer for Contact model."""
     email = serializers.EmailField(
-        required=False, 
-        allow_blank=True, 
+        required=False,
+        allow_blank=True,
         error_messages={
             "invalid": "Please enter a valid email address.",
             "blank": "This field may not be blank.",
@@ -23,4 +24,4 @@ class ContactSerializer(ModelSerializer):
 
     class Meta:
         model = Contact
-        fields = ['id', 'user', 'name', 'email', 'phone', 'job', 'relationship_rating', 'relationship', 'notes', 'created_at']
+        fields = ['id', 'user', 'name', 'pfp', 'email', 'phone', 'job', 'relationship_rating', 'relationship', 'notes', 'created_at']

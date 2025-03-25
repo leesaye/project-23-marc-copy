@@ -9,12 +9,15 @@ import AddIcon from '@mui/icons-material/Add';
 import { Link, useNavigate } from 'react-router-dom';
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import { useEffect, useState, useRef } from 'react';
+import { useMediaQuery } from 'react-responsive';
 
 function Contacts() {
     const [searchQuery, setSearchQuery] = useState("");
     const [contacts, setContacts] = useState([]);
     const [sortValue, setSearchValue] = useState("Name (asc)");
     const [user, setUser] = useState(null);
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
+    const isTinyScreen = useMediaQuery({ query: '(max-width: 450px)' });
     const [googleConnection, setGoogleConnection] = useState(null);
     const BASE_URL = `http://127.0.0.1:8000/`;
     const csvInputRef = useRef();
@@ -125,79 +128,199 @@ function Contacts() {
 
     return (
         <Layout>
-            <div className="container bg-primary-subtle rounded p-3 min-vh-100">
-                <div className="row">
-                    <div className="col-2">
+            {!isSmallScreen ? ( /*For desktop screen size*/
+                <div className="container bg-primary-subtle rounded p-3 min-vh-100">
+                    <div className="row">
+                        <div className="col-2">
+                            <h2>Contacts</h2>
+                        </div>
+                        <div className="col-2 mt-1">
+                            <Link to="/contacts/add/">
+                                <button className="btn btn-success">
+                                    <AddIcon />
+                                    Add contact
+                                </button>
+                            </Link>
+                        </div>
+                        <div className="col-4 mt-1">
+                            <Paper elevation={0} component="form" className="p-1 w-75">
+                                <SearchIcon />
+                                <InputBase placeholder="Search contacts" inputProps={{ 'aria-label': 'search contacts' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                            </Paper>
+                        </div>
+                        <div className="col-2 mt-1">
+                            <div className="dropdown">
+                                <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <SwapVertIcon />
+                                    Sort by
+                                </button>
+                                <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                    <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
+                                    <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
+                                    <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
+                                    <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div className="col-1 mt-1">
+                            <div className="dropdown">
+                                <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Import
+                                </button>
+                                <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                    <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
+                                    {!user ? (
+                                        <li><button onClick={googleLogin} className="dropdown-item">Connect with Google</button></li>
+                                    ) : (
+                                        <div>
+                                            <li><button onClick={handleSync} className="dropdown-item">Sync Google contacts</button></li>
+                                            <li><button onClick={handleLogout} className="dropdown-item">Disconnect from Google</button></li>
+                                        </div>
+                                    )
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row mt-4">
+                        <div className="col-1"></div>
+                        <div className="col-2">
+                            <p>Name</p>
+                        </div>
+                        <div className="col-2">
+                            <p>Job</p>
+                        </div>
+                        <div className="col-3">
+                            <p>Relationship Rating</p>
+                        </div>
+                        <div className="col-3">
+                            <p>Relationship</p>
+                        </div>
+                    </div>
+                    {!contacts ? <p>Loading...</p>:
+                    sortedContacts.map(contact =>
+                        <Contact key={contact.id} contact={contact} />
+                    )}
+
+                </div>
+
+            ) : ( /*For laptop/phone screen (not smallest size)*/
+
+                <div className="container bg-primary-subtle rounded p-3 min-vh-100">
+                    <div className="row text-center">
                         <h2>Contacts</h2>
                     </div>
-                    <div className="col-3 mt-1">
-                        <Link to="/contacts/add/">
-                            <button className="btn btn-success">
-                                <AddIcon />
-                                Add contact
-                            </button>
-                        </Link>
-                    </div>
-                    <div className="col-4 mt-1">
-                        <Paper elevation={0} component="form" className="p-1 w-75">
-                            <SearchIcon />
-                            <InputBase placeholder="Search contacts" inputProps={{ 'aria-label': 'search contacts' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-                        </Paper>
-                    </div>
-                    <div className="col-2 mt-1">
-                        <div className="dropdown">
-                            <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <SwapVertIcon />
-                                Sort by
-                            </button>
-                            <ul className="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
-                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
-                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
-                                <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
-                            </ul>
+                    <div className="row">
+                        <div className="col-12 my-2">
+                            <Paper elevation={0} component="form" className="p-1 w-75 mx-auto">
+                                <SearchIcon />
+                                <InputBase placeholder="Search contacts" inputProps={{ 'aria-label': 'search contacts' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                            </Paper>
                         </div>
                     </div>
-                    <div className="col-1 mt-1">
-                        <div className="dropdown">
-                            <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Import
-                            </button>
-                            <ul className="dropdown-menu" aria-labelledby="sortDropdown">
-                                <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
-                                {!user ? (
-                                    <li><button onClick={googleLogin} className="dropdown-item">Connect with Google</button></li>
-                                ) : (
-                                    <div>
-                                        <li><button onClick={handleSync} className="dropdown-item">Sync Google contacts</button></li>
-                                        <li><button onClick={handleLogout} className="dropdown-item">Disconnect from Google</button></li>
+                        {!isTinyScreen ? ( /*For laptop/phone screen (not smallest size)*/
+                            <div className="row text-center">
+                                <div className="col-4 mt-1">
+                                    <Link to="/contacts/add/">
+                                        <button className="btn btn-success">
+                                            <AddIcon />
+                                            Add
+                                        </button>
+                                    </Link>
+                                </div>
+                                <div className="col-4 mt-1">
+                                    <div className="dropdown">
+                                        <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <SwapVertIcon />
+                                            Sort
+                                        </button>
+                                        <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                            <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
+                                            <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
+                                            <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
+                                            <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
+                                        </ul>
                                     </div>
-                                )
-                                }
-                            </ul>
+                                </div>
+                                <div className="col-1 mt-1">
+                                    <div className="dropdown">
+                                        <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Import
+                                        </button>
+                                        <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                            <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
+                                            {!user ? (
+                                                <li><button onClick={googleLogin} className="dropdown-item">Connect with Google</button></li>
+                                            ) : (
+                                                <div>
+                                                    <li><button onClick={handleSync} className="dropdown-item">Sync Google contacts</button></li>
+                                                    <li><button onClick={handleLogout} className="dropdown-item">Disconnect from Google</button></li>
+                                                </div>
+                                            )
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : ( /*For smallest phone size*/
+                            <div className="row text-center">
+                                <div className="col-3 mt-1">
+                                    <Link to="/contacts/add/">
+                                        <button className="btn btn-success">
+                                            <AddIcon />
+                                        </button>
+                                    </Link>
+                                </div>
+                                <div className="col-4 mt-1">
+                                    <div className="dropdown">
+                                        <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <SwapVertIcon />
+                                        </button>
+                                        <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                            <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (asc)</button></li>
+                                            <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Name (desc)</button></li>
+                                            <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (asc)</button></li>
+                                            <li><button className="dropdown-item" onClick={(e) => setSearchValue(e.target.innerHTML)} >Relationship rating (desc)</button></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div className="col-1 mt-1">
+                                    <div className="dropdown">
+                                        <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Import
+                                        </button>
+                                        <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                            <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
+                                            {!user ? (
+                                                <li><button onClick={googleLogin} className="dropdown-item">Connect with Google</button></li>
+                                            ) : (
+                                                <div>
+                                                    <li><button onClick={handleSync} className="dropdown-item">Sync Google contacts</button></li>
+                                                    <li><button onClick={handleLogout} className="dropdown-item">Disconnect from Google</button></li>
+                                                </div>
+                                            )
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    <div className="row mt-4">
+                        <div className="col-4">
+                            <p>Name</p>
+                        </div>
+                        <div className="col-8">
+                            <p>Relationship Rating</p>
                         </div>
                     </div>
-                </div>
-                <div className="row mt-4">
-                    <div className="col-4">
-                        <p>Name</p>
-                    </div>
-                    <div className="col-2">
-                        <p>Job</p>
-                    </div>
-                    <div className="col-3">
-                        <p>Relationship Rating</p>
-                    </div>
-                    <div className="col-2">
-                        <p>Relationship</p>
-                    </div>
-                </div>
-                {!contacts ? <p>Loading...</p>:
-                sortedContacts.map(contact =>
-                    <Contact contact={contact} />
-                )}
+                    {!contacts ? <p>Loading...</p>:
+                    sortedContacts.map(contact =>
+                        <Contact key={contact.id} contact={contact} />
+                    )}
 
-            </div>
+                </div>
+            )}
+            
         </Layout>
     );
 }
