@@ -19,8 +19,8 @@ function GoogleCalendar() {
     const [tasks, setTasks] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [formType, setFormType] = useState(null);
-    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', contact: '', type: 'Event' });
-    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '' });
+    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', contact: '', tag: '', type: 'Event' });
+    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', tag: '', contact: '' });
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [contacts, setContacts] = useState([]);
@@ -64,6 +64,7 @@ function GoogleCalendar() {
                 end: new Date(event.end),
                 type: event.source === "google" ? "Google Event" : "Event",
                 contact: event.contact || "",
+                tag: event.tag || "",  
                 style: { backgroundColor: event.color || "#3174ad", color: 'white' }
             }));
 
@@ -78,7 +79,8 @@ function GoogleCalendar() {
                 type: "Task",
                 style: { backgroundColor: task.color || "#014F86", color: 'white' },
                 contact: task.contact || "",
-                completed: task.completed
+                completed: task.completed, 
+                tag: task.tag || ""   
             }));
 
             setEvents([...eventsData, ...tasksData]);
@@ -175,13 +177,14 @@ function GoogleCalendar() {
                     end: new Date(moment.utc(createdEvent.end).format("YYYY-MM-DDTHH:mm:ss")),
                     type: 'Event',
                     style: { backgroundColor: selectedColor, color: 'white' },
-                    contact: createdEvent.contact || ""
+                    contact: createdEvent.contact || "", 
+                    tag: createdEvent.tag || ""
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
             }
 
-            setNewEvent({ title: '', start: '', end: '' , contact: '' });
+            setNewEvent({ title: '', start: '', end: '' , contact: '', tag: ''});
             setSidebarOpen(false);
         }
     };
@@ -201,7 +204,8 @@ function GoogleCalendar() {
                     allDay: true,
                     style: { backgroundColor: selectedColor, color: 'white' },
                     type: "Task",
-                    contact: createdTask.contact || ""
+                    contact: createdTask.contact || "",
+                    tag: createdTask.tag || ""
                 };
 
                 setTasks([...tasks, createdTask]);
@@ -210,7 +214,7 @@ function GoogleCalendar() {
                 console.error('Error adding task:', error);
             }
 
-            setNewTask({ title: '', date: '' , contact: ''});
+            setNewTask({ title: '', date: '' , contact: '', tag: ''});
             setSidebarOpen(false);
         }
     };
@@ -226,7 +230,8 @@ function GoogleCalendar() {
                 start: selectedEvent.start,
                 end: selectedEvent.end,
                 contact: selectedEvent.contact || "",
-                color: selectedColor
+                color: selectedColor,
+                tag: selectedEvent.tag || ""
             };
 
             await axiosInstance.put(`${BASE_URL}api/events/${selectedEvent.id}/`, updatedEventData);
@@ -239,7 +244,8 @@ function GoogleCalendar() {
                         start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
                         end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
                         contact: updatedEventData.contact,
-                        style: { backgroundColor: selectedColor, color: 'white' }
+                        style: { backgroundColor: selectedColor, color: 'white' },
+                        tag: updatedEventData.tag || ""
                     }
                     : event
             );
@@ -267,7 +273,8 @@ function GoogleCalendar() {
                 date: moment(selectedTask.start).format("YYYY-MM-DD"),
                 contact: selectedTask.contact || "",
                 color: selectedColor,
-                completed: selectedTask.completed
+                completed: selectedTask.completed,
+                tag: selectedTask.tag || ""
             };
 
             await axiosInstance.put(`${BASE_URL}api/tasks/${selectedTask.id}/`, updatedTaskData);
@@ -286,7 +293,8 @@ function GoogleCalendar() {
                         end: moment(updatedTaskData.date).startOf('day').toDate(),
                         contact: updatedTaskData.contact,
                         style: { backgroundColor: selectedColor, color: 'white' },
-                        completed: updatedTaskData.completed
+                        completed: updatedTaskData.completed,
+                        tag: updatedTaskData.tag || ""
                     }
                     : event
             );
@@ -320,14 +328,16 @@ function GoogleCalendar() {
                         title: event.title,
                         start: moment(event.start).format("YYYY-MM-DDTHH:mm"),
                         end: moment(event.end).format("YYYY-MM-DDTHH:mm"),
-                        contact: event.contact ? event.contact : ""
+                        contact: event.contact ? event.contact : "", 
+                        tag: event.tag ? event.tag : ""
                     });
                 } else if (event.type === "Task") {
                     setSelectedTask(event);
                     setNewTask({
                         title: event.title,
                         date: moment(event.start).format("YYYY-MM-DD"),
-                        contact: event.contact ? event.contact : ""
+                        contact: event.contact ? event.contact : "", 
+                        tag: event.tag ? event.tag : ""
                     });
                 }
 
@@ -501,7 +511,12 @@ function GoogleCalendar() {
                                 ))}
                             </div>
                             <div>
-                                <TagSelector selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+                                <TagSelector
+                                    selectedTag={selectedEvent.tag}
+                                    setSelectedTag={(tag) =>
+                                        setSelectedEvent({ ...selectedEvent, tag })
+                                    }
+                                />
                             </div>
                             <div className="button-group">
                                 <button className="cancel-button" onClick={() => { deleteItem(selectedEvent); setSidebarOpen(false); }}>Delete</button>
@@ -549,7 +564,10 @@ function GoogleCalendar() {
                                 ))}
                             </div>
                             <div>
-                                <TagSelector selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+                                <TagSelector
+                                    selectedTag={newEvent.tag}
+                                    setSelectedTag={(tag) => setNewEvent({ ...newEvent, tag })}
+                                />
                             </div>
                             <div className="button-group">
                                 <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
@@ -621,7 +639,10 @@ function GoogleCalendar() {
 
                             </div>
                             <div>
-                                <TagSelector selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+                                <TagSelector
+                                    selectedTag={selectedTask.tag}
+                                    setSelectedTag={(tag) => setSelectedTask({ ...selectedTask, tag })}
+                                />
                             </div>
                             <div className="button-group">
                                 <button className="cancel-button" onClick={() => { deleteItem(selectedTask); setSidebarOpen(false); }}>Delete</button>
@@ -667,7 +688,10 @@ function GoogleCalendar() {
 
                             </div>
                             <div>
-                                <TagSelector selectedTag={selectedTag} setSelectedTag={setSelectedTag} />
+                                <TagSelector
+                                    selectedTag={newTask.tag}
+                                    setSelectedTag={(tag) => setNewTask({ ...newTask, tag })}
+                                />
                             </div>
                             <div className="button-group">
                                 <button className="cancel-button" onClick={() => setSidebarOpen(false)}>Cancel</button>
