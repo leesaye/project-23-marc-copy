@@ -1,15 +1,7 @@
-from django.shortcuts import render
-import django_filters
-from django.utils.timezone import now
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework import status, viewsets, filters
-from datetime import timedelta
-from itertools import chain
-
-from calendarapi.serializers import EventSerializer, TaskSerializer
-from calendarapi.models import Event, Task
+from rest_framework import status
 
 from .models import MissionLog
 
