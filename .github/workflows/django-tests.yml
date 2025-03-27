@@ -19,16 +19,12 @@ jobs:
     - name: Install Dependencies
       run: |
         ls
-        cd project/backend
-        ls
         python -m pip install --upgrade pip
-        chmod +x project/backend/startup.sh
-        ./project/backend/startup.sh
-        pip install -r project/backend/requirements.txt
+        chmod +x startup.sh
+        ./startup.sh
+        pip install -r requirements.txt
     - name: Run Tests
       run: |
-        cd project/backend
-        ls
         python manage.py test accounts.tests
         python manage.py test contacts.tests
         python manage.py test calendarapi.tests
