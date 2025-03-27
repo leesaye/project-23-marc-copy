@@ -10,6 +10,7 @@ python -m pip install google-genai
 python -m pip install google-api-core
 python -m pip install drf-spectacular
 python -m pip install pillow
+python -m pip install django-filter
 
 python manage.py makemigrations
 python manage.py migrate
