@@ -44,7 +44,7 @@ function Log() {
     // filter by tag
     const filterByTag = (activities, tag) => {
         if (!tag) return activities; // No filter applied
-        return activities.filter(event => event.tags.includes(tag));
+        return activities.filter(event => event.tag.includes(tag));
     };
 
     // filter by past X weeks
@@ -167,7 +167,7 @@ function Log() {
                                     <p>{activity.title}</p>
                                 </div>
                                 <div className="col-2">
-                                    <p>Tag: {activity.tags.join(", ")}</p>
+                                    <p>Tag: {activity.tag}</p>
                                 </div>
                                 <div className="col-2">
                                     <p>Contact: {contacts[activity.contact] || ""}</p>
