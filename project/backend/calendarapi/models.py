@@ -5,11 +5,6 @@ from django.utils import timezone
 
 
 # Create your models here.
-class Tag(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-    # color = models.CharField(max_length=7, default='#4A90E2')
-    def __str__(self):
-        return self.name
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
