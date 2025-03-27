@@ -19,7 +19,7 @@ class Event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events', default=1)
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True)
     source = models.CharField(max_length=20, default='local')
-    tag = models.CharField(Tag, max_length=100, default='')
+    tag = models.CharField(max_length=100, default='')
 
     def __str__(self):
         return self.title
@@ -32,7 +32,7 @@ class Task(models.Model):
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True)
     completed = models.BooleanField(default=False)
     created_at = models.DateTimeField(default=timezone.now)    # default for migrations
-    tag = models.CharField(Tag, max_length=100, default='')
+    tag = models.CharField(max_length=100, default='')
 
     def __str__(self):
         return self.title
