@@ -9,14 +9,12 @@ import LogMission from "../components/LogMission";
 
 function Log() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [logItems, setLogItems] = useState([]); // The list of log items to be set in the api get call
     const [missionItems, setMissionItems] = useState([]); // The list of mission items to be set in the api get call
     const [sortValue, setSortValue] = useState("Newest");
     const [activities, setActivities] = useState([]);
     const [contacts, setContacts] = useState({});
-    const [filteredEvents, setFilteredEvents] = useState([]);
-    const [selectedTag, setSelectedTag] = useState("");
-    const [weeks, setWeeks] = useState(4);
+    const [filteredActivities, setFilteredActivities] = useState([]);
+    const [weeks, setWeeks] = useState(0);
     const BASE_URL = "http://127.0.0.1:8000/";
 
     useEffect(() => {
@@ -30,31 +28,40 @@ function Log() {
         });
     }, []);
 
-    const filteredLogItems = logItems.filter((logItems) =>
-        (logItems.title.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
-        (logItems.type.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
-        (logItems.contact.name.toLowerCase().search(searchQuery.toLowerCase()) !== -1)
-    );
-
-    const sortedLogItems = [...filteredLogItems].sort((a, b) => {
-        if (sortValue === "Oldest") return a - b;
-        return b - a; // Default newest date order
-    });
-
-    // filter by tag
-    const filterByTag = (activities, tag) => {
-        if (!tag) return activities; // No filter applied
-        return activities.filter(event => event.tag.includes(tag));
-    };
-
     // filter by past X weeks
     const filterByWeeks = (activities, weeks) => {
         if (weeks < 0) weeks = 0;
+        const today = new Date();
         const cutoffDate = new Date();
         console.log("Current Date:", cutoffDate);
         cutoffDate.setDate(cutoffDate.getDate() - weeks * 7); // Go back X weeks
 
-        return activities.filter(event => new Date(event.start) >= cutoffDate);
+        if (weeks == 0) {
+            return activities.filter((activity) => {
+                if (activity.start) {
+                    const eventDate = new Date(activity.start);
+                    return eventDate <= today
+                }
+                else if (activity.date && activity.completed) {
+                    const taskDate = new Date(activity.date);
+                    return taskDate <= today
+                }
+            });
+        }
+        return activities.filter((activity) => {
+            if (activity.start) {
+                const eventDate = new Date(activity.start);
+                if (eventDate <= today) {
+                    return new Date(activity.start) >= cutoffDate;
+                }   
+            }
+            else if (activity.date && activity.completed) {
+                const taskDate = new Date(activity.date);
+                if (taskDate <= today) {
+                    return new Date(activity.date) >= cutoffDate;
+                }
+            }
+        });
     };
 
     useEffect(() => {
@@ -86,9 +93,21 @@ function Log() {
     // apply filters
     useEffect(() => {
         let filtered = filterByWeeks(activities, weeks);
-        filtered = filterByTag(filtered, selectedTag);
-        setFilteredEvents(filtered);
-    }, [activities, selectedTag, weeks]);
+        setFilteredActivities(filtered);
+    }, [activities, weeks]);
+    
+    const filteredLogItems = filteredActivities.filter((activity) =>
+        (activity.title.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
+        (activity.tag.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
+        (contacts[activity.contact].toLowerCase().search(searchQuery.toLowerCase()) !== -1)
+    );
+
+    const sortedLogItems = [...filteredLogItems].sort((a, b) => {
+        let aDate = (a.start) ? new Date(a.start) : new Date(a.date);
+        let bDate = (b.start) ? new Date(b.start) : new Date(b.date);
+        if (sortValue === "Oldest") return aDate - bDate;
+        return bDate - aDate; // Default newest date order
+    });
 
     return (
         <Layout>
@@ -145,23 +164,17 @@ function Log() {
                     </div>
                     {/* Filter Controls */}
                     <div>
-                        <label>Filter by Tag: </label>
-                        <select onChange={(e) => setSelectedTag(e.target.value)}>
-                            <option value="">All</option>
-                            <option value="school related">School</option>
-                            <option value="work related">Work</option>
-                        </select>
-
                         <label> Filter by Time: </label>
                         <select value={weeks} onChange={(e) => setWeeks(Number(e.target.value))}>
                             <option value={1}>Last Week</option>
                             <option value={4}>Last Month</option>
                             <option value={24}>Last 6 Months</option>
+                            <option value={0}>All Time</option>
                         </select>
                     </div>
                     <div className="container mt-1 mx-1 bg-info-subtle rounded-3 overflow-auto" style={{maxHeight:"15rem"}}>
                         <br />
-                        {filteredEvents.map((activity) => (
+                        {sortedLogItems.map((activity) => (
                             <div className="row bg-light pt-2">
                                 <div className="col-4">
                                     <p>{activity.title}</p>
@@ -173,7 +186,7 @@ function Log() {
                                     <p>Contact: {contacts[activity.contact] || ""}</p>
                                 </div>
                                 <div className="col-4">
-                                    <p>End date: {new Date(activity.end).toLocaleString()}</p>
+                                    <p>Date: {activity.end ? activity.end.split('T')[0] : activity.date}</p>
                                 </div>
                             </div>
                         ))}
