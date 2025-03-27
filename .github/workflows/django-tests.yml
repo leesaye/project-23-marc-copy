@@ -18,6 +18,9 @@ jobs:
         python-version: '3.11'
     - name: Install Dependencies
       run: |
+        ls
+        cd project/backend
+        ls
         python -m pip install --upgrade pip
         chmod +x project/backend/startup.sh
         ./project/backend/startup.sh
@@ -25,6 +28,7 @@ jobs:
     - name: Run Tests
       run: |
         cd project/backend
+        ls
         python manage.py test accounts.tests
         python manage.py test contacts.tests
         python manage.py test calendarapi.tests
