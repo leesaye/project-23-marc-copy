@@ -22,16 +22,28 @@ import {
   };
 
   async function run(prompt) {
-    const chatSession = model.startChat({
-      generationConfig,
-      history: [
-      ],
-    });
+    try {
+      const chatSession = model.startChat({
+        generationConfig,
+        history: [],
+      });
 
-    const result = await chatSession.sendMessage(prompt);
-    const response = result.response;
-    console.log(result.response.text());
-    return response.text()
+      const result = await chatSession.sendMessage(prompt);
+      const response = result.response;
+
+      if (!response) {
+        throw new Error("Empty response from Gemini API, please try to reload the page.");
+      }
+
+      return response.text();
+    } catch (error) {
+      console.error("Error with Gemini API:", error);
+      if (error.message.includes("429")){
+        return "Oops, you have made too many requests and have hit the rate limit. Please try again in 1 minute.";
+      }
+      return "Oops! Something went wrong. Please try again.";
+    }
   }
+
 
  export default run;

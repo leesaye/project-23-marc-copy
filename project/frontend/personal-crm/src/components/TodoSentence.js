@@ -27,7 +27,6 @@ function TodoSentence() {
             const tasks = await fetchTasks();
             const events = await fetchEvents();
 
-            console.log(promptStart);
 
             const combinedInput = `${promptStart} Events: ${JSON.stringify(events)} Tasks: ${JSON.stringify(tasks)}`;
             onSent(combinedInput);
@@ -107,7 +106,7 @@ function TodoSentence() {
                     showResult ? (
                         <>
                         {loading ? <h1>Loading...</h1> : (
-                                    <p>{splitResultData}</p>
+                                    <div>{splitResultData}</div>
                         )}
                     </>
                     ) : (

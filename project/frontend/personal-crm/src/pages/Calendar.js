@@ -14,6 +14,7 @@ const localizer = momentLocalizer(moment);
 function GoogleCalendar() {
     const [events, setEvents] = useState([]);
     const [user, setUser] = useState(null);
+    const [googleConnection, setGoogleConnection] = useState(null);
     const [tasks, setTasks] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [formType, setFormType] = useState(null);
@@ -33,6 +34,19 @@ function GoogleCalendar() {
 
     useEffect(() => {
         fetchEventsAndTasks();
+        axiosInstance.get(`${BASE_URL}api/googleToken/`)
+            .then((response) => {
+                if (response.data) {
+                    const decoded_token = atob(response.data.googleToken);
+                    setGoogleConnection(decoded_token);
+                    setUser(response.data.user);
+                } else {
+                    setUser(null);
+                }
+            }).catch((error) => {
+                console.error('Error fetching Google connection:', error);
+                setUser(null);
+            })
     }, []);
 
     const fetchEventsAndTasks = async () => {
@@ -50,8 +64,11 @@ function GoogleCalendar() {
                 start: new Date(event.start),
                 end: new Date(event.end),
                 type: event.source === "google" ? "Google Event" : "Event",
+                contact: event.contact || "",
                 style: { backgroundColor: event.color || "#3174ad", color: 'white' }
             }));
+
+            console.log(tasksResponse.data)
 
             const tasksData = tasksResponse.data.map(task => ({
                 id: task.id,
@@ -61,7 +78,8 @@ function GoogleCalendar() {
                 allDay: true,
                 type: "Task",
                 style: { backgroundColor: task.color || "#014F86", color: 'white' },
-                contact: task.contact || ""
+                contact: task.contact || "",
+                completed: task.completed
             }));
 
             setEvents([...eventsData, ...tasksData]);
@@ -73,7 +91,6 @@ function GoogleCalendar() {
 
     const processEvents = (events = []) => {
         return events.map(event => {
-            // Create new Date objects for the start and end times
             const startDate = new Date(event.start);
             const endDate = new Date(event.end);
 
@@ -97,14 +114,28 @@ function GoogleCalendar() {
         });
     };
 
-    const login = useGoogleLogin({
+    const googleLogin = useGoogleLogin({
         scope: "https://www.googleapis.com/auth/calendar.readonly",
         onSuccess: (response) => {
-            setUser({ id: response.userId });
+            const encoded_token = btoa(response.access_token)
+            axiosInstance.post(`${BASE_URL}api/googleToken/`, { googleToken: encoded_token });
+            setUser(response);
+            setGoogleConnection(response.access_token);
             syncCalendar(response.access_token);
         },
         onError: (error) => console.log("Login Failed:", error),
     });
+
+    const handleSync = () => {
+        syncCalendar(googleConnection);
+    }
+
+    const handleLogout = () => {
+        axiosInstance.delete(`${BASE_URL}api/googleLogout/`);
+        setUser(null);
+        setGoogleConnection(null);
+        googleLogout();
+    }
 
     const syncCalendar = async (token) => {
         try {
@@ -144,13 +175,14 @@ function GoogleCalendar() {
                     start: new Date(moment.utc(createdEvent.start).format("YYYY-MM-DDTHH:mm:ss")),
                     end: new Date(moment.utc(createdEvent.end).format("YYYY-MM-DDTHH:mm:ss")),
                     type: 'Event',
-                    style: { backgroundColor: selectedColor, color: 'white' }
+                    style: { backgroundColor: selectedColor, color: 'white' },
+                    contact: createdEvent.contact || ""
                 }]);
             } catch (error) {
                 console.error('Error adding event:', error);
             }
 
-            setNewEvent({ title: '', start: '', end: '' });
+            setNewEvent({ title: '', start: '', end: '' , contact: '' });
             setSidebarOpen(false);
         }
     };
@@ -194,6 +226,7 @@ function GoogleCalendar() {
                 title: selectedEvent.title,
                 start: selectedEvent.start,
                 end: selectedEvent.end,
+                contact: selectedEvent.contact || "",
                 color: selectedColor
             };
 
@@ -206,6 +239,7 @@ function GoogleCalendar() {
                         title: updatedEventData.title,
                         start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
                         end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
+                        contact: updatedEventData.contact,
                         style: { backgroundColor: selectedColor, color: 'white' }
                     }
                     : event
@@ -226,11 +260,15 @@ function GoogleCalendar() {
         if (!selectedTask) return;
 
         try {
+            const wasPreviouslyCompleted = tasks.find(task => task.id === selectedTask.id)?.completed;
+            const isNowCompleted = selectedTask.completed;
+
             const updatedTaskData = {
                 title: selectedTask.title,
                 date: moment(selectedTask.start).format("YYYY-MM-DD"),
                 contact: selectedTask.contact || "",
-                color: selectedColor
+                color: selectedColor,
+                completed: selectedTask.completed
             };
 
             await axiosInstance.put(`${BASE_URL}api/tasks/${selectedTask.id}/`, updatedTaskData);
@@ -249,13 +287,22 @@ function GoogleCalendar() {
                         start: moment(updatedTaskData.date).startOf('day').toDate(),
                         end: moment(updatedTaskData.date).startOf('day').toDate(),
                         contact: updatedTaskData.contact,
-                        style: { backgroundColor: selectedColor, color: 'white' }
+                        style: { backgroundColor: selectedColor, color: 'white' },
+                        completed: updatedTaskData.completed
                     }
                     : event
             );
-
             setEvents(updatedEvents);
 
+            if (!wasPreviouslyCompleted && isNowCompleted && selectedTask.contact) {
+                const contact = contacts.find(c => c.id === selectedTask.contact);
+                if (contact && contact.relationship_rating < 100) {
+                    const updatedRating = Math.min(contact.relationship_rating + 5, 100);
+                    await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, {
+                        relationship_rating: updatedRating
+                    });
+                }
+            }
             setSelectedTask(null);
             setSidebarOpen(false);
         } catch (error) {
@@ -273,7 +320,8 @@ function GoogleCalendar() {
                     setNewEvent({
                         title: event.title,
                         start: moment(event.start).format("YYYY-MM-DDTHH:mm"),
-                        end: moment(event.end).format("YYYY-MM-DDTHH:mm")
+                        end: moment(event.end).format("YYYY-MM-DDTHH:mm"),
+                        contact: event.contact ? event.contact : ""
                     });
                 } else if (event.type === "Task") {
                     setSelectedTask(event);
@@ -335,12 +383,20 @@ function GoogleCalendar() {
                     components={{
                         event: CustomEvent,
                     }}
-                    eventPropGetter={(event) => ({
-                        style: {
-                            backgroundColor: event.style?.backgroundColor || "#3174ad",
-                            color: "white"
-                        }
-                    })}
+                    eventPropGetter={(event) => {
+                        console.log("Event:", event);
+
+                        return {
+                            style: {
+                                backgroundColor: event.completed ? "#808080" : event.style?.backgroundColor || "#3174ad",
+                                color: "white",
+                                textDecoration: event.completed ? "line-through" : "none",
+                                backgroundImage: event.completed?
+                                    "repeating-linear-gradient(45deg, #808080, #808080 10px, #7a7a7a 10px, #7a7a7a 20px)"
+                                    : "none",
+                            }
+                        };
+                    }}
                 />
 
                 <div style={{ marginTop: "20px", display: "flex", gap: "20px", justifyContent: "center" }}>
@@ -350,7 +406,7 @@ function GoogleCalendar() {
                             setFormType('event');
                             setSelectedEvent(null);
                             setSelectedTask(null);
-                            setNewEvent({ title: '', start: '', end: '', type: 'Event' });
+                            setNewEvent({ title: '', start: '', end: '', contact: '', type: 'Event' });
                             setSidebarOpen(true);
                         }}
                     >
@@ -377,7 +433,16 @@ function GoogleCalendar() {
                         Click the button below to securely connect your Google Calendar. After signing in, your Google Calendar events will automatically appear on the calendar above.
                     </p>
 
-                    <button onClick={login} className={"button-style"}>Sign In with Google Calendar</button>
+                    {!user ? (
+                        <button onClick={googleLogin} className={"button-style"}>Sign In with Google Calendar</button>
+                    ) : (
+                        <div>
+                            <button onClick={handleSync} className={"button-style"}>Sync Google calendar</button>
+                            <button onClick={handleLogout} className={"button-style"}>Disconnect from Google</button>
+                        </div>
+                    )
+                    }
+
                 </div>
 
             </div>
@@ -408,6 +473,19 @@ function GoogleCalendar() {
                                 value={moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm")}
                                 onChange={(e) => setSelectedEvent({ ...selectedEvent, end: e.target.value })}
                             />
+
+                            <label>Contact:</label>
+                            <select
+                                name="contact"
+                                value={selectedEvent.contact}
+                                onChange={(e) => setSelectedEvent({ ...selectedEvent, contact: e.target.value })}
+                            >
+                                <option value="">Select a contact (optional)</option>
+                                {contacts.map(contact => (
+                                    <option key={contact.id} value={contact.id}>{contact.name}</option>
+                                ))}
+                            </select>
+
                             <div className="color-picker">
                             {COLORS.map((color) => (
                                 <div
@@ -445,6 +523,14 @@ function GoogleCalendar() {
                             <input type="datetime-local" name="start" value={newEvent.start} onChange={handleInputChange} />
                             <label>End Time:</label>
                             <input type="datetime-local" name="end" value={newEvent.end} onChange={handleInputChange} />
+                            <label>Contact:</label>
+                            <select name="contact" value={newEvent.contact} onChange={handleInputChange}>
+                                <option value="">Select a contact (optional)</option>
+                                {contacts.map(contact => (
+                                    <option key={contact.id} value={contact.id}>{contact.name}</option>
+                                ))}
+                            </select>
+
                             <div className="color-picker">
                             {COLORS.map((color) => (
                                 <div
@@ -503,6 +589,16 @@ function GoogleCalendar() {
                                     <option key={contact.id} value={contact.id}>{contact.name}</option>
                                 ))}
                             </select>
+                            <div className="completed-toggle">
+                                <label htmlFor="completed">Mark Completed:</label>
+                                <input
+                                    id="completed"
+                                    type="checkbox"
+                                    checked={selectedTask.completed}
+                                    onChange={(e) => setSelectedTask({ ...selectedTask, completed: e.target.checked })}
+                                />
+
+                            </div>
                             <div className="color-picker">
                             {COLORS.map((color) => (
                                 <div
