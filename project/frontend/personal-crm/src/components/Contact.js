@@ -11,7 +11,10 @@ function Contact({contact}) {
             {!isSmallScreen ? ( /*For desktop screen size*/
                 <div className="row" key={contact.id}>
                     <hr />
-                    <div className="col-3">
+                    <div className="col-1">
+                        <p><img className="rounded-circle mx-auto" src={`data:image/png;base64,${contact.pfp}`} alt="not found" style={{ width: "75px", height: "75px", objectFit: "cover" }}></img></p>
+                    </div>
+                    <div className="col-2">
                         <p>{contact.name}</p>
                     </div>
                     <div className="col-2">

@@ -257,8 +257,11 @@ function GoogleCalendar() {
         e.preventDefault();
 
         if (!selectedTask) return;
-        console.log(selectedTask);
+    
         try {
+            const wasPreviouslyCompleted = tasks.find(task => task.id === selectedTask.id)?.completed;
+            const isNowCompleted = selectedTask.completed;
+    
             const updatedTaskData = {
                 title: selectedTask.title,
                 date: moment(selectedTask.start).format("YYYY-MM-DD"),
@@ -272,7 +275,6 @@ function GoogleCalendar() {
             const updatedTasks = tasks.map(task =>
                 task.id === selectedTask.id ? { ...task, ...updatedTaskData } : task
             );
-
             setTasks(updatedTasks);
 
             const updatedEvents = events.map(event =>
@@ -288,17 +290,26 @@ function GoogleCalendar() {
                     }
                     : event
             );
-
             setEvents(updatedEvents);
-
+    
+            if (!wasPreviouslyCompleted && isNowCompleted && selectedTask.contact) {
+                const contact = contacts.find(c => c.id === selectedTask.contact);
+                if (contact && contact.relationship_rating < 100) {
+                    const updatedRating = Math.min(contact.relationship_rating + 5, 100);
+                    await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, {
+                        relationship_rating: updatedRating
+                    });
+                }
+            }
+    
             setSelectedTask(null);
             setSidebarOpen(false);
         } catch (error) {
             console.error('Error updating task:', error);
         }
     };
-
-    const CustomEvent = ({ event }) => {
+                    
+    const CustomEvent = ({ event }) => { 
         return (
             <div className="custom-event" onClick={() => {
                 setFormType(event.type.toLowerCase());
@@ -584,7 +595,7 @@ function GoogleCalendar() {
                                 ))}
                             </select>
                             <div className="completed-toggle">
-                                <label htmlFor="completed">Mark as Complete:</label>
+                                <label htmlFor="completed">Mark Completed:</label>
                                 <input
                                     id="completed"
                                     type="checkbox"

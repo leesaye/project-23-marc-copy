@@ -174,7 +174,21 @@ class ContactViewTests(TestCase):
     def test_authenticated_user_can_add_contact(self):
         try:
             print(f"\nStarting: {self._testMethodName}")
-            response = self.client.post(self.add_contact_url, self.contact_data, format="json")
+
+            test_contact_data = {
+                "name": "John Doe",
+                "email": "john@example.com",
+                "phone": "1234567890",
+                "job": "Engineer",
+                "relationship_rating": 80,
+                "relationship": "Friend",
+                "notes": "Met at a conference.",
+                "quiz_answers": json.dumps([  # Mimic JSON.stringify() from frontend
+                    {"question": "How well do you click?", "answer": "Yes"},
+                    {"question": "How often do you communicate?", "answer": "Sometimes"}
+                ]),
+            }
+            response = self.client.post(self.add_contact_url, test_contact_data, format="multipart")
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
             # Verify that the contact was created in the database
@@ -274,14 +288,14 @@ class ContactViewTests(TestCase):
             print(f"\nStarting: {self._testMethodName}")
 
             sample_answers_bad = {
-                "quiz_answers": [
+                "quiz_answers": json.dumps([
                     {"question": "How would you describe how well you click with A?",
                      "answer": "We fight alot. We don't click well."},
                     {"question": "How committed would you be to strengthening your relationship, and by how much?",
                      "answer": "Not committed. I don't like them."},
                     {"question": "How much have you contacted this person in the last month?",
                      "answer": "Zero times."}
-                ]
+                ])
             }
 
             high_rel_score_contact = {"name": "Jack", "email": "jack@example.com", "phone": "1234567890",
@@ -290,7 +304,7 @@ class ContactViewTests(TestCase):
                                       "quiz_answers": sample_answers_bad["quiz_answers"]}
 
             old_rel_rating = high_rel_score_contact["relationship_rating"]
-            response = self.client.post(self.add_contact_url, high_rel_score_contact, format="json")
+            response = self.client.post(self.add_contact_url, high_rel_score_contact, format="multipart")
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
             new_rating = response.data.get("relationship_rating")
@@ -318,18 +332,18 @@ class ContactViewTests(TestCase):
             self.assertEqual(response.json()["relationship_rating"], 85)
 
             sample_answers_bad = {
-                "quiz_answers": [
+                "quiz_answers": json.dumps([
                     {"question": "How would you describe how well you click with A?",
                      "answer": "We fight alot. We don't click well."},
                     {"question": "How committed would you be to strengthening your relationship, and by how much?",
                      "answer": "Not committed. I don't like them."},
                     {"question": "How much have you contacted this person in the last month?",
                      "answer": "Zero times."}
-                ]
+                ])
             }
 
             # No changes to any data, just adding quiz answers
-            responsepost = self.client.post(self.id_contact_url, sample_answers_bad, format="json")
+            responsepost = self.client.post(self.id_contact_url, sample_answers_bad, format="multipart")
             self.assertEqual(responsepost.status_code, status.HTTP_200_OK)
 
             # Verify that the contact relationship rating is lower now (old rating is 85)
@@ -361,18 +375,18 @@ class ContactViewTests(TestCase):
             self.assertEqual(response.json()["relationship_rating"], 85)
 
             empty_quiz_answers = {
-                "quiz_answers": [
+                "quiz_answers": json.dumps([
                     {"question": "How would you describe how well you click with A?",
                      "answer": ""},
                     {"question": "How committed would you be to strengthening your relationship, and by how much?",
                      "answer": ""},
                     {"question": "How much have you contacted this person in the last month?",
                      "answer": ""}
-                ]
+                ])
             }
 
             # No changes to any data, not adding quiz answers either
-            responsepost = self.client.post(self.id_contact_url, empty_quiz_answers, format="json")
+            responsepost = self.client.post(self.id_contact_url, empty_quiz_answers, format="multipart")
             self.assertEqual(responsepost.status_code, status.HTTP_200_OK)
 
             responseget = self.client.get(self.id_contact_url)

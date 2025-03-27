@@ -30,3 +30,40 @@ class GoogleConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = GoogleConnection
         fields = ['user', 'googleToken']
+
+
+# class UpdateUserSerializer(serializers.ModelSerializer):
+#     password = serializers.CharField(write_only=True, required=False)
+
+#     class Meta:
+#         model = User
+#         fields = ['email', 'first_name', 'last_name', 'password']
+
+#     def update(self, instance, validated_data):
+#         password = validated_data.pop('password', None)
+#         if password:
+#             instance.set_password(password)  # Hashes password before saving
+#         return super().update(instance, validated_data)
+
+
+class UpdateUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)  # To allow password update
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']  # Include password field
+
+    def update(self, instance, validated_data):
+        # If the password is being updated, hash it
+        password = validated_data.pop('password', None)
+        
+        if password:
+            instance.set_password(password)
+        
+        # Update other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        instance.save()
+        return instance
+

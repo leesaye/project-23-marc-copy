@@ -44,6 +44,7 @@ function Home() {
                 let sortedTasks = tasksResponse.data
                     .map(task => ({
                         ...task,
+                        completed: task.completed || false,
                         contactName: contactsMap[task.contact] || "Not specified"
                     }))
                     .filter(task => new Date(task.date) >= yesterday)
@@ -59,6 +60,38 @@ function Home() {
         fetchData();
     }, []);
 
+    const handleTaskCompletion = async (task) => {
+        try {
+            const wasPreviouslyCompleted = task.completed;
+            const updatedTask = { ...task, completed: !task.completed };
+    
+            await axiosInstance.patch(`${TASK_URL}${task.id}/`, {
+                completed: updatedTask.completed,
+            });
+    
+            const updatedTasks = tasks.map(t => t.id === task.id ? updatedTask : t);
+            setTasks(updatedTasks);
+    
+            if (!wasPreviouslyCompleted && updatedTask.completed && task.contact) {
+                const contact = contacts.find(c => c.id === task.contact);
+
+                if (contact && contact.relationship_rating < 100) {
+                    const updatedRating = Math.min(contact.relationship_rating + 5, 100);
+                    console.log(contact.relationship_rating);
+
+                    const formData = new FormData();
+                    formData.append("relationship_rating", updatedRating);
+    
+                    await axiosInstance.post(`${CONTACT_URL}${contact.id}`, formData, {
+                        headers: { "Content-Type": "multipart/form-data" },
+                    });
+                }
+            }
+        } catch (error) {
+            console.error("Error completing task:", error);
+        }
+    };
+                
     const handleTaskClick = (taskId, event) => {
         if (event.target.closest(".task-message-container")) {
             return;
@@ -96,39 +129,92 @@ function Home() {
 
                     {/* Upcoming Tasks */}
                     <div className="col-md-6">
-                        <h4 className="fw-bold ms-3">Upcoming Tasks</h4>
-                        <TaskAIContextProvider>
-                            <div className="d-flex flex-column gap-3">
-                                {tasks.length > 0 ? (
-                                    tasks.map((task) => (
-                                        <div
-                                            key={task.id}
-                                            className="card shadow-sm border-0 rounded ms-3"
-                                            style={{ cursor: "pointer", transition: "0.2s", padding: "15px" }}
-                                            onClick={(event) => handleTaskClick(task.id, event)}
-                                        >
-                                            <div className="card-body">
-                                                <h5 className="text-dark fw-bold mb-2">{task.title}</h5>
-                                                <p className="card-text">
-                                                    <span className="fw-bold">📆 Date:</span> {task.date}
-                                                </p>
-                                                <p className="card-text">
-                                                    <span className="fw-bold">👤 Contact:</span> {task.contactName}
-                                                </p>
+                    <div className="p-4 bg-white rounded shadow border" style={{ minHeight: '100%', marginLeft: '1rem' }}>
+                        <h4 className="fw-bold mb-3">Upcoming Tasks</h4>
 
-                                                {selectedTask === task.id && (
-                                                    <div className="task-message-container">
-                                                        <TaskMessage task={task} />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <p className="text-muted ms-3">No tasks available.</p>
-                                )}
-                            </div>
+                        <div className="d-flex align-items-start bg-light rounded p-3 mb-4" style={{ gap: '10px' }}>
+                        <div style={{ fontSize: '1.5rem', color: '#0d6efd' }}>💡</div>
+                        <div style={{ fontWeight: '500', fontSize: '1rem' }}>
+                            <span style={{ color: '#0d6efd', fontWeight: '600' }}>Tip:</span> Completing tasks boosts your relationship score and helps you build stronger connections!
+                        </div>
+                        </div>
+
+                        <TaskAIContextProvider>
+                        {tasks.length > 0 ? (
+                            tasks.map((task) => {
+                            const isCompleted = task.completed;
+
+                            return (
+                                <div
+                                key={task.id}
+                                className={`card shadow-sm border-0 rounded mb-3 ${isCompleted ? "completed-task" : ""}`}
+                                style={{
+                                    cursor: "pointer",
+                                    transition: "0.3s ease",
+                                    padding: "15px",
+                                    backgroundColor: "#f8f9fa",
+                                    opacity: isCompleted ? 0.7 : 1
+                                }}
+                                onClick={(event) => handleTaskClick(task.id, event)}
+                                >
+                                <div className="card-body">
+                                    <div className="d-flex justify-content-between align-items-center mb-2">
+                                    <h5
+                                        className="fw-bold mb-0"
+                                        style={{
+                                        color: isCompleted ? "#6c757d" : "#212529",
+                                        textDecoration: isCompleted ? "line-through" : "none"
+                                        }}
+                                    >
+                                        {task.title}
+                                    </h5>
+                                    {isCompleted && (
+                                        <span className="badge bg-success" style={{ fontSize: "0.8rem" }}>
+                                        Completed
+                                        </span>
+                                    )}
+                                    </div>
+
+                                    <p className="card-text mb-1">
+                                    <strong>📆 Date:</strong> {task.date}
+                                    </p>
+                                    <p className="card-text mb-1">
+                                    <strong>👤 Contact:</strong> {task.contactName}
+                                    </p>
+
+                                    <div className="form-check mt-2">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        checked={task.completed}
+                                        onChange={() => handleTaskCompletion(task)}
+                                        id={`complete-check-${task.id}`}
+                                        onClick={(e) => e.stopPropagation()}
+                                    />
+                                    <label className="form-check-label" htmlFor={`complete-check-${task.id}`}>
+                                        Mark completed
+                                    </label>
+                                    {!task.completed && task.contact && (
+                                        <span className="ms-3 badge bg-primary-subtle text-primary fw-semibold">
+                                        +5 Relationship Rating
+                                        </span>
+                                    )}
+                                    </div>
+
+                                    {selectedTask === task.id && (
+                                    <div className="task-message-container mt-3">
+                                        <TaskMessage task={task} />
+                                    </div>
+                                    )}
+                                </div>
+                                </div>
+                            );
+                            })
+                        ) : (
+                            <div className="text-muted">No tasks available.</div>
+                        )}
                         </TaskAIContextProvider>
+                    </div>
                     </div>
 
                 </div>
