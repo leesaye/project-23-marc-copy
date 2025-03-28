@@ -106,10 +106,14 @@ function Log() {
         setFilteredActivities(filtered);
     }, [activities, weeks]);
     
-    const filteredLogItems = filteredActivities.filter((activity) =>
-        (activity.title.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
-        (activity.tag.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
-        (contacts[activity.contact].toLowerCase().search(searchQuery.toLowerCase()) !== -1)
+    const filteredLogItems = filteredActivities.filter((activity) => {
+            let title = (activity.title) ? activity.title : "";
+            let tag = (activity.tag) ? activity.tag : "";
+            let contact = (contacts[activity.contact]) ? contacts[activity.contact] : "";
+            return (title.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
+                    (tag.toLowerCase().search(searchQuery.toLowerCase()) !== -1) ||
+                    (contact.toLowerCase().search(searchQuery.toLowerCase()) !== -1)
+        }
     );
 
     const sortedLogItems = [...filteredLogItems].sort((a, b) => {
