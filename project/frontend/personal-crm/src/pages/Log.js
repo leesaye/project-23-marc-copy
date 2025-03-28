@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { useEffect, useState } from 'react';
 import LogMission from "../components/LogMission";
+import LogActivity from "../components/LogActivity";
 
 function Log() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -149,7 +150,7 @@ function Log() {
                                 <InputBase className="w-75" placeholder="Search log" inputProps={{ 'aria-label': 'search log' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                             </Paper>
                         </div>
-                        <div className="col-4 mt-1">
+                        <div className="col-2 mt-1">
                             <div className="dropdown">
                                 <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     <SwapVertIcon />
@@ -161,36 +162,40 @@ function Log() {
                                 </ul>
                             </div>
                         </div>
+                        <div className="col-2 mt-1">
+                            <div className="dropdown">
+                                <button className="btn btn-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <SwapVertIcon />
+                                    Date Filter
+                                </button>
+                                <ul className="dropdown-menu" aria-labelledby="filterDropdown">
+                                    <li><button className="dropdown-item" value={1} onClick={(e) => setWeeks(e.target.value)} >Last Week</button></li>
+                                    <li><button className="dropdown-item" value={4} onClick={(e) => setWeeks(e.target.value)} >Last Month</button></li>
+                                    <li><button className="dropdown-item" value={24} onClick={(e) => setWeeks(e.target.value)} >Last 6 Months</button></li>
+                                    <li><button className="dropdown-item" value={0} onClick={(e) => setWeeks(e.target.value)} >All Time</button></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    {/* Filter Controls */}
-                    <div>
-                        <label> Filter by Time: </label>
-                        <select value={weeks} onChange={(e) => setWeeks(Number(e.target.value))}>
-                            <option value={1}>Last Week</option>
-                            <option value={4}>Last Month</option>
-                            <option value={24}>Last 6 Months</option>
-                            <option value={0}>All Time</option>
-                        </select>
+                    <div className="row mt-3 mx-3">
+                        <div className="col-4">
+                            <h5>Title</h5>
+                        </div>
+                        <div className="col-3">
+                            <h5>Tag</h5>
+                        </div>
+                        <div className="col-3">
+                            <h5>Contact</h5>
+                        </div>
+                        <div className="col-2">
+                            <h5>Date</h5>
+                        </div>
                     </div>
-                    <div className="container mt-1 mx-1 bg-info-subtle rounded-3 overflow-auto" style={{maxHeight:"15rem"}}>
+                    <div className="container mx-1 bg-info-subtle rounded-3 overflow-auto" style={{maxHeight:"20rem"}}>
                         <br />
                         {sortedLogItems.map((activity) => (
-                            <div className="row bg-light pt-2">
-                                <div className="col-4">
-                                    <p>{activity.title}</p>
-                                </div>
-                                <div className="col-2">
-                                    <p>Tag: {activity.tag}</p>
-                                </div>
-                                <div className="col-2">
-                                    <p>Contact: {contacts[activity.contact] || ""}</p>
-                                </div>
-                                <div className="col-4">
-                                    <p>Date: {activity.end ? activity.end.split('T')[0] : activity.date}</p>
-                                </div>
-                            </div>
+                            <LogActivity activity={activity} contacts={contacts} />
                         ))}
-
                     </div>
                 </div>
             </div>
