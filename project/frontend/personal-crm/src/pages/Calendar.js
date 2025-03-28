@@ -58,8 +58,8 @@ export default function CalendarPage() {
 
             const eventsData = eventsRes.data.map(event => ({
                 ...event,
-                start: new Date(event.start),
-                end: new Date(event.end),
+                start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
+                end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
                 type: event.source === "google" ? "Google Event" : "Event",
                 contact: event.contact || "",
                 style: { backgroundColor: event.color || "#3174ad", color: 'white' }
@@ -125,9 +125,9 @@ export default function CalendarPage() {
             setSelectedEvent(event);
             setNewEvent({
                 title: event.title,
-                start: moment(event.start).format("YYYY-MM-DDTHH:mm"),
-                end: moment(event.end).format("YYYY-MM-DDTHH:mm"),
-                contact: event.contact || ""
+                start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
+                end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
+            contact: event.contact || ""
             });
         } else if (event.type === "Task") {
             setSelectedTask(event);
