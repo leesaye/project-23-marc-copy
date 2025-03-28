@@ -16,6 +16,7 @@ function Log() {
     const [contacts, setContacts] = useState({});
     const [filteredActivities, setFilteredActivities] = useState([]);
     const [weeks, setWeeks] = useState(0);
+    const [lastLogin, setLastLogin] = useState("No previous login");
     const BASE_URL = "http://127.0.0.1:8000/";
 
     useEffect(() => {
@@ -26,6 +27,14 @@ function Log() {
         })
         .catch(error => {
             console.error("Error fetching mission log:", error);
+        });
+
+        axiosInstance.get(`${BASE_URL}api/profile/`)
+        .then(response => {
+            setLastLogin(response.data.last_login);
+        })
+        .catch(error => {
+            console.error("Error fetching last login:", error);
         });
     }, []);
 
@@ -114,11 +123,11 @@ function Log() {
         <Layout>
             <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                 <div className="row">
-                    <div className="col-8">
+                    <div className="col-6">
                         <h1>Log</h1>
                     </div>
-                    <div className="col-4 mt-3">
-                        <h4>Last login: </h4>
+                    <div className="col-6 mt-3">
+                        <h4>Last login: {new Date(lastLogin).toLocaleString()}</h4>
                     </div>
                 </div>
                 <div className="container mx-1">
