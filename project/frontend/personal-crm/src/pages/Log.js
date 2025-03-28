@@ -7,6 +7,7 @@ import SwapVertIcon from '@mui/icons-material/SwapVert';
 import { useEffect, useState } from 'react';
 import LogMission from "../components/LogMission";
 import LogActivity from "../components/LogActivity";
+import { useMediaQuery } from 'react-responsive';
 
 function Log() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -17,6 +18,7 @@ function Log() {
     const [filteredActivities, setFilteredActivities] = useState([]);
     const [weeks, setWeeks] = useState(0);
     const [lastLogin, setLastLogin] = useState("No previous login");
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
     const BASE_URL = "http://127.0.0.1:8000/";
 
     useEffect(() => {
@@ -125,6 +127,7 @@ function Log() {
 
     return (
         <Layout>
+            {!isSmallScreen ? ( /*For desktop screen size*/
             <div className="container bg-primary-subtle rounded p-3 min-vh-100">
                 <div className="row">
                     <div className="col-6">
@@ -212,6 +215,101 @@ function Log() {
                     </div>
                 </div>
             </div>
+            ) : ( /*For laptop/phone screen*/
+                <div className="container bg-primary-subtle rounded p-3 min-vh-100">
+                    <div className="row">
+                        <div className="col-4">
+                            <h1>Log</h1>
+                        </div>
+                        <div className="col-8 mt-3">
+                            <h4>Last login: {new Date(lastLogin).toLocaleDateString()}</h4>
+                        </div>
+                    </div>
+                    <div className="container mx-1">
+                        <div className="row mt-3 text-center">
+                            <div className="col-12">
+                                <h2>My Mission Log</h2>
+                            </div>
+                        </div>
+                        <div className="container mt-1 mx-1 bg-info-subtle rounded-3">
+                            <div className="row">
+                                <div className="col-12">
+                                    <h5>Weekly quests</h5>
+                                </div>
+                            </div>
+                            {!missionItems ? <p>Loading...</p>:
+                            missionItems.map(missionItem =>
+                                <LogMission key={missionItem.id} missionItem={missionItem}></LogMission>
+                            )}
+                        </div>
+
+
+                        <div className="row mt-5">
+                            <div className="col-12 text-center">
+                                <h2>My Activity Log</h2>
+                            </div>
+                        </div>
+                        <div className="row justify-content-center">
+                            <div className="col-12 my-1">
+                                <Paper elevation={0} component="form" className="p-1 w-75 mx-auto">
+                                    <SearchIcon />
+                                    <InputBase className="w-75" placeholder="Search log" inputProps={{ 'aria-label': 'search log' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                                </Paper>
+                            </div>
+                        </div>
+                        <div className="row justify-content-center">
+                            <div className="col-6 mt-1 text-center">
+                                <div className="dropdown">
+                                    <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <SwapVertIcon />
+                                        Sort by
+                                    </button>
+                                    <ul className="dropdown-menu" aria-labelledby="sortDropdown">
+                                        <li><button className="dropdown-item" onClick={(e) => setSortValue(e.target.innerHTML)} >Newest</button></li>
+                                        <li><button className="dropdown-item" onClick={(e) => setSortValue(e.target.innerHTML)} >Oldest</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="col-6 mt-1 text-center">
+                                <div className="dropdown">
+                                    <button className="btn btn-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <SwapVertIcon />
+                                        Filter
+                                    </button>
+                                    <ul className="dropdown-menu" aria-labelledby="filterDropdown">
+                                        <li><button className="dropdown-item" value={1} onClick={(e) => setWeeks(e.target.value)} >Last Week</button></li>
+                                        <li><button className="dropdown-item" value={4} onClick={(e) => setWeeks(e.target.value)} >Last Month</button></li>
+                                        <li><button className="dropdown-item" value={24} onClick={(e) => setWeeks(e.target.value)} >Last 6 Months</button></li>
+                                        <li><button className="dropdown-item" value={0} onClick={(e) => setWeeks(e.target.value)} >All Time</button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row mt-3 text-center">
+                            <div className="col-6">
+                                <h5>Title</h5>
+                            </div>
+                            <div className="col-6">
+                                <h5>Tag</h5>
+                            </div>
+                        </div>
+                        <div className="row text-center">
+                            <div className="col-6">
+                                <h5>Contact</h5>
+                            </div>
+                            <div className="col-6">
+                                <h5>Date</h5>
+                            </div>
+                        </div>
+                        <div className="container mx-1 bg-info-subtle rounded-3 overflow-auto" style={{maxHeight:"20rem"}}>
+                            <br />
+                            {sortedLogItems.map((activity) => (
+                                <LogActivity activity={activity} contacts={contacts} />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     );
 }
