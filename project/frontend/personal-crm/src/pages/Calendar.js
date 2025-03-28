@@ -171,7 +171,7 @@ export default function CalendarPage() {
                             <img src="https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_20_2x.png" alt="Google Calendar" style={{ width: "30px", height: "30px" }} />
                             Google Calendar Integration
                         </h2>
-                        <p>Sign in to sync your Google Calendar with this app.</p>
+                        <p>Click the button below to securely connect your Google Calendar. This may take a few seconds...</p>
                         <div style={{ display: "flex", gap: "10px" }}>
                             {!user ? (
                                 <button onClick={googleLogin} className="button-style">Sign In with Google Calendar</button>
