@@ -120,14 +120,30 @@ export default function CalendarPage() {
     };
 
     const handleSelectEvent = (event) => {
+        // console.log("📌 User clicked event:", event);
+        // console.log("🔎 Raw event.start:", event.start, "| type:", typeof event.start);
+        // console.log("🔎 Raw event.end:", event.end, "| type:", typeof event.end);
+    
         setFormType(event.type.toLowerCase());
+    
         if (event.type === "Event") {
-            setSelectedEvent(event);
+            const formattedStart = moment(event.start).format("YYYY-MM-DDTHH:mm");
+            const formattedEnd = moment(event.end).format("YYYY-MM-DDTHH:mm");
+    
+            // console.log("📅 Formatted start for input:", formattedStart);
+            // console.log("📅 Formatted end for input:", formattedEnd);
+    
+            setSelectedEvent({
+                ...event,
+                start: formattedStart,
+                end: formattedEnd
+            });
+    
             setNewEvent({
                 title: event.title,
-                start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
-                end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
-            contact: event.contact || ""
+                start: formattedStart,
+                end: formattedEnd,
+                contact: event.contact || ""
             });
         } else if (event.type === "Task") {
             setSelectedTask(event);

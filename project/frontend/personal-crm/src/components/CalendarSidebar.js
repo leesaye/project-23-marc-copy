@@ -78,35 +78,46 @@ export default function CalendarSidebar({
 
     const handleUpdateEvent = async (e, selectedColor) => {
         e.preventDefault();
+    
         if (!selectedEvent) return;
+    
         try {
-            const updated = {
+            const updatedEventData = {
                 title: selectedEvent.title,
                 start: selectedEvent.start,
                 end: selectedEvent.end,
                 contact: selectedEvent.contact || "",
                 color: selectedColor
             };
-            await axiosInstance.put(`${BASE_URL}api/events/${selectedEvent.id}/`, updated);
-            const updatedList = events.map(ev =>
-                ev.id === selectedEvent.id
-                    ? {
-                        ...ev,
-                        ...updated,
-                        start: new Date(moment.utc(updated.start).format("YYYY-MM-DDTHH:mm:ss")),
-                        end: new Date(moment.utc(updated.end).format("YYYY-MM-DDTHH:mm:ss")),
-                        style: { backgroundColor: selectedColor, color: "white" }
-                    }
-                    : ev
+    
+            await axiosInstance.put(`${BASE_URL}api/events/${selectedEvent.id}/`, updatedEventData);
+    
+            const updatedEvents = events.map(event =>
+                event.id === selectedEvent.id
+                    ? { 
+                        ...event, 
+                        title: updatedEventData.title,
+                        start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
+                        end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
+                        contact: updatedEventData.contact, 
+                        style: { backgroundColor: selectedColor, color: 'white' }
+                    } 
+                    : event
             );
-            setEvents(updatedList);
+            // console.log("✅ Final updated object to insert into calendar:", {
+            //     start: moment(updatedEventData.start, "YYYY-MM-DDTHH:mm").toDate(),
+            //     end: moment(updatedEventData.end, "YYYY-MM-DDTHH:mm").toDate(),
+            //   });
+              
+            setEvents(updatedEvents);
+    
             setSelectedEvent(null);
             setSidebarOpen(false);
-        } catch (err) {
-            console.error("Error updating event:", err);
+        } catch (error) {
+            console.error('Error updating event:', error);
         }
     };
-
+            
     const handleUpdateTask = async (e, selectedColor) => {
         e.preventDefault();
         if (!selectedTask) return;
@@ -205,7 +216,7 @@ export default function CalendarSidebar({
                         <label>Start Time:</label>
                         <input type="datetime-local" name="start" value={moment(selectedEvent.start).format("YYYY-MM-DDTHH:mm")} onChange={(e) => setSelectedEvent({ ...selectedEvent, start: e.target.value })} />
                         <label>End Time:</label>
-                        <input type="datetime-local" name="end" value={moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm")} onChange={(e) => setSelectedEvent({ ...selectedEvent, end: e.target.value })} />
+                        <input type="datetime-local" name="end" value={moment(selectedEvent.end).format("YYYY-MM-DDTHH:mm")}  onChange={(e) => setSelectedEvent({ ...selectedEvent, end: e.target.value })} />
                         <label>Contact:</label>
                         <select name="contact" value={selectedEvent.contact} onChange={(e) => setSelectedEvent({ ...selectedEvent, contact: e.target.value })}>
                             <option value="">Select a contact (optional)</option>
