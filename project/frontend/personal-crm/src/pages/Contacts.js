@@ -125,6 +125,27 @@ function Contacts() {
         }
     }
 
+    // export contacts in csv
+    const handleExportCSV = async () => {
+        try {
+            const response = await axiosInstance.get(`${BASE_URL}contacts/export-contacts/`, {
+                responseType: "blob", // ensures the response is treated as a file
+            });
+
+            // Create a URL for the downloaded CSV file
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "contacts.csv"); // Set file name
+            document.body.appendChild(link);
+            link.click(); // Trigger download
+            document.body.removeChild(link); // Clean up
+
+        } catch (error) {
+            console.error("Error downloading CSV:", error);
+        }
+    };
+
 
     return (
         <Layout>
@@ -180,6 +201,11 @@ function Contacts() {
                                     }
                                 </ul>
                             </div>
+                        </div>
+                        <div className="col-1 mt-1">
+                            <button className="btn btn-success" onClick={handleExportCSV}>
+                                Export as CSV
+                            </button>
                         </div>
                     </div>
                     <div className="row mt-4">
@@ -320,7 +346,7 @@ function Contacts() {
 
                 </div>
             )}
-            
+
         </Layout>
     );
 }

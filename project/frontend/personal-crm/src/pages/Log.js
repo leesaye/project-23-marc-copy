@@ -65,7 +65,7 @@ function Log() {
                 const eventDate = new Date(activity.start);
                 if (eventDate <= today) {
                     return new Date(activity.start) >= cutoffDate;
-                }   
+                }
             }
             else if (activity.date && activity.completed) {
                 const taskDate = new Date(activity.date);
@@ -107,7 +107,7 @@ function Log() {
         let filtered = filterByWeeks(activities, weeks);
         setFilteredActivities(filtered);
     }, [activities, weeks]);
-    
+
     const filteredLogItems = filteredActivities.filter((activity) => {
             let title = (activity.title) ? activity.title : "";
             let tag = (activity.tag) ? activity.tag : "";
@@ -124,6 +124,27 @@ function Log() {
         if (sortValue === "Oldest") return aDate - bDate;
         return bDate - aDate; // Default newest date order
     });
+
+    // export activity in csv
+    const handleExportCSV = async () => {
+        try {
+            const response = await axiosInstance.get(`${BASE_URL}log/export-activities/`, {
+                responseType: "blob", // ensures the response is treated as a file
+            });
+
+            // Create a URL for the downloaded CSV file
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "activity_log.csv"); // Set file name
+            document.body.appendChild(link);
+            link.click(); // Trigger download
+            document.body.removeChild(link); // Clean up
+
+        } catch (error) {
+            console.error("Error downloading CSV:", error);
+        }
+    };
 
     return (
         <Layout>
@@ -191,6 +212,11 @@ function Log() {
                                     <li><button className="dropdown-item" value={0} onClick={(e) => setWeeks(e.target.value)} >All Time</button></li>
                                 </ul>
                             </div>
+                            <div className="col-1 mt-1">
+                                <button className="btn btn-success" onClick={handleExportCSV}>
+                                    Export as CSV
+                            </button>
+                        </div>
                         </div>
                     </div>
                     <div className="row mt-3 mx-3">
