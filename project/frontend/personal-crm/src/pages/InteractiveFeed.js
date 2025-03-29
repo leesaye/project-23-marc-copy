@@ -132,13 +132,13 @@ function InteractiveFeed() {
     
     return (
         <Layout>
-            <div className="d-flex flex-column justify-content-center" style={{ padding:'10%', height: '100%', backgroundColor: 'lightblue'}}>
+            <div className="d-flex flex-column justify-content-center container-fluid bg-primary-subtle rounded p-4 min-vh-100">
                 <div className="d-flex flex-column justify-content-center align-items-center">
                     <h1 className="d-flex justify-content-center" style={{fontSize: '1.25rem'}}>You are on a {streak} day streak</h1>
                     <div className="card shadow-sm rounded mt-5 mb-5" style={{ backgroundColor: 'white', width: '50%', minWidth: "300px" }}>
                         <div className="card-bod m-4">
                             {eventData ? (
-                                <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
+                            <div className="d-flex flex-column justify-content-between" style={{ height: '100%' }}>
                                     <div className="mb-5">
                                         <h1 className="card-title">{eventData.title}</h1>
                                         <p className="card-text">{eventData.description}</p>
