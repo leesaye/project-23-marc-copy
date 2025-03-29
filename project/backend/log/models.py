@@ -113,13 +113,3 @@ class MissionLog(models.Model):
             "progress": min(contacts_count, mission.actions_required),
             "total_required": mission.actions_required
         }
-
-
-# class ActivityLog(models.Model):
-#     title = models.CharField(max_length=200)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
-#     task = models.ForeignKey(Task, on_delete=models.SET_NULL, blank=True, null=True)
-#
-#     def __str__(self):
-#         return self.title
