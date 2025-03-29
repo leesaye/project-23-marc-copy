@@ -71,8 +71,10 @@ class MissionLog(models.Model):
         mission.reset_if_new_week()
 
         task_count = Task.objects.filter(user=user, created_at__date__range=[week_start, week_end]).count()
-
-        mission.completed = task_count >= mission.actions_required
+        if mission.completed:
+            task_count = mission.actions_required
+        else:
+            mission.completed = task_count >= mission.actions_required
         mission.save()
 
         return {
@@ -99,7 +101,10 @@ class MissionLog(models.Model):
 
         contacts_count = Contact.objects.filter(user=user, created_at__date__range=[week_start, week_end]).count()
 
-        mission.completed = contacts_count >= mission.actions_required
+        if mission.completed:
+            contacts_count = mission.actions_required
+        else:
+            mission.completed = contacts_count >= mission.actions_required
         mission.save()
 
         return {
