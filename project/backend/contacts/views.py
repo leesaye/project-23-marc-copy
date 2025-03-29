@@ -334,14 +334,14 @@ class ExportContactsCSV(APIView):
             # write data
             for contact in contacts:
                 writer.writerow([
-                    contact.name,
-                    contact.email,
-                    contact.phone,
-                    contact.job,
-                    contact.company,
-                    contact.linkedin_url,
-                    contact.relationship_rating,
-                    contact.relationship,
+                    contact.name if contact.name else "",
+                    contact.email if contact.email else "",
+                    contact.phone if contact.phone else "",
+                    contact.job if contact.job else "",
+                    contact.company if contact.company else "",
+                    contact.linkedin_url if contact.linkedin_url else "",
+                    contact.relationship_rating if contact.relationship_rating else "",
+                    contact.relationship if contact.relationship else "",
                     contact.notes if contact.notes else "",
                     contact.created_at.strftime("%Y-%m-%d %H:%M:%S"),
                 ])
