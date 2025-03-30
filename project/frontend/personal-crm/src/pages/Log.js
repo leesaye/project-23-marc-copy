@@ -156,7 +156,7 @@ function Log() {
                         <div className="col-6">
                             <h2>My Mission Log</h2>
                         </div>
-                        <div className="col-6 mt-3">
+                        <div className="col-6 mt-2">
                             <h4>Last login: {new Date(lastLogin).toLocaleString()}</h4>
                         </div>
                     </div>
@@ -246,7 +246,7 @@ function Log() {
                             </div>
                         </div>
                         <div className="row text-center">
-                            <div className="col-12 mt-3">
+                            <div className="col-12">
                                 <h4>Last login: {new Date(lastLogin).toLocaleDateString()}</h4>
                             </div>
                         </div>
