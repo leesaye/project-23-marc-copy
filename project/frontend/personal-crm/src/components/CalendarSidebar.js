@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import moment from "moment";
 import axiosInstance from "../endpoints/api";
 import "../pages/Calendar.css";
-import TagSelector from "./Tags"; 
+import TagSelector from "./Tags";
 
-const BASE_URL = "http://127.0.0.1:8000/";
+// const BASE_URL = "http://127.0.0.1:8000/";
+const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
 
 export default function CalendarSidebar({
     formType,
@@ -100,48 +101,48 @@ export default function CalendarSidebar({
 
     const handleUpdateEvent = async (e, selectedColor) => {
         e.preventDefault();
-    
+
         if (!selectedEvent) return;
-    
+
         try {
             const updatedEventData = {
                 title: selectedEvent.title,
                 start: selectedEvent.start,
                 end: selectedEvent.end,
                 contact: selectedEvent.contact || "",
-                color: selectedColor, 
+                color: selectedColor,
                 ...(selectedEvent.tag ? { tag: selectedEvent.tag } : {})
             };
-    
+
             await axiosInstance.put(`${BASE_URL}api/events/${selectedEvent.id}/`, updatedEventData);
-    
+
             const updatedEvents = events.map(event =>
                 event.id === selectedEvent.id
-                    ? { 
-                        ...event, 
+                    ? {
+                        ...event,
                         title: updatedEventData.title,
                         start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
                         end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
-                        contact: updatedEventData.contact, 
-                        style: { backgroundColor: selectedColor, color: 'white' }, 
+                        contact: updatedEventData.contact,
+                        style: { backgroundColor: selectedColor, color: 'white' },
                         tag: updatedEventData.tag
-                    } 
+                    }
                     : event
             );
             // console.log("✅ Final updated object to insert into calendar:", {
             //     start: moment(updatedEventData.start, "YYYY-MM-DDTHH:mm").toDate(),
             //     end: moment(updatedEventData.end, "YYYY-MM-DDTHH:mm").toDate(),
             //   });
-              
+
             setEvents(updatedEvents);
-    
+
             setSelectedEvent(null);
             setSidebarOpen(false);
         } catch (error) {
             console.error('Error updating event:', error);
         }
     };
-            
+
     const handleUpdateTask = async (e, selectedColor) => {
         e.preventDefault();
         if (!selectedTask) return;
@@ -173,7 +174,7 @@ export default function CalendarSidebar({
                         end: moment(updated.date).startOf("day").toDate(),
                         contact: updated.contact,
                         completed: updated.completed,
-                        style: { backgroundColor: selectedColor, color: "white" }, 
+                        style: { backgroundColor: selectedColor, color: "white" },
                         tag: updated.tag
                     }
                     : ev

@@ -8,7 +8,8 @@ import axiosInstance from "../endpoints/api";
 import TaskMessage from "../components/TaskMessages";
 
 // const BASE_URL = "http://127.0.0.1:8000/"
-const BASE_URL = `https://project-23-marc.onrender.com/`;
+// const BASE_URL = `https://project-23-marc.onrender.com/`;
+const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
 const TASK_URL =  `${BASE_URL}api/tasks/`;
 const CONTACT_URL = `${BASE_URL}contacts/`;
 
@@ -65,14 +66,14 @@ function Home() {
         try {
             const wasPreviouslyCompleted = task.completed;
             const updatedTask = { ...task, completed: !task.completed };
-    
+
             await axiosInstance.patch(`${TASK_URL}${task.id}/`, {
                 completed: updatedTask.completed,
             });
-    
+
             const updatedTasks = tasks.map(t => t.id === task.id ? updatedTask : t);
             setTasks(updatedTasks);
-    
+
             if (!wasPreviouslyCompleted && updatedTask.completed && task.contact) {
                 const contact = contacts.find(c => c.id === task.contact);
 
@@ -82,7 +83,7 @@ function Home() {
 
                     const formData = new FormData();
                     formData.append("relationship_rating", updatedRating);
-    
+
                     await axiosInstance.post(`${CONTACT_URL}${contact.id}`, formData, {
                         headers: { "Content-Type": "multipart/form-data" },
                     });
@@ -92,7 +93,7 @@ function Home() {
             console.error("Error completing task:", error);
         }
     };
-                
+
     const handleTaskClick = (taskId, event) => {
         if (event.target.closest(".task-message-container")) {
             return;

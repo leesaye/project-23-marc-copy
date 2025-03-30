@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 function CSVUpload() {
     // const BASE_URL = `http://127.0.0.1:8000/`;
-    const BASE_URL = `https://project-23-marc.onrender.com/`;
+    // const BASE_URL = `https://project-23-marc.onrender.com/`;
+    const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
     const csvInputRef = useRef();
     const nav = useNavigate();
 

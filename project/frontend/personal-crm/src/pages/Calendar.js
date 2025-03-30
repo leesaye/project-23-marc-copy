@@ -8,7 +8,10 @@ import CalendarView from "./CalendarView";
 import CalendarSidebar from "../components/CalendarSidebar";
 import "./Calendar.css";
 
-const BASE_URL = 'http://127.0.0.1:8000/';
+// const BASE_URL = 'http://127.0.0.1:8000/';
+// const BASE_URL = 'https://project-23-marc-backend-deployment.onrender.com/';
+// const BASE_URL = `https://project-23-marc.onrender.com/`;
+const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
 const COLORS = ["#B5D22C", "#73AA2A", "#0995AE", "#04506A"];
 
 export default function CalendarPage() {
@@ -60,10 +63,10 @@ export default function CalendarPage() {
             const eventsData = eventsRes.data.map(event => ({
                 ...event,
                 start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
-                end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
+                end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")),
                 type: event.source === "google" ? "Google Event" : "Event",
                 contact: event.contact || "",
-                tag: event.tag || "",  
+                tag: event.tag || "",
                 style: { backgroundColor: event.color || "#3174ad", color: 'white' }
             }));
 
@@ -76,8 +79,8 @@ export default function CalendarPage() {
                 type: "Task",
                 style: { backgroundColor: task.color || "#014F86", color: 'white' },
                 contact: task.contact || "",
-                completed: task.completed, 
-                tag: task.tag || ""   
+                completed: task.completed,
+                tag: task.tag || ""
             }));
 
 
@@ -123,19 +126,19 @@ export default function CalendarPage() {
         if (formType === "task") setNewTask(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSelectEvent = (event) => {    
+    const handleSelectEvent = (event) => {
         setFormType(event.type.toLowerCase());
-    
+
         if (event.type === "Event") {
             const formattedStart = moment(event.start).format("YYYY-MM-DDTHH:mm");
             const formattedEnd = moment(event.end).format("YYYY-MM-DDTHH:mm");
-        
+
             setSelectedEvent({
                 ...event,
                 start: formattedStart,
                 end: formattedEnd
             });
-    
+
             setNewEvent({
                 title: event.title,
                 start: formattedStart,

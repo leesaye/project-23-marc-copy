@@ -1,13 +1,14 @@
 import Layout from "../components/Layout";
 import React, { useState, useEffect } from "react";
 import "./Calendar.css";
-import axiosInstance from "../endpoints/api"; 
+import axiosInstance from "../endpoints/api";
 
-const BASE_URL = "http://127.0.0.1:8000";
+// const BASE_URL = "http://127.0.0.1:8000";
+const BASE_URL = `https://project-23-marc-backend-d4.onrender.com`;
 
 function AccountSettings() {
     const [user, setUser] = useState({ username: "", email: "", new_password: "" });
-    const [dailyGoal, setDailyGoal] = useState(""); 
+    const [dailyGoal, setDailyGoal] = useState("");
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [usernameError, setUsernameError] = useState("");
@@ -25,27 +26,27 @@ function AccountSettings() {
                 setLoading(false);
             }
         };
-        
+
         const fetchDailyGoal = async () => {
             try {
                 const response = await fetch(`${BASE_URL}/feed/user-stats/`, { credentials: "include" });
-    
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch user stats');
                 }
-    
+
                 const data = await response.json();
-                setDailyGoal(data[0]?.daily_goal || ""); 
+                setDailyGoal(data[0]?.daily_goal || "");
 
             } catch (error) {
                 console.error("Error fetching daily goal:", error);
             }
         };
-    
+
         fetchUserData();
         fetchDailyGoal();
     }, []);
-    
+
 
     const handleChange = (e) => {
         setUser({ ...user, [e.target.name]: e.target.value });
@@ -53,21 +54,21 @@ function AccountSettings() {
     };
 
     const handleDailyGoalChange = (e) => {
-        setDailyGoal(e.target.value);  
-        setMessage(""); 
+        setDailyGoal(e.target.value);
+        setMessage("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Ensure dailyGoal is a valid positive integer
         const parsedDailyGoal = parseInt(dailyGoal, 10);
-        
+
         if (parsedDailyGoal <= 0 || isNaN(parsedDailyGoal)) {
             setMessage({ text: "Invalid daily goal. It must be a positive integer.", isError: true });
             return;
         }
-    
+
         try {
             const response = await fetch(`${BASE_URL}/api/update/`, {
                 method: "PUT",
@@ -79,11 +80,11 @@ function AccountSettings() {
                     password: user.new_password || undefined,
                 }),
             });
-    
+
             await axiosInstance.post(`${BASE_URL}/feed/user-stats/set_daily_goal/`, {
                 daily_goal: parsedDailyGoal,
             });
-    
+
             if (response.ok) {
                 setMessage({ text: "Profile and daily goal updated successfully!", isError: false });
             } else {
@@ -94,9 +95,9 @@ function AccountSettings() {
             setMessage("Failed to update profile or daily goal.");
         }
     };
-    
-    
-    
+
+
+
 
     const handleDeleteAccount = async () => {
     try {
@@ -133,12 +134,12 @@ function AccountSettings() {
                          )}
                         <div className="mb-3 w-25 mx-auto">
                             <label className="form-label fw-bold">Username</label>
-                            <input 
-                                type="text" 
-                                name="username" 
-                                value={user.username} 
-                                onChange={handleChange} 
-                                className="form-control" 
+                            <input
+                                type="text"
+                                name="username"
+                                value={user.username}
+                                onChange={handleChange}
+                                className="form-control"
                                 required
                             />
                             {usernameError && <p className="text-danger">{usernameError}</p>}
@@ -146,34 +147,34 @@ function AccountSettings() {
 
                         <div className="mb-3 w-25 mx-auto">
                             <label className="form-label fw-bold">Email</label>
-                            <input 
-                                type="email" 
-                                name="email" 
-                                value={user.email} 
-                                onChange={handleChange} 
-                                className="form-control" 
+                            <input
+                                type="email"
+                                name="email"
+                                value={user.email}
+                                onChange={handleChange}
+                                className="form-control"
                                 required
                             />
                         </div>
 
                         <div className="mb-3 w-25 mx-auto">
                             <label className="form-label fw-bold">New Password</label>
-                            <input 
-                                type="password" 
-                                name="new_password" 
-                                value={user.new_password} 
-                                onChange={handleChange} 
-                                className="form-control" 
+                            <input
+                                type="password"
+                                name="new_password"
+                                value={user.new_password}
+                                onChange={handleChange}
+                                className="form-control"
                             />
                         </div>
 
                         <div className="mb-3 w-25 mx-auto">
                             <label className="form-label fw-bold"> Daily Goal</label>
-                            <input 
-                                type="text" 
-                                value={dailyGoal} 
-                                onChange={handleDailyGoalChange} 
-                                className="form-control" 
+                            <input
+                                type="text"
+                                value={dailyGoal}
+                                onChange={handleDailyGoalChange}
+                                className="form-control"
                                 required
                             />
                         </div>
@@ -183,7 +184,7 @@ function AccountSettings() {
                     </form>
                 )}
             </div>
-            
+
             {showModal && (
                 <div className="modal-overlay">
                     <div className="modal-content">

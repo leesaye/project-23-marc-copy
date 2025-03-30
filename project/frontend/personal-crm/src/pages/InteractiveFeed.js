@@ -2,8 +2,8 @@ import Layout from "../components/Layout";
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { Context } from "../contexts/AIContext";
 import { LinearProgress } from "@mui/material";
-import axiosInstance from "../endpoints/api"; 
-import moment from "moment";  
+import axiosInstance from "../endpoints/api";
+import moment from "moment";
 
 
 function InteractiveFeed() {
@@ -12,13 +12,14 @@ function InteractiveFeed() {
     today.setHours(0, 0, 0, 0);
     const promptStart = "Give me a mock event that is happening with some random contact that I may have that I could join. Only give json of format { title: \"Event 1\", description: \"This is the first event\", date: \"2025-03-10\", contact: \"Contact Name\"} in plain text no code block. Ensure that the date given is 1 to 7 days after:" + today + ". Also make sure the JSON starts with { and ends with }";
     const [eventData, setEventData] = useState("");
-    const BASE_URL = 'http://127.0.0.1:8000/';
+    // const BASE_URL = 'http://127.0.0.1:8000/';
+    const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
     const [currentDailyCount, setCurrentDailyCount] = useState();
     const [dailyGoal, setDailyGoal] = useState();
     const [streak, setStreak] = useState();
     // New
     const COLORS = ["#B5D22C", "#73AA2A", "#0995AE", "#04506A"];
-    const [selectedColor, setSelectedColor] = useState(COLORS[0]); 
+    const [selectedColor, setSelectedColor] = useState(COLORS[0]);
     const [showEventForm, setShowEventForm] = useState(false);
     const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
     const [selectedFeedEventId, setSelectedFeedEventId] = useState(null);
@@ -30,23 +31,23 @@ function InteractiveFeed() {
             console.error("Invalid event data:", event);
             return;
         }
-    
+
         setNewEvent({
             title: event.title,
             start: moment(event.date).set({ hour: 9, minute: 0 }).format("YYYY-MM-DDTHH:mm"),
             end: moment(event.date).set({ hour: 17, minute: 0 }).format("YYYY-MM-DDTHH:mm"),
         });
-    
+
         setSelectedFeedEventId(event.id || Date.now());
         setShowEventForm(true);
     };
-    
-    
+
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setNewEvent((prev) => ({ ...prev, [name]: value }));
     };
-    
+
     const handleAddEvent = async (e) => {
         e.preventDefault();
         try {
@@ -54,12 +55,12 @@ function InteractiveFeed() {
                 ...newEvent,
                 color: selectedColor,
             });
-    
+
             // Increment Current Daily Count only if it's below the Daily Goal
             if (currentDailyCount < dailyGoal) {
                 setCurrentDailyCount((prevCount) => {
                     const updatedCount = (prevCount || 0) + 1;
-    
+
                     axiosInstance.post(`${BASE_URL}feed/user-stats/increment_count/`)
                         .then((response) => {
                             console.log("Daily Count incremented:", response.data);
@@ -67,28 +68,28 @@ function InteractiveFeed() {
                         .catch((error) => {
                             console.error("Error incrementing Daily Count:", error);
                         });
-    
+
                     return updatedCount;
                 });
             }
-    
+
         } catch (error) {
             console.error("Error adding event:", error);
         }
-    
+
         setShowEventForm(false);
         setNewEvent({ title: "", start: "", end: "" });
         setSelectedFeedEventId(null);
         setSelectedColor(COLORS[0]);
     };
-    
-    
+
+
     const handleCancel = () => {
         setShowEventForm(false);
         setNewEvent({ title: "", start: "", end: "" });
         setSelectedFeedEventId(null);
     };
-    
+
     const generateEvent = async () => {
         try {
             onSent(promptStart);
@@ -125,11 +126,11 @@ function InteractiveFeed() {
         } catch (error) {
             //if the json response returned from the AI is not proper JSON just generating a response again until it does return valid json
             console.error("Error parsing resultData:", error);
-            setEventData(null); 
+            setEventData(null);
             generateEvent();
         }
     }, [resultData]);
-    
+
     return (
         <Layout>
             <div className="d-flex flex-column justify-content-center container-fluid bg-primary-subtle rounded p-4 min-vh-100">
@@ -165,7 +166,7 @@ function InteractiveFeed() {
                     </div>
                 </div>
             </div>
-    
+
             {showEventForm && (
                 <div className="modal-overlay">
                     <div className="modal-content">
@@ -197,7 +198,7 @@ function InteractiveFeed() {
                             onChange={handleInputChange}
                             required
                         />
-    
+
                         <div className="color-picker">
                             {COLORS.map((color) => (
                                 <div
@@ -208,7 +209,7 @@ function InteractiveFeed() {
                                 ></div>
                             ))}
                         </div>
-    
+
                         <div className="modal-buttons">
                             <button className="cancel-button" onClick={handleCancel}>
                                 Cancel
@@ -222,7 +223,7 @@ function InteractiveFeed() {
             )}
         </Layout>
     );
-    
+
 }
 
 export default InteractiveFeed;
