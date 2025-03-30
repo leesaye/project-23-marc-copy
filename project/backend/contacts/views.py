@@ -2,12 +2,14 @@ from django.shortcuts import render
 import pandas as pd
 import uuid
 import io
+from io import StringIO
 import csv
 import base64
 from PIL import Image
 import json
 import os
 from django.conf import settings
+from django.http import HttpResponse
 
 from rest_framework.views import APIView
 from . models import Contact
@@ -312,29 +314,47 @@ class UploadLinkedInCSVView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class ExportContactsCSV(APIView):
+    permission_classes = [IsAuthenticated]  # Ensure only logged-in users can access
 
-# Relationship quiz
-# TODO: Move relationship quiz logic to here later
-class RelationshipQuizView(APIView):
-    def post(self, request, contact_id):
-        # Get the contact based on contact_id
+    def get(self, request):
         try:
-            contact = Contact.objects.get(id=contact_id)
-            relationship_rating = get_relationship_rating(request.data)
-            contact.relationship_rating = relationship_rating
-            contact.save()
+            # get contacts
+            contacts = Contact.objects.filter(user=request.user)
 
-        except Contact.DoesNotExist:
-            return Response({"error": "Contact not found"}, status=status.HTTP_404_NOT_FOUND)
-        except GeminiAPIError as e:
-            return Response({"error": f"Failed to generate relationship rating: {str(e)}"},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            csv_buffer = StringIO()
+            writer = csv.writer(csv_buffer)
 
-        # Ret generated rating
-        return Response({"relationship_rating": relationship_rating}, status=status.HTTP_200_OK)
+            # header
+            writer.writerow([
+                "Name", "Email", "Phone", "Job", "Company", "LinkedIn",
+                "Relationship Rating", "Relationship", "Notes", "Created At"
+            ])
 
+            # write data
+            for contact in contacts:
+                writer.writerow([
+                    contact.name if contact.name else "",
+                    contact.email if contact.email else "",
+                    contact.phone if contact.phone else "",
+                    contact.job if contact.job else "",
+                    contact.company if contact.company else "",
+                    contact.linkedin_url if contact.linkedin_url else "",
+                    contact.relationship_rating if contact.relationship_rating else "",
+                    contact.relationship if contact.relationship else "",
+                    contact.notes if contact.notes else "",
+                    contact.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                ])
 
-##### Helpers for quiz, image and csv parsing/validation #####
+            # HTTP response
+            response = HttpResponse(csv_buffer.getvalue(), content_type="text/csv")
+            response["Content-Disposition"] = 'attachment; filename="contacts.csv"'
+            return response
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+##### Helpers for quiz, image and csv #####
 def encode_img(file):
     if file:
         return file.read()  # Read and return binary data

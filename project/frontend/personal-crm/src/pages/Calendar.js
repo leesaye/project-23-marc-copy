@@ -48,6 +48,7 @@ export default function CalendarPage() {
             }).catch(() => setUser(null));
     }, []);
 
+
     const fetchEventsAndTasks = async () => {
         try {
             const [eventsRes, tasksRes, contactsRes] = await Promise.all([
@@ -62,6 +63,7 @@ export default function CalendarPage() {
                 end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
                 type: event.source === "google" ? "Google Event" : "Event",
                 contact: event.contact || "",
+                tag: event.tag || "",  
                 style: { backgroundColor: event.color || "#3174ad", color: 'white' }
             }));
 
@@ -74,8 +76,10 @@ export default function CalendarPage() {
                 type: "Task",
                 style: { backgroundColor: task.color || "#014F86", color: 'white' },
                 contact: task.contact || "",
-                completed: task.completed
+                completed: task.completed, 
+                tag: task.tag || ""   
             }));
+
 
             setEvents([...eventsData, ...tasksData]);
             setTasks(tasksRes.data);

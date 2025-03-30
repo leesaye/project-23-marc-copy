@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework import status
+from django.utils import timezone
 
 from django.contrib.auth.models import User
 from .models import GoogleConnection
@@ -21,6 +22,13 @@ from rest_framework_simplejwt.views import (
 #Serializers
 from .serializer import UserSerializer, UserRegisterSerializer, UpdateUserSerializer
 
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     def post(self, request, *args, **kwargs):
@@ -33,6 +41,10 @@ class CustomTokenObtainPairView(TokenObtainPairView):
         # Retrieve user manually since request.user is not available yet
         username = request.data.get("username")
         user = User.objects.get(username=username)
+
+        user.last_login = timezone.now()
+        user.save()
+        
         serializer = UserSerializer(user)
 
         res = Response()
