@@ -19,6 +19,7 @@ function Log() {
     const [weeks, setWeeks] = useState(0);
     const [lastLogin, setLastLogin] = useState("No previous login");
     const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
+    const isTinyScreen = useMediaQuery({ query: '(max-width: 600px)' });
     const BASE_URL = "http://127.0.0.1:8000/";
 
     useEffect(() => {
@@ -178,16 +179,16 @@ function Log() {
 
 
                     <div className="row mt-5">
-                        <div className="col-3">
+                        <div className="col-3 mt-1">
                             <h2>My Activity Log</h2>
                         </div>
-                        <div className="col-5 mt-1">
+                        <div className="col-4 mt-2">
                             <Paper elevation={0} component="form" className="p-1 w-75">
                                 <SearchIcon />
                                 <InputBase className="w-75" placeholder="Search log" inputProps={{ 'aria-label': 'search log' }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
                             </Paper>
                         </div>
-                        <div className="col-2 mt-1">
+                        <div className="col-2 mt-2">
                             <div className="dropdown">
                                 <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     <SwapVertIcon />
@@ -199,7 +200,7 @@ function Log() {
                                 </ul>
                             </div>
                         </div>
-                        <div className="col-2 mt-1">
+                        <div className="col-2 mt-2">
                             <div className="dropdown">
                                 <button className="btn btn-primary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     <SwapVertIcon />
@@ -212,11 +213,11 @@ function Log() {
                                     <li><button className="dropdown-item" value={0} onClick={(e) => setWeeks(e.target.value)} >All Time</button></li>
                                 </ul>
                             </div>
-                            <div className="col-1 mt-1">
-                                <button className="btn btn-success" onClick={handleExportCSV}>
-                                    Export as CSV
-                            </button>
                         </div>
+                        <div className="col-1">
+                            <button className="btn btn-primary" onClick={handleExportCSV}>
+                                CSV Export
+                            </button>
                         </div>
                     </div>
                     <div className="row mt-3 mx-3">
@@ -269,12 +270,33 @@ function Log() {
                             )}
                         </div>
 
-
+                        {!isTinyScreen ? ( /*For laptop/phone screen (not smallest size)*/
                         <div className="row mt-5">
-                            <div className="col-12 text-center">
+                            <div className="col-6 text-center">
                                 <h2>My Activity Log</h2>
                             </div>
+                            <div className="col-6 my-1 text-center">
+                                <button className="btn btn-primary" onClick={handleExportCSV}>
+                                    CSV Export
+                                </button>
+                            </div>
                         </div>
+                        ) : ( /*For smallest phone size*/
+                            <div>
+                            <div className="row mt-5">
+                                <div className="col-12 text-center">
+                                    <h2>My Activity Log</h2>
+                                </div>
+                            </div>
+                            <div className="row my-1">
+                                <div className="col-12 text-center">
+                                    <button className="btn btn-primary" onClick={handleExportCSV}>
+                                        CSV Export
+                                    </button>
+                                </div>
+                            </div>
+                            </div>
+                        )}
                         <div className="row justify-content-center">
                             <div className="col-12 my-1">
                                 <Paper elevation={0} component="form" className="p-1 w-75 mx-auto">

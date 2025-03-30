@@ -17,7 +17,7 @@ function Contacts() {
     const [sortValue, setSearchValue] = useState("Name (asc)");
     const [user, setUser] = useState(null);
     const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
-    const isTinyScreen = useMediaQuery({ query: '(max-width: 450px)' });
+    const isTinyScreen = useMediaQuery({ query: '(max-width: 630px)' });
     const [googleConnection, setGoogleConnection] = useState(null);
     const BASE_URL = `http://127.0.0.1:8000/`;
     const csvInputRef = useRef();
@@ -186,7 +186,7 @@ function Contacts() {
                         <div className="col-1 mt-1">
                             <div className="dropdown">
                                 <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Import
+                                    Import/Export
                                 </button>
                                 <ul className="dropdown-menu" aria-labelledby="sortDropdown">
                                     <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
@@ -199,13 +199,9 @@ function Contacts() {
                                         </div>
                                     )
                                     }
+                                    <li><button onClick={handleExportCSV} className="dropdown-item">Export as CSV</button></li>
                                 </ul>
                             </div>
-                        </div>
-                        <div className="col-1 mt-1">
-                            <button className="btn btn-success" onClick={handleExportCSV}>
-                                Export as CSV
-                            </button>
                         </div>
                     </div>
                     <div className="row mt-4">
@@ -271,7 +267,7 @@ function Contacts() {
                                 <div className="col-1 mt-1">
                                     <div className="dropdown">
                                         <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Import
+                                            Import/Export
                                         </button>
                                         <ul className="dropdown-menu" aria-labelledby="sortDropdown">
                                             <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
@@ -284,6 +280,7 @@ function Contacts() {
                                                 </div>
                                             )
                                             }
+                                            <li><button onClick={handleExportCSV} className="dropdown-item">Export as CSV</button></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -326,6 +323,7 @@ function Contacts() {
                                                 </div>
                                             )
                                             }
+                                            <li><button onClick={handleExportCSV} className="dropdown-item">Export as CSV</button></li>
                                         </ul>
                                     </div>
                                 </div>
