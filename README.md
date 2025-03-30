@@ -27,9 +27,9 @@ Primary Features and functionalities currently implemented for D4:
 	2. A user can also add events or tasks to the calendar.
  	3. A user can sync their calendar with Google Calendars to see those events appear on their calendar on our website.
 4. A user can view and interact with recent events and tasks from their network (Feed Tab)
- 	3. A user can add an event taken from activity on a linked site that is not already on their calendar to their calendar through the feed page.
-  	4. A user can build a streak off of adding events to their calendar, and add events in a "swipe right" gamified manner.
-  	5. A user can see an AI summary of their recent tasks and events and what it recommends that they prioritize. (Added to Home Tab)
+ 	1. A user can add an event taken from activity on a linked site that is not already on their calendar to their calendar through the feed page.
+  	2. A user can build a streak off of adding events to their calendar, and add events in a "swipe right" gamified manner.
+  	3. A user can see an AI summary of their recent tasks and events and what it recommends that they prioritize. (Added to Home Tab)
 5. A user can complete missions and view a log of all their activity (Log Tab)
 	1. A user can view all added events and tasks in a log to track their progress.
  	2. A user can filter, sort, and categorize events and tasks using tags.
