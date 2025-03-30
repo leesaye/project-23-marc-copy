@@ -19,8 +19,8 @@ export default function CalendarPage() {
     const [contacts, setContacts] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [formType, setFormType] = useState(null);
-    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', contact: '', type: 'Event' });
-    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '' });
+    const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', contact: '', tag: '', type: 'Event' });
+    const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '', tag: '' });
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
 
@@ -123,20 +123,13 @@ export default function CalendarPage() {
         if (formType === "task") setNewTask(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSelectEvent = (event) => {
-        // console.log("📌 User clicked event:", event);
-        // console.log("🔎 Raw event.start:", event.start, "| type:", typeof event.start);
-        // console.log("🔎 Raw event.end:", event.end, "| type:", typeof event.end);
-    
+    const handleSelectEvent = (event) => {    
         setFormType(event.type.toLowerCase());
     
         if (event.type === "Event") {
             const formattedStart = moment(event.start).format("YYYY-MM-DDTHH:mm");
             const formattedEnd = moment(event.end).format("YYYY-MM-DDTHH:mm");
-    
-            // console.log("📅 Formatted start for input:", formattedStart);
-            // console.log("📅 Formatted end for input:", formattedEnd);
-    
+        
             setSelectedEvent({
                 ...event,
                 start: formattedStart,
@@ -147,7 +140,8 @@ export default function CalendarPage() {
                 title: event.title,
                 start: formattedStart,
                 end: formattedEnd,
-                contact: event.contact || ""
+                contact: event.contact || "",
+                tag: event.tag || ""
             });
         } else if (event.type === "Task") {
             setSelectedTask(event);
@@ -155,7 +149,8 @@ export default function CalendarPage() {
                 title: event.title,
                 date: moment(event.start).format("YYYY-MM-DD"),
                 contact: event.contact || "",
-                completed: event.completed || false
+                completed: event.completed || false,
+                tag: event.tag || ""
             });
         }
         setSidebarOpen(true);
