@@ -27,7 +27,6 @@ Primary Features and functionalities currently implemented for D4:
 	2. A user can also add events or tasks to the calendar.
  	3. A user can sync their calendar with Google Calendars to see those events appear on their calendar on our website.
 4. A user can view and interact with recent events and tasks from their network (Feed Tab)
-	1. A user can view all recent events and tasks from their network in a consolidated view.
  	3. A user can add an event taken from activity on a linked site that is not already on their calendar to their calendar through the feed page.
   	4. A user can build a streak off of adding events to their calendar, and add events in a "swipe right" gamified manner.
   	5. A user can see an AI summary of their recent tasks and events and what it recommends that they prioritize. (Added to Home Tab)
@@ -43,8 +42,8 @@ Primary Features and functionalities currently implemented for D4:
 The Final MVP for Personal CRM should accomplish the following 3 main user stories:
 
 1. As a user I want to be reminded when I haven't communicated with someone for a while.
-2. As a user, I want to be able to easily follow up on outstanding items and set due dates - that means I should be able to tap one button and the message sends.
-3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship by only answering a few short questions about the person, after which a score from 0-100 that represents my relationship with them is generated.
+2. As a user, I want to be able to easily follow up on outstanding items and set due dates - that means I should be able to send a follow up messages with one button press.
+3. As a user, I want to be able to capture information easily. I want to be prompted to help me understand my relationship by only answering a few short questions about the person, after which a score from 0-100 that represents my relationship with them is generated.
 
 ## Screenshots, GIFs, or Short Videos:
 View the following video for a walkthrough and user flow of our website:
@@ -124,7 +123,7 @@ Visit our deployed website here:
 8. To test our sixth use case, click the Settings Tab on the left sidebar
 	1. You can change your username, email and password, as well as your streak goals (for the interactive Feed Tab)
 	2. By clicking the Save Changes button, you apply all changes
-	3. By clicking the Delete Account button, you can confirm deletion—your account will be deleted and you will return to the login page
+	3. By clicking the Delete Account button, you can confirm deletion—your account will be deleted and you will be returned to the login page
 9. For more space you can collapse the sidebar by clicking the three lines in the top left corner
 10. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
 	1. This will bring you back to the log in page
