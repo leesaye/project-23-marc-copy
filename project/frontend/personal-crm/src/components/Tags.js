@@ -22,7 +22,7 @@ const TagSelector = ({ selectedTag, setSelectedTag }) => {
     };
 
     return (
-        <div style={{ marginTop: "10px" }}>
+        <div>
             <label>Tag:</label>
             <select name="tag" value={isCustomTag ? "custom" : selectedTag} onChange={handleTagChange}>
                 <option value="">Select a tag</option>
