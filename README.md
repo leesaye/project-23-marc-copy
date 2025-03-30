@@ -42,7 +42,7 @@ Primary Features and functionalities currently implemented for D4:
 The Final MVP for Personal CRM should accomplish the following 3 main user stories:
 
 1. As a user I want to be reminded when I haven't communicated with someone for a while.
-2. As a user, I want to be able to easily follow up on outstanding items and set due dates - that means I should be able to send a follow up messages with one button press.
+2. As a user, I want to be able to easily follow up on outstanding items and set due dates - that means I should be able to send a follow up message with one button press.
 3. As a user, I want to be able to capture information easily. I want to be prompted to help me understand my relationship by only answering a few short questions about the person, after which a score from 0-100 that represents my relationship with them is generated.
 
 ## Screenshots, GIFs, or Short Videos:
