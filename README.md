@@ -184,6 +184,7 @@ Repo has been forked and changed slightly to allow for deployment.
      	- REACT_APP_GEMINI_API_KEY and REACT_APP_GOOGLE_CLIENT_ID, set to generated values
         	- Note: REACT_APP_GOOGLE_CLIENT_ID must enable the People API and the GCal API
 - Note: Our current frontend deployment (due to permission restrictions on this classrooom repo) is off of a fork of this repo
+	- Fork: https://github.com/leesaye/project-23-marc
 
 **Backend Deployment Using Render:**
 - Create an account on Render.com
