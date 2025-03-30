@@ -19,13 +19,13 @@ Primary Features and functionalities currently implemented for D4:
 2. A user can create and add contacts to their account (Contacts Tab)
 	1. A user can add contacts and input information about each of their contacts manually.
  	2. They can also choose to upload their contacts through LinkedIn with its CSV export by uploading the CSV file, or upload their contacts through Google by syncing with Google contacts.
-	3. They can also take a quiz that asks questions about their contact to generate a relationship score using AI that determines the strength of their relationship.
+	3. They can also take a quiz that asks questions about a contact to generate a relationship score using AI that determines the strength of their relationship.
 	4. A user can view all their contacts in a consolidated overview.
  	5. A contact's relationship rating will change based on interactions the user makes via events or tasks
 3. A user can add events and tasks to a calendar as reminders for when to reach out to contacts. (Calendar Tab)
 	1. On the Calendar Tab, a user can view a calendar of all their upcoming events and tasks.
 	2. A user can also add events or tasks to the calendar.
- 	3. A user can sync their calendar with Google Calendars to see those events appear on their calendar on the website.
+ 	3. A user can sync their calendar with Google Calendars to see those events appear on their calendar on our website.
 4. A user can view and interact with recent events and tasks from their network (Feed Tab)
 	1. A user can view all recent events and tasks from their network in a consolidated view.
  	3. A user can add an event taken from activity on a linked site that is not already on their calendar to their calendar through the feed page.
