@@ -151,18 +151,13 @@ function Log() {
         <Layout>
             {!isSmallScreen ? ( /*For desktop screen size*/
             <div className="container bg-primary-subtle rounded p-3 min-vh-100">
-                <div className="row">
-                    <div className="col-6">
-                        <h1>Log</h1>
-                    </div>
-                    <div className="col-6 mt-3">
-                        <h4>Last login: {new Date(lastLogin).toLocaleString()}</h4>
-                    </div>
-                </div>
-                <div className="container mx-1">
+                <div className="container">
                     <div className="row mt-3">
                         <div className="col-6">
                             <h2>My Mission Log</h2>
+                        </div>
+                        <div className="col-6 mt-3">
+                            <h4>Last login: {new Date(lastLogin).toLocaleString()}</h4>
                         </div>
                     </div>
                     <div className="container mt-1 mx-1 bg-info-subtle rounded-3">
@@ -244,18 +239,15 @@ function Log() {
             </div>
             ) : ( /*For laptop/phone screen*/
                 <div className="container bg-primary-subtle rounded p-3 min-vh-100">
-                    <div className="row">
-                        <div className="col-4">
-                            <h1>Log</h1>
-                        </div>
-                        <div className="col-8 mt-3">
-                            <h4>Last login: {new Date(lastLogin).toLocaleDateString()}</h4>
-                        </div>
-                    </div>
                     <div className="container mx-1">
                         <div className="row mt-3 text-center">
                             <div className="col-12">
                                 <h2>My Mission Log</h2>
+                            </div>
+                        </div>
+                        <div className="row text-center">
+                            <div className="col-12 mt-3">
+                                <h4>Last login: {new Date(lastLogin).toLocaleDateString()}</h4>
                             </div>
                         </div>
                         <div className="container mt-1 mx-1 bg-info-subtle rounded-3">
