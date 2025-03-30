@@ -112,9 +112,9 @@ Visit our deployed website here:
 	5. You can navigate back and forth in time using the buttons in the top left.
  	6. You can also add contacts through google by clicking the connect with google button. This will import the google calendar events of whatever google accouhnt you select.
 6. To test our fourth use case, click the Feed Tab on the left sidebar
-	1. This will bring up a view of recent events in your network.
- 	2. Events that are already a part of your calendar can be seen with a green checkmark.
-  	3. By clicking the green plus mark on events that are not already in your calendar, you can add them to your calendar.
+	1. This will bring up a view where you see events from people in your network.
+ 	2. You can click the Next button to see a new Event or click the Add button the add the current event to your calendar.
+  	3. Adding an event to the calendar will increment the daily event counter. A user can set a daily event goal (default is 3). If they add a number of events equal to their daily goal, their daily streak counter will increment. If a user fails to meet their daily goal, their counter will reset back to 0. Daily streaks are done using a Cron job and is not available using the free tier of our backend deployment as of right now. However developers can test this feature out in our local developer environment (see below).
 7. To test our fifth use case, click the Log Tab on the left sidebar
 	1. This will bring up a Mission log (for weekly quests) and Activity log (displays past events and completed tasks).
  	2. Quests will refresh automatically every week
