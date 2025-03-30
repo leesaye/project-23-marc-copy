@@ -22,7 +22,7 @@ function Contacts() {
 
     const [user, setUser] = useState(null);
     const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
-    const isTinyScreen = useMediaQuery({ query: '(max-width: 450px)' });
+    const isTinyScreen = useMediaQuery({ query: '(max-width: 630px)' });
     const [googleConnection, setGoogleConnection] = useState(null);
     const csvInputRef = useRef();
     const nav = useNavigate();
@@ -130,6 +130,27 @@ function Contacts() {
         }
     }
 
+    // export contacts in csv
+    const handleExportCSV = async () => {
+        try {
+            const response = await axiosInstance.get(`${BASE_URL}contacts/export-contacts/`, {
+                responseType: "blob", // ensures the response is treated as a file
+            });
+
+            // Create a URL for the downloaded CSV file
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", "contacts.csv"); // Set file name
+            document.body.appendChild(link);
+            link.click(); // Trigger download
+            document.body.removeChild(link); // Clean up
+
+        } catch (error) {
+            console.error("Error downloading CSV:", error);
+        }
+    };
+
 
     return (
         <Layout>
@@ -170,7 +191,7 @@ function Contacts() {
                         <div className="col-1 mt-1">
                             <div className="dropdown">
                                 <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Import
+                                    Import/Export
                                 </button>
                                 <ul className="dropdown-menu" aria-labelledby="sortDropdown">
                                     <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
@@ -183,6 +204,7 @@ function Contacts() {
                                         </div>
                                     )
                                     }
+                                    <li><button onClick={handleExportCSV} className="dropdown-item">Export as CSV</button></li>
                                 </ul>
                             </div>
                         </div>
@@ -250,7 +272,7 @@ function Contacts() {
                                 <div className="col-1 mt-1">
                                     <div className="dropdown">
                                         <button className="btn btn-primary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            Import
+                                            Import/Export
                                         </button>
                                         <ul className="dropdown-menu" aria-labelledby="sortDropdown">
                                             <li><Link to="/contacts/importcsv/" className="link-underline link-underline-opacity-0"><button className="dropdown-item">Import LinkedIn contacts</button></Link></li>
@@ -263,6 +285,7 @@ function Contacts() {
                                                 </div>
                                             )
                                             }
+                                            <li><button onClick={handleExportCSV} className="dropdown-item">Export as CSV</button></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -305,6 +328,7 @@ function Contacts() {
                                                 </div>
                                             )
                                             }
+                                            <li><button onClick={handleExportCSV} className="dropdown-item">Export as CSV</button></li>
                                         </ul>
                                     </div>
                                 </div>
