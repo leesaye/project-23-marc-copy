@@ -40,18 +40,25 @@ The Final MVP for Personal CRM should accomplish the following 3 main user stori
 ## Screenshots, GIFs, or Short Videos:
 View the following video for a walkthrough and user flow of our website:
 
-(D2)
-[https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link](https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link)
+(D4) https://drive.google.com/file/d/1p0NXsdapgDIGY1qg4pIRuvwF7i0os-z_/view?usp=drive_link
 
 (D3) https://drive.google.com/file/d/1JW90mKkOl3xHRIIyQfsKz_y9BK-xlQT-/view?usp=sharing
 
+(D2)
+[https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link](https://drive.google.com/file/d/1AE1FqYCjQAl-VvuZVgFaiwOJPLMCc7xf/view?usp=drive_link)
+
 ## How the TA can test the features:
-1. Visit our deployed website here: D3 snapshot: https://personalcrm-d3.netlify.app/
+1. Visit our deployed website here:
+
+**Newest D4 snapshot: https://personalcrm-d4.netlify.app/**
+
+(D3 snapshot: https://personalcrm-d3.netlify.app/)
+
 (D2 snapshot: https://personalcrm.netlify.app/)
 
 	Note: Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity. You may be seeing a loading screen for aprox 1-2 mins or a request may take a while to get sent.
 	   
-2. After clicking the link above you will be brought to the log in page.
+3. After clicking the link above you will be brought to the log in page.
 	1. You can use the following test user to login
 		1. username: testuser
 		2. password: 123
@@ -60,9 +67,9 @@ View the following video for a walkthrough and user flow of our website:
 		2. Feel free to use this account instead of the test user above.
   		3. There is also a password strength calculator that shows under the password you created to ensure you are using a strong enough password.
   	3. You can also test the lockout feature that locks you out of logging in for 30 seconds after 5 failed login attempts
-3. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
-4. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
-5. To test our second use case, click the Contacts tab on the left sidebar.
+4. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
+5. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
+6. To test our second use case, click the Contacts tab on the left sidebar.
 	1. Here you can add a new contact by clicking the green add contact button.
 		1. This will bring you to an add contacts page where you can enter information about a new contact you want to add
 		2. Try inputing a name, email, phone, job, relationship and notes.
@@ -79,7 +86,7 @@ View the following video for a walkthrough and user flow of our website:
 	6. Clicking the import button in the top-right, you can see two options, for uploading LinkedIn contacts and uploading Google contacts.
  		7. Clicking import LinkedIn brings you to a page that gives you steps for how to download your LinkedIn contacts CSV file from LinkedIn. You can then upload this file using the upload button on that page and it will add all of your LinkedIn connections.
    		8. Clicking on the Connect With Google button brings you to a page where you can connect your account to Google if it is not already connected, and then you can sync your Google account's contacts, and it will add all of them to the contacts page.
-6. To test our third use case, click the Calendar Tab on the left sidebar
+7. To test our third use case, click the Calendar Tab on the left sidebar
 	1. This will bring up a calendar view 
 	2. To add an event to the calendar click the add event button located at the bottom right of the screen.
 		1. This will bring up a dialog to add an event
@@ -93,12 +100,12 @@ View the following video for a walkthrough and user flow of our website:
 	4. On the calendar tab you can also change the views by clicking the week, day and agenda views at the top right
 	5. You can navigate back and forth in time using the buttons in the top left.
  	6. You can also add contacts through google by clicking the connect with google button. This will import the google calendar events of whatever google accouhnt you select.
-7. To test our fourth use case, click the Feed Tab on the left sidebar.
+8. To test our fourth use case, click the Feed Tab on the left sidebar.
 	1. This will bring up a view of recent events in your network.
  	2. Events that are already a part of your calendar can be seen with a green checkmark.
   	3. By clicking the green plus mark on events that are not already in your calendar, you can add them to your calendar.
-8. For more space you can collapse the sidebar by clicking the three lines in the top left corner
-9. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
+9. For more space you can collapse the sidebar by clicking the three lines in the top left corner
+10. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
 	1. This will bring you back to the log in page
 
 Notes for testing
