@@ -166,12 +166,8 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     # OTHER SETTINGS
 }
-<<<<<<< HEAD
-=======
 
 CRONJOBS = [
     ("0 0 * * *", "feed.cron.reset_and_update_streaks_cron"),
     ("* * * * *", "feed.cron.keep_server_alive"),
 ]
-
->>>>>>> main
