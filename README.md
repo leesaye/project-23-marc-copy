@@ -67,7 +67,7 @@ Visit our deployed website here:
 
 	Note: Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity. You may be seeing a loading screen for aprox 1-2 mins or a request may take a while to get sent.
 	   
-3. After clicking the link above you will be brought to the log in page.
+1. After clicking the link above you will be brought to the log in page.
 	1. You can use the following test user to login
 		1. username: testuser
 		2. password: 123
@@ -76,9 +76,9 @@ Visit our deployed website here:
 		2. Feel free to use this account instead of the test user above.
   		3. There is also a password strength calculator that shows under the password you created to ensure you are using a strong enough password.
   	3. You can also test the lockout feature that locks you out of logging in for 30 seconds after 5 failed login attempts
-4. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
-5. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
-6. To test our second use case, click the Contacts tab on the left sidebar.
+2. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
+3. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
+4. To test our second use case, click the Contacts tab on the left sidebar.
 	1. Here you can add a new contact by clicking the green add contact button.
 		1. This will bring you to an add contacts page where you can enter information about a new contact you want to add
 		2. Try inputing a name, email, phone, job, relationship and notes.
@@ -96,7 +96,7 @@ Visit our deployed website here:
  		1. Clicking import LinkedIn brings you to a page that gives you steps for how to download your LinkedIn contacts CSV file from LinkedIn. You can then upload this file using the upload button on that page and it will add all of your LinkedIn connections.
   		2. Clicking on the Connect With Google button brings you to a page where you can connect your account to Google if it is not already connected, and then you can sync your Google account's contacts, and it will add all of them to the contacts page.
        3. Clicking on the Export as CSV button will export all your contacts as a downloadable csv file.
-7. To test our third use case, click the Calendar Tab on the left sidebar
+5. To test our third use case, click the Calendar Tab on the left sidebar
 	1. This will bring up a calendar view 
 	2. To add an event to the calendar click the add event button located at the bottom right of the screen.
 		1. This will bring up a dialog to add an event
@@ -112,21 +112,21 @@ Visit our deployed website here:
 	4. On the calendar tab you can also change the views by clicking the week, day and agenda views at the top right
 	5. You can navigate back and forth in time using the buttons in the top left.
  	6. You can also add contacts through google by clicking the connect with google button. This will import the google calendar events of whatever google accouhnt you select.
-8. To test our fourth use case, click the Feed Tab on the left sidebar
+6. To test our fourth use case, click the Feed Tab on the left sidebar
 	1. This will bring up a view of recent events in your network.
  	2. Events that are already a part of your calendar can be seen with a green checkmark.
   	3. By clicking the green plus mark on events that are not already in your calendar, you can add them to your calendar.
-9. To test our fifth use case, click the Log Tab on the left sidebar
+7. To test our fifth use case, click the Log Tab on the left sidebar
 	1. This will bring up a Mission log (for weekly quests) and Activity log (displays past events and completed tasks).
  	2. Quests will refresh automatically every week
  	3. The Sort By and Date Filter buttons allow you sort and filter your activities, and the CSV Export button will export all your activities as a downloadable csv file.
   	4. The search bar can filter by keywords or by Tag.
-10. To test our sixth use case, click the Settings Tab on the left sidebar
-    	1. You can change your username, email and password, as well as your streak goals (for the interactive Feed Tab)
-    	2. By clicking the Save Changes button, you apply all changes
-    	3. By clicking the Delete Account button, you can confirm deletion—your account will be deleted and you will return to the login page
-12. For more space you can collapse the sidebar by clicking the three lines in the top left corner
-13. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
+8. To test our sixth use case, click the Settings Tab on the left sidebar
+	1. You can change your username, email and password, as well as your streak goals (for the interactive Feed Tab)
+	2. By clicking the Save Changes button, you apply all changes
+	3. By clicking the Delete Account button, you can confirm deletion—your account will be deleted and you will return to the login page
+9. For more space you can collapse the sidebar by clicking the three lines in the top left corner
+10. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
 	1. This will bring you back to the log in page
 
 Notes for testing
