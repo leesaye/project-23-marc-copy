@@ -9,7 +9,7 @@ import PrivateRoute from './PrivateRoute';
 import Register from '../pages/Register';
 import CalendarPage from '../pages/Calendar';
 import Feed from '../pages/Feed';
-import Notification from '../pages/Notification';
+import Log from '../pages/Log';
 import CSVUpload from '../pages/CSVUpload';
 import Settings from '../pages/Settings';
 
@@ -31,8 +31,8 @@ function Main() {
                 <Route path='/contacts/importcsv/' element={<PrivateRoute><CSVUpload/></PrivateRoute>} />
                 <Route path='/calendars/' element={<PrivateRoute><CalendarPage/></PrivateRoute>} />
                 <Route path='/feed/' element={<PrivateRoute><AIContextProvider><InteractiveFeed/></AIContextProvider></PrivateRoute>} />
+                <Route path='/log/' element={<PrivateRoute><Log/></PrivateRoute>} />
                 <Route path='/settings/' element={<PrivateRoute><Settings/></PrivateRoute>} />
-                <Route path='/notifications/' element={<PrivateRoute><Notification/></PrivateRoute>} />
             </Routes>
         </Fragment>
     );

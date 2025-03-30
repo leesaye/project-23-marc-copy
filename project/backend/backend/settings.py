@@ -39,14 +39,15 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_crontab",
     # new packages installed
-    "rest_framework",
-    "corsheaders",
-    "rest_framework_simplejwt",
-    "drf_spectacular",
-    "accounts",
-    "contacts",
-    "calendarapi",
-    "feed",
+    'rest_framework',
+    'corsheaders',
+    'rest_framework_simplejwt',
+    'drf_spectacular',
+    'accounts',
+    'contacts',
+    'calendarapi',
+    'feed',
+    'log'
 ]
 
 MIDDLEWARE = [
@@ -170,4 +171,3 @@ CRONJOBS = [
     ("0 0 * * *", "feed.cron.reset_and_update_streaks_cron"),
     ("* * * * *", "feed.cron.keep_server_alive"),
 ]
-
