@@ -23,6 +23,7 @@ export default function CalendarPage() {
     const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '', tag: '' });
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
+    const [syncing, setSyncing] = useState(false);
 
     const googleLogin = useGoogleLogin({
         scope: "https://www.googleapis.com/auth/calendar.readonly",
@@ -39,13 +40,21 @@ export default function CalendarPage() {
     useEffect(() => {
         fetchEventsAndTasks();
         axiosInstance.get(`${BASE_URL}api/googleToken/`)
-            .then((response) => {
-                if (response.data) {
-                    const decoded_token = atob(response.data.googleToken);
-                    setGoogleConnection(decoded_token);
-                    setUser(response.data.user);
-                }
-            }).catch(() => setUser(null));
+        .then((response) => {
+            const token = response?.data?.googleToken;
+            if (token) {
+                const decoded_token = atob(token);
+                setGoogleConnection(decoded_token);
+                setUser(response.data.user || {});  
+            } else {
+                setUser(null);
+                setGoogleConnection(null);
+            }
+        })
+        .catch(() => {
+            setUser(null);
+            setGoogleConnection(null);
+        });
     }, []);
 
 
@@ -90,6 +99,9 @@ export default function CalendarPage() {
     };
 
     const syncCalendar = async (token) => {
+        if (syncing) return; 
+        setSyncing(true);
+
         try {
             const response = await axios.post(`${BASE_URL}api/sync_google_calendar/`, {
                 access_token: token
@@ -111,10 +123,22 @@ export default function CalendarPage() {
     };
 
     const handleLogout = () => {
-        axiosInstance.delete(`${BASE_URL}api/googleLogout/`);
-        setUser(null);
-        setGoogleConnection(null);
-        googleLogout();
+        try {
+            axiosInstance.delete(`${BASE_URL}api/google-events/`);
+            axiosInstance.delete(`${BASE_URL}api/googleLogout/`);
+
+            setEvents(prev => prev.filter(e => e.type !== "Google Event"));
+
+            setUser(null);
+            setGoogleConnection(null);
+            googleLogout();
+            window.location.reload();
+
+        } catch (error) {
+            console.error("Failed to disconnect:", error);
+            alert("Something went wrong while disconnecting.");
+        }
+
     };
 
     const handleInputChange = (e) => {
@@ -192,7 +216,13 @@ export default function CalendarPage() {
                                 <button onClick={googleLogin} className="button-style">Sign In with Google Calendar</button>
                             ) : (
                                 <>
-                                    <button onClick={() => syncCalendar(googleConnection)} className="button-style">Sync Google Calendar</button>
+                                    <button 
+                                        onClick={() => syncCalendar(googleConnection)} 
+                                        className="button-style"
+                                        disabled={syncing}
+                                    >
+                                        {syncing ? "Syncing..." : "Sync Google Calendar"}
+                                    </button>
                                     <button onClick={handleLogout} className="button-style">Disconnect from Google</button>
                                 </>
                             )}

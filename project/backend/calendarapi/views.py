@@ -204,10 +204,10 @@ class GetGoogleEventsView(APIView):
 class DeleteGoogleEventsView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        # Delete all events for the logged-in user
-        Event.objects.filter(user=request.user).delete()
+    def delete(self, request):
+        # Delete only events from Google Calendar
+        deleted_count, _ = Event.objects.filter(user=request.user, source='google').delete()
 
-        response = Response({"message": "Google Calendar events deleted successfully!"})
-        response.delete_cookie("access_token")  # Remove token from cookie
+        response = Response({"message": f"{deleted_count} Google Calendar events deleted successfully!"})
+        response.delete_cookie("access_token") 
         return response
