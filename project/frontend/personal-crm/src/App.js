@@ -9,9 +9,6 @@ function App() {
     <Fragment>
       <AuthProvider>
         <GoogleOAuthProvider clientId="701175770587-uu3vvsfmgfopun5ccsnmotnokc89cnbd.apps.googleusercontent.com">
-          {/* Things like a navbar that appear on all pages should be put here.
-          For example, you would make a Navbar.js in the components directory,
-          then import it here and put the component <Navbar /> above Main */}
           <Main />
         </GoogleOAuthProvider>
       </AuthProvider>

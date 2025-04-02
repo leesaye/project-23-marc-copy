@@ -39,27 +39,26 @@ export default function CalendarSidebar({
             setFormErrors(errors);
             return;
         }
-        setFormErrors({}); {
-            try {
-                newEvent.color = selectedColor;
-                const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
-                const created = response.data;
-                const eventData = {
-                    ...created,
-                    start: new Date(moment.utc(created.start).format("YYYY-MM-DDTHH:mm:ss")),
-                    end: new Date(moment.utc(created.end).format("YYYY-MM-DDTHH:mm:ss")),
-                    type: "Event",
-                    style: { backgroundColor: selectedColor, color: "white" },
-                    contact: created.contact || "",
-                    tag: created.tag || "",
-                };
-                setEvents(prev => [...prev, eventData]);
-            } catch (err) {
-                console.error("Error adding event:", err);
-            }
-            setNewEvent({ title: "", start: "", end: "", contact: "", tag: "" });
-            setSidebarOpen(false);
+        setFormErrors({});
+        try {
+            newEvent.color = selectedColor;
+            const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
+            const created = response.data;
+            const eventData = {
+                ...created,
+                start: new Date(moment.utc(created.start).format("YYYY-MM-DDTHH:mm:ss")),
+                end: new Date(moment.utc(created.end).format("YYYY-MM-DDTHH:mm:ss")),
+                type: "Event",
+                style: { backgroundColor: selectedColor, color: "white" },
+                contact: created.contact || "",
+                tag: created.tag || "",
+            };
+            setEvents(prev => [...prev, eventData]);
+        } catch (err) {
+            console.error("Error adding event:", err);
         }
+        setNewEvent({ title: "", start: "", end: "", contact: "", tag: "" });
+        setSidebarOpen(false);
     };
 
     const handleAddTask = async (e, selectedColor) => {
@@ -72,30 +71,29 @@ export default function CalendarSidebar({
             setFormErrors(errors);
             return;
         }
-        setFormErrors({}); {
-            try {
-                newTask.color = selectedColor;
-                const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, newTask);
-                const created = response.data;
-                const taskEvent = {
-                    id: created.id,
-                    title: created.title,
-                    start: moment(created.date).startOf("day").toDate(),
-                    end: moment(created.date).startOf("day").toDate(),
-                    allDay: true,
-                    style: { backgroundColor: selectedColor, color: "white" },
-                    type: "Task",
-                    contact: created.contact || "",
-                    tag: created.tag || "",
-                };
-                setTasks(prev => [...prev, created]);
-                setEvents(prev => [...prev, taskEvent]);
-            } catch (err) {
-                console.error("Error adding task:", err);
-            }
-            setNewTask({ title: "", date: "", contact: "", tag: "" });
-            setSidebarOpen(false);
+        setFormErrors({});
+        try {
+            newTask.color = selectedColor;
+            const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, newTask);
+            const created = response.data;
+            const taskEvent = {
+                id: created.id,
+                title: created.title,
+                start: moment(created.date).startOf("day").toDate(),
+                end: moment(created.date).startOf("day").toDate(),
+                allDay: true,
+                style: { backgroundColor: selectedColor, color: "white" },
+                type: "Task",
+                contact: created.contact || "",
+                tag: created.tag || "",
+            };
+            setTasks(prev => [...prev, created]);
+            setEvents(prev => [...prev, taskEvent]);
+        } catch (err) {
+            console.error("Error adding task:", err);
         }
+        setNewTask({ title: "", date: "", contact: "", tag: "" });
+        setSidebarOpen(false);
     };
 
     const handleUpdateEvent = async (e, selectedColor) => {
@@ -128,10 +126,6 @@ export default function CalendarSidebar({
                     } 
                     : event
             );
-            // console.log("✅ Final updated object to insert into calendar:", {
-            //     start: moment(updatedEventData.start, "YYYY-MM-DDTHH:mm").toDate(),
-            //     end: moment(updatedEventData.end, "YYYY-MM-DDTHH:mm").toDate(),
-            //   });
               
             setEvents(updatedEvents);
     

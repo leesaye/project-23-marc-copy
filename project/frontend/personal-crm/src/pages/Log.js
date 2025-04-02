@@ -25,7 +25,6 @@ function Log() {
     useEffect(() => {
         axiosInstance.get(`${BASE_URL}log/`)
         .then(response => {
-            console.log(response.data);
             setMissionItems(response.data);
         })
         .catch(error => {
@@ -46,18 +45,17 @@ function Log() {
         if (weeks < 0) weeks = 0;
         const today = new Date();
         const cutoffDate = new Date();
-        console.log("Current Date:", cutoffDate);
         cutoffDate.setDate(cutoffDate.getDate() - weeks * 7); // Go back X weeks
 
-        if (weeks == 0) {
+        if (weeks === 0 || weeks === "0") {
             return activities.filter((activity) => {
                 if (activity.start) {
                     const eventDate = new Date(activity.start);
-                    return eventDate <= today
+                    return eventDate <= today;
                 }
                 else if (activity.date && activity.completed) {
                     const taskDate = new Date(activity.date);
-                    return taskDate <= today
+                    return taskDate <= today;
                 }
             });
         }
@@ -231,8 +229,8 @@ function Log() {
                     </div>
                     <div className="container mx-1 bg-info-subtle rounded-3 overflow-auto" style={{maxHeight:"20rem"}}>
                         <br />
-                        {sortedLogItems.map((activity) => (
-                            <LogActivity activity={activity} contacts={contacts} />
+                        {sortedLogItems.map((activity, index) => (
+                            <LogActivity key={`${activity.id}-${index}`} activity={activity} contacts={contacts} />
                         ))}
                     </div>
                 </div>
@@ -343,8 +341,8 @@ function Log() {
                         </div>
                         <div className="container mx-1 bg-info-subtle rounded-3 overflow-auto" style={{maxHeight:"20rem"}}>
                             <br />
-                            {sortedLogItems.map((activity) => (
-                                <LogActivity activity={activity} contacts={contacts} />
+                            {sortedLogItems.map((activity, index) => (
+                                <LogActivity key={`${activity.id}-${index}`} activity={activity} contacts={contacts} />
                             ))}
                         </div>
                     </div>
