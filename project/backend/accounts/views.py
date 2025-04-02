@@ -140,7 +140,7 @@ class GoogleTokenView(APIView):
             try:
                 googleConnection = GoogleConnection.objects.get(user=user)
                 # If the connection exists, update it
-                googleConnection.token = googleToken
+                googleConnection.googleToken = googleToken
                 googleConnection.save()
                 serializer = GoogleConnectionSerializer(googleConnection)
             except GoogleConnection.DoesNotExist:

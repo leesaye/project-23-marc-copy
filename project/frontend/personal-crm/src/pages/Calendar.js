@@ -26,7 +26,7 @@ export default function CalendarPage() {
     const [syncing, setSyncing] = useState(false);
 
     const googleLogin = useGoogleLogin({
-        scope: "https://www.googleapis.com/auth/calendar.readonly",
+        scope: "https://www.googleapis.com/auth/calendar",
         onSuccess: (response) => {
             const encoded_token = btoa(response.access_token);
             axiosInstance.post(`${BASE_URL}api/googleToken/`, { googleToken: encoded_token });
@@ -116,7 +116,7 @@ export default function CalendarPage() {
             }));
 
             setEvents(prev => [...prev.filter(e => e.type !== "Google Event"), ...synced]);
-            window.location.reload();
+            // window.location.reload();
         } catch (error) {
             console.error("Sync failed:", error);
         }
@@ -180,6 +180,16 @@ export default function CalendarPage() {
         setSidebarOpen(true);
     };
 
+    const pushToGoogleCalendar = async () => {
+        try {
+            const res = await axiosInstance.post(`${BASE_URL}api/push_to_google/`);
+            alert(`Uploaded: ${res.data.uploaded} event(s)\nFailed: ${res.data.failed} event(s)`);
+        } catch (error) {
+            console.error("Failed to push events:", error);
+            alert("Something went wrong while pushing events to Google Calendar.");
+        }
+    };
+    
     return (
         <Layout>
             <div className={`calendar-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
@@ -224,6 +234,12 @@ export default function CalendarPage() {
                                         {syncing ? "Syncing..." : "Sync Google Calendar"}
                                     </button>
                                     <button onClick={handleLogout} className="button-style">Disconnect from Google</button>
+                                    <button
+                                        onClick={pushToGoogleCalendar}
+                                        className="button-style"
+                                    >
+                                        Push My Events to Google
+                                    </button>
                                 </>
                             )}
                         </div>
