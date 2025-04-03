@@ -12,6 +12,9 @@ from .models import Event, Task
 from .serializers import EventSerializer, TaskSerializer
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
+from accounts.views import GoogleConnection
+from django.utils.timezone import is_naive, make_aware
+import base64
 
 
 class EventViewSet(viewsets.ModelViewSet):
@@ -204,10 +207,68 @@ class GetGoogleEventsView(APIView):
 class DeleteGoogleEventsView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        # Delete all events for the logged-in user
-        Event.objects.filter(user=request.user).delete()
+    def delete(self, request):
+        # Delete only events from Google Calendar
+        deleted_count, _ = Event.objects.filter(user=request.user, source='google').delete()
 
-        response = Response({"message": "Google Calendar events deleted successfully!"})
-        response.delete_cookie("access_token")  # Remove token from cookie
+        response = Response({"message": f"{deleted_count} Google Calendar events deleted successfully!"})
+        response.delete_cookie("access_token") 
         return response
+
+class PushEventsToGoogleView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            connection = GoogleConnection.objects.get(user=request.user)
+            access_token = base64.b64decode(connection.googleToken).decode('utf-8')
+        except GoogleConnection.DoesNotExist:
+            return Response({"error": "No Google token found"}, status=400)
+
+        events = Event.objects.filter(user=request.user).exclude(source='google')
+
+        headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json"
+        }
+
+        success_count = 0
+        failure_count = 0
+
+        for event in events:
+            start_dt = event.start
+            end_dt = event.end
+
+            if is_naive(start_dt):
+                from django.utils.timezone import get_current_timezone
+                tz = get_current_timezone()
+                start_dt = make_aware(start_dt, timezone=tz)
+            if is_naive(end_dt):
+                from django.utils.timezone import get_current_timezone
+                tz = get_current_timezone()
+                end_dt = make_aware(end_dt, timezone=tz)
+
+            event_payload = {
+                "summary": event.title,
+                "start": { "dateTime": start_dt.isoformat() },
+                "end": { "dateTime": end_dt.isoformat() },
+            }
+
+            response = requests.post(
+                "https://www.googleapis.com/calendar/v3/calendars/primary/events",
+                headers=headers,
+                json=event_payload
+            )
+
+            if response.status_code in [200, 201]:
+                success_count += 1
+                event.source = "google"
+                event.save()
+            else:
+                failure_count += 1
+
+        return Response({
+            "message": "Push complete",
+            "uploaded": success_count,
+            "failed": failure_count
+        }, status=200)
