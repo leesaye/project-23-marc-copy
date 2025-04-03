@@ -42,6 +42,12 @@ function CalendarView({ events, tasks, onSelectEvent }) {
                     };
                 }
 
+                const duration = moment(event.end).diff(moment(event.start), "minutes");
+                let fontSize = "14px"; // Default font size
+                if (duration <= 60) {
+                    fontSize = "13px"; // Smaller font size for 1-hour events
+                }
+
                 return {
                     style: {
                         backgroundColor: event.completed
@@ -52,6 +58,7 @@ function CalendarView({ events, tasks, onSelectEvent }) {
                         backgroundImage: event.completed
                             ? "repeating-linear-gradient(45deg, #808080, #808080 10px, #7a7a7a 10px, #7a7a7a 20px)"
                             : "none",
+                        fontSize: fontSize,
                     },
                 };
             }}
