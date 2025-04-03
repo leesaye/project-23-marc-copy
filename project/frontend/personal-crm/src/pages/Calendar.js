@@ -45,7 +45,7 @@ export default function CalendarPage() {
             if (token) {
                 const decoded_token = atob(token);
                 setGoogleConnection(decoded_token);
-                setUser(response.data.user || {});  
+                // setUser(response.data.user || {});  
             } else {
                 setUser(null);
                 setGoogleConnection(null);
@@ -77,10 +77,9 @@ export default function CalendarPage() {
             }));
 
             const tasksData = tasksRes.data.map(task => ({
-                id: task.id,
-                title: task.title,
+                ...task,
                 start: moment(task.date).startOf('day').toDate(),
-                end: moment(task.date).startOf('day').toDate(),
+                end: moment(task.date).endOf('day').toDate(), 
                 allDay: true,
                 type: "Task",
                 style: { backgroundColor: task.color || "#014F86", color: 'white' },
@@ -88,10 +87,8 @@ export default function CalendarPage() {
                 completed: task.completed, 
                 tag: task.tag || ""   
             }));
-
-
-            setEvents([...eventsData, ...tasksData]);
-            setTasks(tasksRes.data);
+            setEvents(eventsData);
+            setTasks(tasksData);
             setContacts(contactsRes.data);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -168,7 +165,12 @@ export default function CalendarPage() {
                 tag: event.tag || ""
             });
         } else if (event.type === "Task") {
-            setSelectedTask(event);
+            const formattedStart = moment(event.start).format("YYYY-MM-DD");
+            setSelectedTask({
+                ...event,
+                start: formattedStart}
+            );
+
             setNewTask({
                 title: event.title,
                 date: moment(event.start).format("YYYY-MM-DD"),
@@ -196,6 +198,7 @@ export default function CalendarPage() {
                 <div className={`calendar-container ${sidebarOpen ? 'shrink' : ''}`}>
                     <CalendarView
                         events={events}
+                        tasks={tasks}
                         onSelectEvent={handleSelectEvent}
                     />
                     <div className="center-buttons">
