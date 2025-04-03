@@ -84,8 +84,8 @@ export default function CalendarPage() {
 
             const eventsData = eventsRes.data.map(event => ({
                 ...event,
-                start: new Date(moment.utc(event.start).format("YYYY-MM-DDTHH:mm:ss")),
-                end: new Date(moment.utc(event.end).format("YYYY-MM-DDTHH:mm:ss")), 
+                start: new Date(moment(event.start).local().format("YYYY-MM-DDTHH:mm")),
+                end: new Date(moment(event.end).local().format("YYYY-MM-DDTHH:mm")),
                 type: event.source === "google" ? "Google Event" : "Event",
                 contact: event.contact || "",
                 tag: event.tag || "",  
@@ -164,9 +164,9 @@ export default function CalendarPage() {
         setFormType(event.type.toLowerCase());
     
         if (event.type === "Event") {
-            const formattedStart = moment(event.start).format("YYYY-MM-DDTHH:mm");
-            const formattedEnd = moment(event.end).format("YYYY-MM-DDTHH:mm");
-        
+            const formattedStart = moment(event.start).local().format("YYYY-MM-DDTHH:mm");
+            const formattedEnd = moment(event.end).local().format("YYYY-MM-DDTHH:mm");
+                    
             setSelectedEvent({
                 ...event,
                 start: formattedStart,

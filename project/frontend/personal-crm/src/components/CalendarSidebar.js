@@ -51,12 +51,20 @@ export default function CalendarSidebar({
             try {
                 const color = selectedColor || "#4285F4"
                 newEvent.color = color;
-                const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
+
+                const payload = {
+                    ...newEvent,
+                    start: new Date(newEvent.start).toISOString(),  
+                    end: new Date(newEvent.end).toISOString(),
+                    color
+                };
+                
+                const response = await axiosInstance.post(`${BASE_URL}api/events/`, payload);
                 const created = response.data;
                 const eventData = {
                     ...created,
-                    start: new Date(moment.utc(created.start).format("YYYY-MM-DDTHH:mm:ss")),
-                    end: new Date(moment.utc(created.end).format("YYYY-MM-DDTHH:mm:ss")),
+                    start: new Date(moment(created.start).local().format("YYYY-MM-DDTHH:mm")),
+                    end: new Date(moment(created.end).local().format("YYYY-MM-DDTHH:mm")),
                     type: "Event",
                     style: { backgroundColor: selectedColor, color: "white" },
                     contact: created.contact || "",
@@ -137,8 +145,8 @@ export default function CalendarSidebar({
 
             const updatedEventData = {
                 title: selectedEvent.title,
-                start: selectedEvent.start,
-                end: selectedEvent.end,
+                start: new Date(selectedEvent.start).toISOString(),  
+                end: new Date(selectedEvent.end).toISOString(),
                 contact: selectedEvent.contact || "",
                 color: color, 
                 ...(selectedEvent.tag ? { tag: selectedEvent.tag } : {})
@@ -151,8 +159,8 @@ export default function CalendarSidebar({
                     ? { 
                         ...event, 
                         title: updatedEventData.title,
-                        start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
-                        end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
+                        start: new Date(moment(updatedEventData.start).local().format("YYYY-MM-DDTHH:mm")),
+                        end: new Date(moment(updatedEventData.end).local().format("YYYY-MM-DDTHH:mm")),
                         contact: updatedEventData.contact, 
                         style: { backgroundColor: selectedColor, color: 'white' }, 
                         tag: updatedEventData.tag
