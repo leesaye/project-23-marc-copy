@@ -41,6 +41,10 @@ class AddContactView(APIView):
         try:
             data = request.data.copy()
 
+            # Name is required
+            if request.data.get("name", None) == "":
+                return Response({"name": ["Name is required."]}, status=status.HTTP_400_BAD_REQUEST)
+
             # Quiz logic
             quiz_answers_str = request.data.get("quiz_answers", None)
             quiz_answers = json.loads(quiz_answers_str)  # Convert back to dictionary
@@ -82,7 +86,7 @@ class AddContactView(APIView):
             return Response({"error": f"Failed to generate relationship rating: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ValidationError as e:
-            return Response({"error": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"image": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": f"Failed to edit contact: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -111,6 +115,10 @@ class IndividualContactView(APIView):
     def post(self, request, contact_id):
         try:
             contact = Contact.objects.get(id=contact_id, user=request.user)
+
+            # Name is required
+            if request.data.get("name", None) == "":
+                return Response({"name": ["Name is required."]}, status=status.HTTP_400_BAD_REQUEST)
 
             # Quiz logic
             quiz_answers_str = request.data.get("quiz_answers", None)
@@ -166,7 +174,7 @@ class IndividualContactView(APIView):
             return Response({"error": f"Failed to generate relationship rating: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ValidationError as e:
-            return Response({"error": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"image": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": f"Failed to edit contact: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

@@ -107,12 +107,20 @@ function ContactId() {
             await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, newFormData);
             nav('/contacts/');
         } catch (error) {
-            if (error.response && error.response.data) {
-                 // Image validation error checker
-                if (error.response.status === 400 && error.response.data.error) {
-                    console.error("Image validation error", error.response.data.error);
-                } else {
-                    setErrors(error.response.data);
+             // Image validation and name validation error checker
+            if (error.response.status === 400 && error.response.data) {
+                if (error.response.data.name) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        name: error.response.data.name,
+                    }));
+                }
+
+                if (error.response.data.image) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        image: error.response.data.image,
+                    }));
                 }
             } else {
                 console.error("Error updating contact", error);
@@ -337,6 +345,7 @@ function ContactId() {
                                         }
                                     }}
                                 />
+                                {errors.image && <p className="text-danger">{errors.image}</p>}
                             </div>
                             {validImageMessage && <p className="text-danger text-center mt-1">Please upload a valid image file</p>}
                         </div>
@@ -369,6 +378,7 @@ function ContactId() {
                                 }
                             }}
                         />
+                        {errors.image && <p className="text-danger">{errors.image}</p>}
                     </div>
                     {validImageMessage && <p className="text-danger text-center mt-1">Please upload a valid image file</p>}
                     <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>

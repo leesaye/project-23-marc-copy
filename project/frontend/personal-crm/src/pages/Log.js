@@ -57,6 +57,7 @@ function Log() {
                     const taskDate = new Date(activity.date);
                     return taskDate <= today;
                 }
+                return false;
             });
         }
         return activities.filter((activity) => {
@@ -72,6 +73,7 @@ function Log() {
                     return new Date(activity.date) >= cutoffDate;
                 }
             }
+            return false;
         });
     };
 
@@ -165,8 +167,8 @@ function Log() {
                             </div>
                         </div>
                         {!missionItems ? <p>Loading...</p>:
-                        missionItems.map(missionItem =>
-                            <LogMission key={missionItem.id} missionItem={missionItem}></LogMission>
+                        missionItems.map((missionItem, index) =>
+                            <LogMission key={index} missionItem={missionItem}></LogMission>
                         )}
                     </div>
 
@@ -255,8 +257,8 @@ function Log() {
                                 </div>
                             </div>
                             {!missionItems ? <p>Loading...</p>:
-                            missionItems.map(missionItem =>
-                                <LogMission key={missionItem.id} missionItem={missionItem}></LogMission>
+                            missionItems.map((missionItem, index) =>
+                                <LogMission key={index} missionItem={missionItem}></LogMission>
                             )}
                         </div>
 

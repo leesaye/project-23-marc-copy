@@ -122,9 +122,21 @@ function AddContact() {
             nav('/contacts/');
         } catch (error) {
             if (error.response && error.response.data) {
-                 // Image validation error checker
-                if (error.response.status === 400 && error.response.data.error) {
-                    console.error("Image validation error", error.response.data.error);
+                 // Image validation and name validation error checker
+                if (error.response.status === 400 && error.response.data) {
+                    if (error.response.data.name) {
+                        setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            name: error.response.data.name,
+                        }));
+                    }
+
+                    if (error.response.data.image) {
+                        setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            image: error.response.data.image,
+                        }));
+                    }
                 } else {
                     setErrors(error.response.data);
                 }
@@ -320,6 +332,7 @@ function AddContact() {
                                         }
                                     }}
                                 />
+                                {errors.image && <p className="text-danger">{errors.image}</p>}
                             </div>
                             {validImageMessage && <p className="text-danger text-center mt-1">Please upload a valid image file</p>}
                         </div>
@@ -352,6 +365,7 @@ function AddContact() {
                                 }
                             }}
                         />
+                        {errors.image && <p className="text-danger">{errors.image}</p>}
                     </div>
                     {validImageMessage && <p className="text-danger text-center mt-1">Please upload a valid image file</p>}
                     <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
