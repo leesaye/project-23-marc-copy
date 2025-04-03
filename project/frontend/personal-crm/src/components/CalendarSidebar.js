@@ -49,7 +49,8 @@ export default function CalendarSidebar({
 
         {
             try {
-                newEvent.color = selectedColor;
+                const color = selectedColor || "#3174ad"
+                newEvent.color = color;
                 const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
                 const created = response.data;
                 const eventData = {
@@ -85,6 +86,7 @@ export default function CalendarSidebar({
     
         try {
             const payload = { ...newTask, color: selectedColor };
+            const color = selectedColor || "#014F86"; 
             const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, payload);
             const created = response.data;
     
@@ -94,7 +96,7 @@ export default function CalendarSidebar({
                 end: moment(created.date).endOf("day").toDate(),
                 allDay: true,
                 type: "Task",
-                style: { backgroundColor: selectedColor, color: "white" },
+                style: { backgroundColor: color, color: "white" },
                 contact: created.contact || "",
                 tag: created.tag || "",
                 completed: created.completed || false,
@@ -131,12 +133,14 @@ export default function CalendarSidebar({
         }
     
         try {
+            const color = selectedColor || "#3174ad"; 
+
             const updatedEventData = {
                 title: selectedEvent.title,
                 start: selectedEvent.start,
                 end: selectedEvent.end,
                 contact: selectedEvent.contact || "",
-                color: selectedColor, 
+                color: color, 
                 ...(selectedEvent.tag ? { tag: selectedEvent.tag } : {})
             };
     
@@ -185,13 +189,14 @@ export default function CalendarSidebar({
         }
 
         try {
+            const color = selectedColor || "#014F86";
             const wasCompleted = tasks.find(t => t.id === selectedTask.id)?.completed;
             const nowCompleted = selectedTask.completed;
             const updated = {
                 title: selectedTask.title,
                 date: moment(selectedTask.start).format("YYYY-MM-DD"),
                 contact: selectedTask.contact || "",
-                color: selectedColor,
+                color: color,
                 completed: selectedTask.completed,
                 tag: selectedTask.tag === "" ? "" : selectedTask.tag
             };
@@ -274,9 +279,19 @@ export default function CalendarSidebar({
         </div>
     );
     
-    const selectedColor = () =>
-        document.querySelector(".color-option.selected")?.dataset.selectedColor ||
-        (formType === "task" ? "#014F86" : "#3174ad");
+    const selectedColor = () => {
+        const selected = document.querySelector(".color-option.selected")?.dataset.selectedColor;
+
+        if (selected) return selected;
+
+        if (formType === "task") {
+            return selectedTask?.color || "#014F86";
+        } else if (formType === "event") {
+            return selectedEvent?.color || "#3174ad";
+        }
+
+        return "#3174ad"; 
+    };
 
     return (
         <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
