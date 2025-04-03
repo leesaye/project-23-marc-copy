@@ -5,8 +5,6 @@ import {
   } from "@google/generative-ai"
 
   const apiKey = process.env.REACT_APP_GEMINI_API_KEY;
-//    const apiKey = "AIzaSyBhs7tC1Uv4BY9xoxCTEX1XJvmyd_6g4Ko"
-//   const apiKey = "aslkd";
   const genAI = new GoogleGenerativeAI(apiKey);
 
   const model = genAI.getGenerativeModel({

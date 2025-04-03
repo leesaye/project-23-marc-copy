@@ -25,7 +25,6 @@ function Contacts() {
     const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
     const isTinyScreen = useMediaQuery({ query: '(max-width: 630px)' });
     const [googleConnection, setGoogleConnection] = useState(null);
-    const BASE_URL = `http://127.0.0.1:8000/`;
 
 
     useEffect(() => {

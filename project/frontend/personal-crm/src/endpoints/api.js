@@ -1,9 +1,9 @@
 import axios from 'axios'
 
 // const BASE_URL = "http://127.0.0.1:8000/api/"
-// const BASE_URL = "https://project-23-marc-backend-deployment.onrender.com/api/"
+ const BASE_URL = "https://project-23-marc-backend-deployment.onrender.com/api/"
 // const BASE_URL = `https://project-23-marc.onrender.com/api/`;
-const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/api/`;
+//const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/api/`;
 
 
 const LOGIN_URL = `${BASE_URL}token/`
