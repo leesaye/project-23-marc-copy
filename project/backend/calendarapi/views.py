@@ -263,6 +263,8 @@ class PushEventsToGoogleView(APIView):
 
             if response.status_code in [200, 201]:
                 success_count += 1
+                event.source = "google"
+                event.save()
             else:
                 failure_count += 1
                 print(f"\nFailed to upload event: {event.title}")
