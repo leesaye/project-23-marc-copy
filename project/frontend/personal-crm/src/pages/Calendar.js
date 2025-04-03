@@ -33,7 +33,7 @@ export default function CalendarPage() {
             setGoogleConnection(response.access_token);
             syncCalendar(response.access_token);
         },
-        onError: (error) => console.log("Login Failed:", error),
+        onError: (error) => console.error("Login Failed:", error),
     });
 
     useEffect(() => {

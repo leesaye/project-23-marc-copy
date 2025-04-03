@@ -1,7 +1,7 @@
 from google import genai
 from google.api_core.exceptions import GoogleAPIError
 import json
-from pydantic import BaseModel, conint
+from pydantic import BaseModel
 
 
 API_KEY = "AIzaSyBhs7tC1Uv4BY9xoxCTEX1XJvmyd_6g4Ko"
@@ -16,7 +16,6 @@ class GeminiAPIError(Exception):
 class Rating(BaseModel):
     """JSON response structure for Gemini to return"""
     relationship_rating: int
-    # relationship_rating: conint(ge=0, le=100)
 
 
 prompt = """You are an AI model that analyzes relationship strength and intent based on user responses to a set of 
