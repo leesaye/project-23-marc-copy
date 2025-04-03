@@ -47,7 +47,7 @@ export default function CalendarSidebar({
             return;
         }
 
-        {
+        
             try {
                 const color = selectedColor || "#4285F4"
                 newEvent.color = color;
@@ -73,11 +73,11 @@ export default function CalendarSidebar({
                 
                 setEvents(prev => [...prev, eventData]);
             } catch (err) {
-                console.error("Error adding event:", err);
+                
             }
             setNewEvent({ title: "", start: "", end: "", contact: "", tag: "" });
             setSidebarOpen(false);
-        }
+        
     };
 
     const handleAddTask = async (e, selectedColor) => {
@@ -114,7 +114,7 @@ export default function CalendarSidebar({
             setNewTask({ title: "", date: "", contact: "", tag: "", type: "Task", completed: false });
             setSidebarOpen(false);
         } catch (err) {
-            console.error("Error adding task:", err);
+            
         }
     };
     
@@ -177,7 +177,7 @@ export default function CalendarSidebar({
             setSelectedEvent(null);
             setSidebarOpen(false);
         } catch (error) {
-            console.error('Error updating event:', error);
+           
         }
     };
             
@@ -245,7 +245,7 @@ export default function CalendarSidebar({
             setSelectedTask(null);
             setSidebarOpen(false);
         } catch (err) {
-            console.error("Error updating task:", err);
+           
         }
     };
 
@@ -257,7 +257,7 @@ export default function CalendarSidebar({
             setEvents(prev => prev.filter(e => e.id !== item.id));
             setTasks(prev => prev.filter(t => t.id !== item.id));
                     } catch (err) {
-            console.error(`Error deleting ${item.type}:`, err);
+          
         }
         setSidebarOpen(false);
     };

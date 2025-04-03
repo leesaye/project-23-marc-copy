@@ -35,7 +35,6 @@ export default function CalendarPage() {
             setGoogleConnection(response.access_token);
             syncCalendar(response.access_token);
         },
-        onError: (error) => console.log("Login Failed:", error),
     });
 
     useEffect(() => {
@@ -107,7 +106,7 @@ export default function CalendarPage() {
             setTasks(tasksData);
             setContacts(contactsRes.data);
         } catch (error) {
-            console.error("Error fetching data:", error);
+            
         }
     };
 
@@ -131,7 +130,7 @@ export default function CalendarPage() {
             setEvents(prev => [...prev.filter(e => e.type !== "Google Event"), ...synced]);
             window.location.reload();
         } catch (error) {
-            console.error("Sync failed:", error);
+         
         }
     };
 
@@ -148,7 +147,6 @@ export default function CalendarPage() {
             window.location.reload();
 
         } catch (error) {
-            console.error("Failed to disconnect:", error);
             alert("Something went wrong while disconnecting.");
         }
 
@@ -205,7 +203,6 @@ export default function CalendarPage() {
             const res = await axiosInstance.post(`${BASE_URL}api/push_to_google/`, { events: events });
             alert(`Uploaded: ${res.data.uploaded} event(s)\nFailed: ${res.data.failed} event(s)`);
         } catch (error) {
-            console.error("Failed to push events:", error);
             alert("Something went wrong while pushing events to Google Calendar.");
         }
     };
