@@ -255,18 +255,25 @@ export default function CalendarSidebar({
             {COLORS.map((color) => (
                 <div
                     key={color}
-                    className="color-option"
+                    className={`color-option ${
+                        (formType === "event" && selectedEvent?.color === color) ||
+                        (formType === "task" && selectedTask?.color === color)
+                            ? "selected"
+                            : ""
+                    }`}
                     style={{ backgroundColor: color }}
+                    data-selected-color={color}
                     onClick={(e) => {
-                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
-                        e.target.classList.add("selected");
-                        e.target.dataset.selectedColor = color;
+                        document.querySelectorAll(".color-option").forEach(el =>
+                            el.classList.remove("selected")
+                        );
+                        e.currentTarget.classList.add("selected");
                     }}
                 />
             ))}
         </div>
     );
-
+    
     const selectedColor = () =>
         document.querySelector(".color-option.selected")?.dataset.selectedColor ||
         (formType === "task" ? "#014F86" : "#3174ad");

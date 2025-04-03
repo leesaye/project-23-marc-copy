@@ -144,7 +144,7 @@ export default function CalendarPage() {
         if (formType === "task") setNewTask(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSelectEvent = (event) => {    
+    const handleSelectCalendarItem = (event) => {    
         setFormType(event.type.toLowerCase());
     
         if (event.type === "Event") {
@@ -162,7 +162,8 @@ export default function CalendarPage() {
                 start: formattedStart,
                 end: formattedEnd,
                 contact: event.contact || "",
-                tag: event.tag || ""
+                tag: event.tag || "", 
+                color: event.color || "#3174ad"
             });
         } else if (event.type === "Task") {
             const formattedStart = moment(event.start).format("YYYY-MM-DD");
@@ -176,7 +177,8 @@ export default function CalendarPage() {
                 date: moment(event.start).format("YYYY-MM-DD"),
                 contact: event.contact || "",
                 completed: event.completed || false,
-                tag: event.tag || ""
+                tag: event.tag || "", 
+                color: event.color || "#014F86"
             });
         }
         setSidebarOpen(true);
@@ -199,7 +201,7 @@ export default function CalendarPage() {
                     <CalendarView
                         events={events}
                         tasks={tasks}
-                        onSelectEvent={handleSelectEvent}
+                        onSelectEvent={handleSelectCalendarItem}
                     />
                     <div className="center-buttons">
                         <button className="blue-button" onClick={() => {
