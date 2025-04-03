@@ -9,7 +9,7 @@ import CalendarSidebar from "../components/CalendarSidebar";
 import "./Calendar.css";
 
 const BASE_URL = 'http://127.0.0.1:8000/';
-const COLORS = ["#B5D22C", "#73AA2A", "#0995AE", "#04506A"];
+const COLORS = ["#B5D22C", "#73AA2A", "#008B8B", "#3174ad", "#014F86"];
 
 export default function CalendarPage() {
     const [events, setEvents] = useState([]);
