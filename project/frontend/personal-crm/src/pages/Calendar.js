@@ -9,7 +9,7 @@ import CalendarSidebar from "../components/CalendarSidebar";
 import "./Calendar.css";
 
 const BASE_URL = 'http://127.0.0.1:8000/';
-const COLORS = ["#B5D22C", "#73AA2A", "#008B8B", "#3174ad", "#014F86"];
+const COLORS = ["#B5D22C", "#73AA2A", "#008B8B", "#4285F4", "#014F86"];
 
 export default function CalendarPage() {
     const [events, setEvents] = useState([]);
@@ -89,7 +89,7 @@ export default function CalendarPage() {
                 type: event.source === "google" ? "Google Event" : "Event",
                 contact: event.contact || "",
                 tag: event.tag || "",  
-                style: { backgroundColor: event.color || "#3174ad", color: 'white' }
+                style: { backgroundColor: event.color || "#4285F4", color: 'white' }
             }));
 
             const tasksData = tasksRes.data.map(task => ({
@@ -125,7 +125,7 @@ export default function CalendarPage() {
                 start: new Date(event.start),
                 end: new Date(event.end),
                 type: "Event",
-                style: { backgroundColor: event.color || "#3174ad", color: 'white' }
+                style: { backgroundColor: event.color || "#4285F4", color: 'white' }
             }));
 
             setEvents(prev => [...prev.filter(e => e.type !== "Google Event"), ...synced]);
@@ -179,7 +179,7 @@ export default function CalendarPage() {
                 end: formattedEnd,
                 contact: event.contact || "",
                 tag: event.tag || "", 
-                color: event.color || "#3174ad"
+                color: event.color || "#4285F4"
             });
         } else if (event.type === "Task") {
             const formattedStart = moment(event.start).format("YYYY-MM-DD");

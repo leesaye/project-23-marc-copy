@@ -10,7 +10,7 @@ class Event(models.Model):
     title = models.CharField(max_length=200)
     start = models.DateTimeField()
     end = models.DateTimeField()
-    color = models.CharField(max_length=7, default='#4A90E2')
+    color = models.CharField(max_length=7, default='#4285F4')
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='events', default=1)
     contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, blank=True, null=True)
     source = models.CharField(max_length=20, default='local')

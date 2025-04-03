@@ -49,7 +49,7 @@ export default function CalendarSidebar({
 
         {
             try {
-                const color = selectedColor || "#3174ad"
+                const color = selectedColor || "#4285F4"
                 newEvent.color = color;
                 const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
                 const created = response.data;
@@ -133,7 +133,7 @@ export default function CalendarSidebar({
         }
     
         try {
-            const color = selectedColor || "#3174ad"; 
+            const color = selectedColor || "#4285F4"; 
 
             const updatedEventData = {
                 title: selectedEvent.title,
@@ -287,10 +287,10 @@ export default function CalendarSidebar({
         if (formType === "task") {
             return selectedTask?.color || "#014F86";
         } else if (formType === "event") {
-            return selectedEvent?.color || "#3174ad";
+            return selectedEvent?.color || "#4285F4";
         }
 
-        return "#3174ad"; 
+        return "#4285F4"; 
     };
 
     return (
