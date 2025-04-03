@@ -20,7 +20,6 @@ export const refresh_token = async () => {
         await axios.post(REFRESH_URL, {}, { withCredentials: true });
         return true;
     } catch (error) {
-        // console.error("Token refresh failed:", error);
         return false;
     }
 };

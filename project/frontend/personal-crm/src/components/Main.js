@@ -8,12 +8,10 @@ import Login from '../pages/Login';
 import PrivateRoute from './PrivateRoute';
 import Register from '../pages/Register';
 import CalendarPage from '../pages/Calendar';
-import Feed from '../pages/Feed';
 import Log from '../pages/Log';
 import CSVUpload from '../pages/CSVUpload';
 import Settings from '../pages/Settings';
 
-import { AuthProvider } from '../contexts/useAuth'; 
 import InteractiveFeed from '../pages/InteractiveFeed';
 import AIContextProvider from '../contexts/AIContext';
 
@@ -21,7 +19,6 @@ function Main() {
     return (
         <Fragment>
             <Routes>
-                {/* Add routes to each different pages with their link path here */}
                 <Route path ='/login' element={<Login />} />
                 <Route path ='/register' element={<Register />} />
                 <Route path='/' element={<PrivateRoute><Home/></PrivateRoute>} />

@@ -77,7 +77,6 @@ function Home() {
 
                 if (contact && contact.relationship_rating < 100) {
                     const updatedRating = Math.min(contact.relationship_rating + 5, 100);
-                    console.log(contact.relationship_rating);
 
                     const formData = new FormData();
                     formData.append("relationship_rating", updatedRating);

@@ -15,6 +15,7 @@ function AddContact() {
     const [openQuizVisible, setOpenQuizVisible] = useState(false);
     const [staticQuizVisible, setStaticQuizVisible] = useState(false);
     const [errors, setErrors] = useState({});
+    const [validImageMessage, setValidImageMessage] = useState(false);
     const BASE_URL = `http://127.0.0.1:8000/`;
 
     const OPEN_QUIZ_QUESTIONS = [
@@ -117,21 +118,30 @@ function AddContact() {
 
         try {
             const newFormData = createFormData(updatedFormData, formattedQuizAnswers, imageFile);
-            const response = await axiosInstance.post(`${BASE_URL}contacts/add`, newFormData);
-            console.log("Contact added:", response.data);
-            alert("Contact successfully added!");
+            await axiosInstance.post(`${BASE_URL}contacts/add`, newFormData);
             nav('/contacts/');
         } catch (error) {
             if (error.response && error.response.data) {
-                 // Image validation error checker
-                if (error.response.status === 400 && error.response.data.error) {
-                    alert(error.response.data.error);
+                 // Image validation and name validation error checker
+                if (error.response.status === 400 && error.response.data) {
+                    if (error.response.data.name) {
+                        setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            name: error.response.data.name,
+                        }));
+                    }
+
+                    if (error.response.data.image) {
+                        setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            image: error.response.data.image,
+                        }));
+                    }
                 } else {
                     setErrors(error.response.data);
                 }
             } else {
                 console.error("Error adding contact", error);
-                alert("Failed to add contact.");
             }
         }
     };
@@ -163,7 +173,6 @@ function AddContact() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="name">Name</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="name"
                                         name="name"
                                         placeholder="John Doe"
@@ -178,7 +187,6 @@ function AddContact() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="email">Email</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="email"
                                         name="email"
                                         placeholder="johndoe@gmail.com"
@@ -195,7 +203,6 @@ function AddContact() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="phone">Phone</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="phone"
                                         name="phone"
                                         placeholder="111-222-3333"
@@ -210,7 +217,6 @@ function AddContact() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="job">Job</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="job"
                                         name="job"
                                         placeholder="Software engineer"
@@ -225,7 +231,6 @@ function AddContact() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="relationship">Relationship</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="relationship"
                                         name="relationship"
                                         placeholder="Coworker"
@@ -242,7 +247,6 @@ function AddContact() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="notes">Notes</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         multiline
                                         rows={3}
                                         id="notes"
@@ -301,7 +305,7 @@ function AddContact() {
                                     ))}
                                 </div>
                             </Collapse>
-                            <FormControlLabel control={<Checkbox />} label="Consent to add this contact" required="required" checked={consent} onChange={handleConsentChange} />
+                            <FormControlLabel control={<Checkbox />} label="Consent to add this contact" required={true} checked={consent} onChange={handleConsentChange} />
                             {errors.consent && <p className="text-danger">{errors.consent}</p>}
                             <button className="btn btn-success float-end my-4" type="submit">Submit</button>
                         </Box>
@@ -320,15 +324,17 @@ function AddContact() {
                                     style={{ display: "none" }}
                                     onChange={(e) => {
                                         if (e.target.files[0].type.startsWith("image/")) {
-                                            console.log(e.target.files[0]);
+                                            setValidImageMessage(false);
                                             setImage(URL.createObjectURL(e.target.files[0]));
                                             setImageFile(e.target.files[0])
                                         }else {
-                                            alert("Please upload a valid image file");
+                                            setValidImageMessage(true);
                                         }
                                     }}
                                 />
+                                {errors.image && <p className="text-danger">{errors.image}</p>}
                             </div>
+                            {validImageMessage && <p className="text-danger text-center mt-1">Please upload a valid image file</p>}
                         </div>
                     </div>
                 </div>
@@ -351,22 +357,23 @@ function AddContact() {
                             style={{ display: "none" }}
                             onChange={(e) => {
                                 if (e.target.files[0].type.startsWith("image/")) {
-                                    console.log(e.target.files[0]);
+                                    setValidImageMessage(false);
                                     setImage(URL.createObjectURL(e.target.files[0]));
                                     setImageFile(e.target.files[0])
                                 }else {
-                                    alert("Please upload a valid image file");
+                                    setValidImageMessage(true);
                                 }
                             }}
                         />
+                        {errors.image && <p className="text-danger">{errors.image}</p>}
                     </div>
+                    {validImageMessage && <p className="text-danger text-center mt-1">Please upload a valid image file</p>}
                     <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
                         <div className="row my-4">
                             <div className="col-6">
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="name-s">Name</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="name-s"
                                     name="name"
                                     placeholder="John Doe"
@@ -381,7 +388,6 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="email-s">Email</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="email-s"
                                     name="email"
                                     placeholder="johndoe@gmail.com"
@@ -398,7 +404,6 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="phone-s">Phone</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="phone-s"
                                     name="phone"
                                     placeholder="111-222-3333"
@@ -413,7 +418,6 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="job-s">Job</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="job-s"
                                     name="job"
                                     placeholder="Software engineer"
@@ -430,7 +434,6 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="relationship-s">Relationship</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="relationship-s"
                                     name="relationship"
                                     placeholder="Coworker"
@@ -447,7 +450,6 @@ function AddContact() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="notes-s">Notes</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     multiline
                                     rows={3}
                                     id="notes-s"
@@ -517,7 +519,7 @@ function AddContact() {
                                 ))}
                             </div>
                         </Collapse>
-                        <FormControlLabel control={<Checkbox />} label="Consent to add contact" required="required" checked={consent} onChange={handleConsentChange} />
+                        <FormControlLabel control={<Checkbox />} label="Consent to add contact" required={true} checked={consent} onChange={handleConsentChange} />
                         {errors.consent && <p className="text-danger">{errors.consent}</p>}
                         <button className="btn btn-success float-end my-4" type="submit">Submit</button>
                     </Box>

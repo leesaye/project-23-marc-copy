@@ -45,7 +45,7 @@ export default function CalendarPage() {
             if (token) {
                 const decoded_token = atob(token);
                 setGoogleConnection(decoded_token);
-                setUser(response.data.user || {});  
+                setUser(response.data.user || {});
             } else {
                 setUser(null);
                 setGoogleConnection(null);
@@ -87,31 +87,31 @@ export default function CalendarPage() {
                 end: new Date(moment(event.end).local().format("YYYY-MM-DDTHH:mm")),
                 type: event.source === "google" ? "Google Event" : "Event",
                 contact: event.contact || "",
-                tag: event.tag || "",  
+                tag: event.tag || "",
                 style: { backgroundColor: event.color || "#4285F4", color: 'white' }
             }));
 
             const tasksData = tasksRes.data.map(task => ({
                 ...task,
                 start: moment(task.date).startOf('day').toDate(),
-                end: moment(task.date).endOf('day').toDate(), 
+                end: moment(task.date).endOf('day').toDate(),
                 allDay: true,
                 type: "Task",
                 style: { backgroundColor: task.color || "#014F86", color: 'white' },
                 contact: task.contact || "",
-                completed: task.completed, 
-                tag: task.tag || ""   
+                completed: task.completed,
+                tag: task.tag || ""
             }));
             setEvents(eventsData);
             setTasks(tasksData);
             setContacts(contactsRes.data);
         } catch (error) {
-            
+
         }
     };
 
     const syncCalendar = async (token) => {
-        if (syncing) return; 
+        if (syncing) return;
         setSyncing(true);
 
         try {
@@ -130,7 +130,7 @@ export default function CalendarPage() {
             setEvents(prev => [...prev.filter(e => e.type !== "Google Event"), ...synced]);
             window.location.reload();
         } catch (error) {
-         
+
         }
     };
 
@@ -158,25 +158,25 @@ export default function CalendarPage() {
         if (formType === "task") setNewTask(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSelectCalendarItem = (event) => {    
+    const handleSelectCalendarItem = (event) => {
         setFormType(event.type.toLowerCase());
-    
+
         if (event.type === "Event") {
             const formattedStart = moment(event.start).local().format("YYYY-MM-DDTHH:mm");
             const formattedEnd = moment(event.end).local().format("YYYY-MM-DDTHH:mm");
-                    
+
             setSelectedEvent({
                 ...event,
                 start: formattedStart,
                 end: formattedEnd
             });
-    
+
             setNewEvent({
                 title: event.title,
                 start: formattedStart,
                 end: formattedEnd,
                 contact: event.contact || "",
-                tag: event.tag || "", 
+                tag: event.tag || "",
                 color: event.color || "#4285F4"
             });
         } else if (event.type === "Task") {
@@ -191,7 +191,7 @@ export default function CalendarPage() {
                 date: moment(event.start).format("YYYY-MM-DD"),
                 contact: event.contact || "",
                 completed: event.completed || false,
-                tag: event.tag || "", 
+                tag: event.tag || "",
                 color: event.color || "#014F86"
             });
         }
@@ -206,7 +206,7 @@ export default function CalendarPage() {
             alert("Something went wrong while pushing events to Google Calendar.");
         }
     };
-        
+
     return (
         <Layout>
             <div className={`calendar-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
@@ -244,8 +244,8 @@ export default function CalendarPage() {
                                 <button onClick={googleLogin} className="button-style">Sign In with Google Calendar</button>
                             ) : (
                                 <>
-                                    <button 
-                                        onClick={() => syncCalendar(googleConnection)} 
+                                    <button
+                                        onClick={() => syncCalendar(googleConnection)}
                                         className="button-style"
                                         disabled={syncing}
                                     >
