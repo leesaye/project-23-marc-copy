@@ -19,18 +19,17 @@ Primary Features and functionalities currently implemented for D4:
 2. A user can create and add contacts to their account (Contacts Tab)
 	1. A user can add contacts and input information about each of their contacts manually.
  	2. They can also choose to upload their contacts through LinkedIn with its CSV export by uploading the CSV file, or upload their contacts through Google by syncing with Google contacts.
-	3. They can also take a quiz that asks questions about their contact to generate a relationship score using AI that determines the strength of their relationship.
+	3. They can also take a quiz that asks questions about a contact to generate a relationship score using AI that determines the strength of their relationship.
 	4. A user can view all their contacts in a consolidated overview.
  	5. A contact's relationship rating will change based on interactions the user makes via events or tasks
 3. A user can add events and tasks to a calendar as reminders for when to reach out to contacts. (Calendar Tab)
 	1. On the Calendar Tab, a user can view a calendar of all their upcoming events and tasks.
 	2. A user can also add events or tasks to the calendar.
- 	3. A user can sync their calendar with Google Calendars to see those events appear on their calendar on the website.
+ 	3. A user can sync their calendar with Google Calendars to see those events appear on their calendar on our website.
 4. A user can view and interact with recent events and tasks from their network (Feed Tab)
-	1. A user can view all recent events and tasks from their network in a consolidated view.
- 	3. A user can add an event taken from activity on a linked site that is not already on their calendar to their calendar through the feed page.
-  	4. A user can build a streak off of adding events to their calendar, and add events in a "swipe right" gamified manner.
-  	5. A user can see an AI summary of their recent tasks and events and what it recommends that they prioritize. (Added to Home Tab)
+ 	1. A user can add an event taken from activity on a linked site that is not already on their calendar to their calendar through the feed page.
+  	2. A user can build a streak off of adding events to their calendar, and add events in a "swipe right" gamified manner.
+  	3. A user can see an AI summary of their recent tasks and events and what it recommends that they prioritize. (Added to Home Tab)
 5. A user can complete missions and view a log of all their activity (Log Tab)
 	1. A user can view all added events and tasks in a log to track their progress.
  	2. A user can filter, sort, and categorize events and tasks using tags.
@@ -43,8 +42,8 @@ Primary Features and functionalities currently implemented for D4:
 The Final MVP for Personal CRM should accomplish the following 3 main user stories:
 
 1. As a user I want to be reminded when I haven't communicated with someone for a while.
-2. As a user, I want to be able to easily follow up on outstanding items and set due dates - that means I should be able to tap one button and the message sends.
-3. As a user, I want to be able to capture information simply. I want to be prompted to help me understand my relationship by only answering a few short questions about the person, after which a score from 0-100 that represents my relationship with them is generated.
+2. As a user, I want to be able to easily follow up on outstanding items and set due dates - that means I should be able to send a follow up message with one button press.
+3. As a user, I want to be able to capture information easily. I want to be prompted to help me understand my relationship by only answering a few short questions about the person, after which a score from 0-100 that represents my relationship with them is generated.
 
 ## Screenshots, GIFs, or Short Videos:
 View the following video for a walkthrough and user flow of our website:
@@ -67,7 +66,7 @@ Visit our deployed website here:
 
 	Note: Since we are using the free tier of our deployment services, it may take a while for our services to startup the first time as our server shutdowns after 15 minutes of inactivity. You may be seeing a loading screen for aprox 1-2 mins or a request may take a while to get sent.
 	   
-3. After clicking the link above you will be brought to the log in page.
+1. After clicking the link above you will be brought to the log in page.
 	1. You can use the following test user to login
 		1. username: testuser
 		2. password: 123
@@ -76,9 +75,9 @@ Visit our deployed website here:
 		2. Feel free to use this account instead of the test user above.
   		3. There is also a password strength calculator that shows under the password you created to ensure you are using a strong enough password.
   	3. You can also test the lockout feature that locks you out of logging in for 30 seconds after 5 failed login attempts
-4. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
-5. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
-6. To test our second use case, click the Contacts tab on the left sidebar.
+2. Click the login or register buttons after entering credentials to sign in. (Note: Since we are using the free tier of our deployment service it may take a while to log in after clicking the Login button)
+3. Once Logged in, you will be brought to our home page. This is where you will see a sidebar and a motivational quote.
+4. To test our second use case, click the Contacts tab on the left sidebar.
 	1. Here you can add a new contact by clicking the green add contact button.
 		1. This will bring you to an add contacts page where you can enter information about a new contact you want to add
 		2. Try inputing a name, email, phone, job, relationship and notes.
@@ -96,7 +95,7 @@ Visit our deployed website here:
  		1. Clicking import LinkedIn brings you to a page that gives you steps for how to download your LinkedIn contacts CSV file from LinkedIn. You can then upload this file using the upload button on that page and it will add all of your LinkedIn connections.
   		2. Clicking on the Connect With Google button brings you to a page where you can connect your account to Google if it is not already connected, and then you can sync your Google account's contacts, and it will add all of them to the contacts page.
        3. Clicking on the Export as CSV button will export all your contacts as a downloadable csv file.
-7. To test our third use case, click the Calendar Tab on the left sidebar
+5. To test our third use case, click the Calendar Tab on the left sidebar
 	1. This will bring up a calendar view 
 	2. To add an event to the calendar click the add event button located at the bottom right of the screen.
 		1. This will bring up a dialog to add an event
@@ -112,21 +111,21 @@ Visit our deployed website here:
 	4. On the calendar tab you can also change the views by clicking the week, day and agenda views at the top right
 	5. You can navigate back and forth in time using the buttons in the top left.
  	6. You can also add contacts through google by clicking the connect with google button. This will import the google calendar events of whatever google accouhnt you select.
-8. To test our fourth use case, click the Feed Tab on the left sidebar
-	1. This will bring up a view of recent events in your network.
- 	2. Events that are already a part of your calendar can be seen with a green checkmark.
-  	3. By clicking the green plus mark on events that are not already in your calendar, you can add them to your calendar.
-9. To test our fifth use case, click the Log Tab on the left sidebar
+6. To test our fourth use case, click the Feed Tab on the left sidebar
+	1. This will bring up a view where you can see events from people in your network.
+ 	2. You can click the Next button to see a new Event or click the Add button to add the current event to your calendar.
+  	3. Adding an event to the calendar will increment the daily event counter. A user can set a daily event goal (default is 3). If they add a number of events equal to their daily goal, their daily streak counter will increment on the following day. If a user fails to meet their daily goal, their counter will reset back to 0. Daily streaks are done using a Cron job and is not available using the free tier of our backend deployment as of right now. However developers can test this feature out in our local developer environment (see below).
+7. To test our fifth use case, click the Log Tab on the left sidebar
 	1. This will bring up a Mission log (for weekly quests) and Activity log (displays past events and completed tasks).
  	2. Quests will refresh automatically every week
  	3. The Sort By and Date Filter buttons allow you sort and filter your activities, and the CSV Export button will export all your activities as a downloadable csv file.
   	4. The search bar can filter by keywords or by Tag.
-10. To test our sixth use case, click the Settings Tab on the left sidebar
-    	1. You can change your username, email and password, as well as your streak goals (for the interactive Feed Tab)
-    	2. By clicking the Save Changes button, you apply all changes
-    	3. By clicking the Delete Account button, you can confirm deletion—your account will be deleted and you will return to the login page
-12. For more space you can collapse the sidebar by clicking the three lines in the top left corner
-13. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
+8. To test our sixth use case, click the Settings Tab on the left sidebar
+	1. You can change your username, email and password, as well as your streak goals (for the interactive Feed Tab)
+	2. By clicking the Save Changes button, you apply all changes
+	3. By clicking the Delete Account button, you can confirm deletion—your account will be deleted and you will be returned to the login page
+9. For more space you can collapse the sidebar by clicking the three lines in the top left corner
+10. Lastly you can log out of your user by clicking the logout button on the sidebar (ensure that you expand the sidebar after collapsing it to see the logout button) 
 	1. This will bring you back to the log in page
 
 Notes for testing
@@ -184,6 +183,7 @@ Repo has been forked and changed slightly to allow for deployment.
      	- REACT_APP_GEMINI_API_KEY and REACT_APP_GOOGLE_CLIENT_ID, set to generated values
         	- Note: REACT_APP_GOOGLE_CLIENT_ID must enable the People API and the GCal API
 - Note: Our current frontend deployment (due to permission restrictions on this classrooom repo) is off of a fork of this repo
+	- Fork: https://github.com/leesaye/project-23-marc
 
 **Backend Deployment Using Render:**
 - Create an account on Render.com

@@ -16,6 +16,7 @@ function ContactId() {
     const [openQuizVisible, setOpenQuizVisible] = useState(false);
     const [staticQuizVisible, setStaticQuizVisible] = useState(false);
     const [errors, setErrors] = useState({});
+    const [validImageMessage, setValidImageMessage] = useState(false);
     // const BASE_URL = "http://127.0.0.1:8000/";
     // const BASE_URL = "https://project-23-marc-backend-deployment.onrender.com";
     // const BASE_URL = `https://project-23-marc.onrender.com/`;
@@ -106,21 +107,26 @@ function ContactId() {
 
         try {
             const newFormData = createFormData(updatedFormData, formattedQuizAnswers, imageFile);
-            const response = await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, newFormData);
-            console.log("Contact updated:", response.data);
-            alert("Contact successfully updated!");
+            await axiosInstance.post(`${BASE_URL}contacts/${contact.id}`, newFormData);
             nav('/contacts/');
         } catch (error) {
-            if (error.response && error.response.data) {
-                 // Image validation error checker
-                if (error.response.status === 400 && error.response.data.error) {
-                    alert(error.response.data.error);
-                } else {
-                    setErrors(error.response.data);
+             // Image validation and name validation error checker
+            if (error.response.status === 400 && error.response.data) {
+                if (error.response.data.name) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        name: error.response.data.name,
+                    }));
+                }
+
+                if (error.response.data.image) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        image: error.response.data.image,
+                    }));
                 }
             } else {
                 console.error("Error updating contact", error);
-                alert("Failed to update contact.");
             }
         }
     };
@@ -141,12 +147,9 @@ function ContactId() {
     const handleDelete = async () => {
         try {
             await axiosInstance.delete(`${BASE_URL}contacts/${contact_id}/delete`);
-            console.log(`Contact ${contact_id} deleted successfully`);
-            alert("Contact successfully deleted!");
             nav('/contacts/');
         } catch (error) {
             console.error("Error deleting contact:", error);
-            alert("Failed to delete contact.");
         }
     };
 
@@ -192,10 +195,8 @@ function ContactId() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="name">Name</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="name"
                                         name="name"
-                                        defaultValue={formData.name}
                                         label="Name"
                                         value={formData.name}
                                         onChange={handleContactFormChange}
@@ -207,10 +208,8 @@ function ContactId() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="email">Email</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="email"
                                         name="email"
-                                        defaultValue={formData.email}
                                         label="Email"
                                         value={formData.email}
                                         onChange={handleContactFormChange}
@@ -224,10 +223,8 @@ function ContactId() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="phone">Phone</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="phone"
                                         name="phone"
-                                        defaultValue={formData.phone}
                                         label="phone"
                                         value={formData.phone}
                                         onChange={handleContactFormChange}
@@ -239,10 +236,8 @@ function ContactId() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="job">Job</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="job"
                                         name="job"
-                                        defaultValue={formData.job}
                                         label="Job"
                                         value={formData.job}
                                         onChange={handleContactFormChange}
@@ -254,10 +249,8 @@ function ContactId() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="relationship">Relationship</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         id="relationship"
                                         name="relationship"
-                                        defaultValue={formData.coworker}
                                         label="Relationship"
                                         value={formData.relationship}
                                         onChange={handleContactFormChange}
@@ -271,13 +264,11 @@ function ContactId() {
                                     <FormControl className="w-100">
                                         <InputLabel htmlFor="notes">Notes</InputLabel>
                                         <OutlinedInput
-                                        required="required"
                                         multiline
                                         rows={3}
                                         id="notes"
                                         name="notes"
                                         label="Notes"
-                                        defaultValue={formData.notes}
                                         value={formData.notes}
                                         onChange={handleContactFormChange}
                                         />
@@ -349,15 +340,17 @@ function ContactId() {
                                     style={{ display: "none" }}
                                     onChange={(e) => {
                                         if (e.target.files[0].type.startsWith("image/")) {
-                                            console.log(e.target.files[0]);
+                                            setValidImageMessage(false);
                                             setImage(URL.createObjectURL(e.target.files[0]));
                                             setImageFile(e.target.files[0])
                                         }else {
-                                            alert("Please upload a valid image file");
+                                            setValidImageMessage(true);
                                         }
                                     }}
                                 />
+                                {errors.image && <p className="text-danger">{errors.image}</p>}
                             </div>
+                            {validImageMessage && <p className="text-danger text-center mt-1">Please upload a valid image file</p>}
                         </div>
                     </div>
                 </div>
@@ -380,25 +373,25 @@ function ContactId() {
                             style={{ display: "none" }}
                             onChange={(e) => {
                                 if (e.target.files[0].type.startsWith("image/")) {
-                                    console.log(e.target.files[0]);
+                                    setValidImageMessage(false);
                                     setImage(URL.createObjectURL(e.target.files[0]));
                                     setImageFile(e.target.files[0])
                                 }else {
-                                    alert("Please upload a valid image file");
+                                    setValidImageMessage(true);
                                 }
                             }}
                         />
+                        {errors.image && <p className="text-danger">{errors.image}</p>}
                     </div>
+                    {validImageMessage && <p className="text-danger text-center mt-1">Please upload a valid image file</p>}
                     <Box component="form" noValidate autoComplete="off" onSubmit={handleSubmit}>
                         <div className="row my-4">
                             <div className="col-6">
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="name-s">Name</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="name-s"
                                     name="name"
-                                    defaultValue={formData.name}
                                     label="Name"
                                     value={formData.name}
                                     onChange={handleContactFormChange}
@@ -410,10 +403,8 @@ function ContactId() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="email-s">Email</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="email-s"
                                     name="email"
-                                    defaultValue={formData.email}
                                     label="Email"
                                     value={formData.email}
                                     onChange={handleContactFormChange}
@@ -427,10 +418,8 @@ function ContactId() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="phone-s">Phone</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="phone-s"
                                     name="phone"
-                                    defaultValue={formData.phone}
                                     label="phone"
                                     value={formData.phone}
                                     onChange={handleContactFormChange}
@@ -442,10 +431,8 @@ function ContactId() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="job-s">Job</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="job-s"
                                     name="job"
-                                    defaultValue={formData.job}
                                     label="Job"
                                     value={formData.job}
                                     onChange={handleContactFormChange}
@@ -459,10 +446,8 @@ function ContactId() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="relationship-s">Relationship</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     id="relationship-s"
                                     name="relationship"
-                                    defaultValue={formData.coworker}
                                     label="Relationship"
                                     value={formData.relationship}
                                     onChange={handleContactFormChange}
@@ -476,13 +461,11 @@ function ContactId() {
                                 <FormControl className="w-100">
                                     <InputLabel htmlFor="notes-s">Notes</InputLabel>
                                     <OutlinedInput
-                                    required="required"
                                     multiline
                                     rows={3}
                                     id="notes-s"
                                     name="notes"
                                     label="Notes"
-                                    defaultValue={formData.notes}
                                     value={formData.notes}
                                     onChange={handleContactFormChange}
                                     />

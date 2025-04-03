@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import moment from "moment";
 import axiosInstance from "../endpoints/api";
 import "../pages/Calendar.css";
-import TagSelector from "./Tags";
+import TagSelector from "../components/Tags.js";
 
 // const BASE_URL = "http://127.0.0.1:8000/";
 const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
@@ -27,76 +27,99 @@ export default function CalendarSidebar({
     contacts,
     COLORS
 }) {
-    const [formErrors, setFormErrors] = useState({});
+    const [formErrors] = useState({});
 
     const handleAddEvent = async (e, selectedColor) => {
         e.preventDefault();
-        const errors = {};
-        if (!newEvent.title.trim()) errors.title = "Title is required.";
-        if (!newEvent.start) errors.start = "Start time is required.";
-        if (!newEvent.end) errors.end = "End time is required.";
-
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
+        if (!newEvent.title.trim()) {
+            alert("Title is required.");
             return;
         }
-        setFormErrors({}); {
+
+        if (!newEvent.start) {
+            alert("Start time is required.");
+            return;
+        }
+        if (!newEvent.end) {
+            alert("End time is required.");
+            return;
+        }
+        if (newEvent.start >= newEvent.end) {
+            alert("Start date must be before the end date.");
+            return;
+        }
+
+
             try {
-                newEvent.color = selectedColor;
-                const response = await axiosInstance.post(`${BASE_URL}api/events/`, newEvent);
+                const color = selectedColor || "#4285F4"
+                newEvent.color = color;
+
+                const payload = {
+                    ...newEvent,
+                    start: new Date(newEvent.start).toISOString(),
+                    end: new Date(newEvent.end).toISOString(),
+                    color
+                };
+
+                const response = await axiosInstance.post(`${BASE_URL}api/events/`, payload);
                 const created = response.data;
                 const eventData = {
                     ...created,
-                    start: new Date(moment.utc(created.start).format("YYYY-MM-DDTHH:mm:ss")),
-                    end: new Date(moment.utc(created.end).format("YYYY-MM-DDTHH:mm:ss")),
+                    start: new Date(moment(created.start).local().format("YYYY-MM-DDTHH:mm")),
+                    end: new Date(moment(created.end).local().format("YYYY-MM-DDTHH:mm")),
                     type: "Event",
                     style: { backgroundColor: selectedColor, color: "white" },
                     contact: created.contact || "",
                     tag: created.tag || "",
                 };
+
                 setEvents(prev => [...prev, eventData]);
             } catch (err) {
-                console.error("Error adding event:", err);
+
             }
             setNewEvent({ title: "", start: "", end: "", contact: "", tag: "" });
             setSidebarOpen(false);
-        }
     };
 
     const handleAddTask = async (e, selectedColor) => {
         e.preventDefault();
-        const errors = {};
-        if (!newTask.title.trim()) errors.title = "Title is required.";
-        if (!newTask.date) errors.date = "Date is required.";
 
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
+        if (!newTask.title.trim()) {
+            alert("Title is required.");
             return;
         }
-        setFormErrors({}); {
-            try {
-                newTask.color = selectedColor;
-                const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, newTask);
-                const created = response.data;
-                const taskEvent = {
-                    id: created.id,
-                    title: created.title,
-                    start: moment(created.date).startOf("day").toDate(),
-                    end: moment(created.date).startOf("day").toDate(),
-                    allDay: true,
-                    style: { backgroundColor: selectedColor, color: "white" },
-                    type: "Task",
-                    contact: created.contact || "",
-                    tag: created.tag || "",
-                };
-                setTasks(prev => [...prev, created]);
-                setEvents(prev => [...prev, taskEvent]);
-            } catch (err) {
-                console.error("Error adding task:", err);
-            }
-            setNewTask({ title: "", date: "", contact: "", tag: "" });
-            setSidebarOpen(false);
+
+        if (!newTask.date) {
+            alert("Date is required.");
+            return;
         }
+
+        try {
+            const payload = { ...newTask, color: selectedColor };
+            const color = selectedColor || "#014F86";
+            const response = await axiosInstance.post(`${BASE_URL}api/tasks/`, payload);
+            const created = response.data;
+
+            const taskEvent = {
+                ...created,
+                start: moment(created.date).startOf("day").toDate(),
+                end: moment(created.date).endOf("day").toDate(),
+                allDay: true,
+                type: "Task",
+                style: { backgroundColor: color, color: "white" },
+                contact: created.contact || "",
+                tag: created.tag || "",
+                completed: created.completed || false,
+            };
+
+            setTasks(prev => [...prev, taskEvent]);
+            setNewTask({ title: "", date: "", contact: "", tag: "", type: "Task", completed: false });
+            setSidebarOpen(false);
+        } catch (err) {
+
+        }
+        setNewTask({ title: "", date: "", contact: "", tag: "" });
+        setSidebarOpen(false);
     };
 
     const handleUpdateEvent = async (e, selectedColor) => {
@@ -104,13 +127,32 @@ export default function CalendarSidebar({
 
         if (!selectedEvent) return;
 
+        if (!selectedEvent.title.trim()) {
+            alert("Title is required.");
+            return;
+        }
+        if (!selectedEvent.start) {
+            alert("Start time is required.");
+            return;
+        }
+        if (!selectedEvent.end) {
+            alert("End time is required.");
+            return;
+        }
+        if (selectedEvent.start >= selectedEvent.end) {
+            alert("Start date must be before the end date.");
+            return;
+        }
+
         try {
+            const color = selectedColor || "#4285F4";
+
             const updatedEventData = {
                 title: selectedEvent.title,
-                start: selectedEvent.start,
-                end: selectedEvent.end,
+                start: new Date(selectedEvent.start).toISOString(),
+                end: new Date(selectedEvent.end).toISOString(),
                 contact: selectedEvent.contact || "",
-                color: selectedColor,
+                color: color,
                 ...(selectedEvent.tag ? { tag: selectedEvent.tag } : {})
             };
 
@@ -121,40 +163,53 @@ export default function CalendarSidebar({
                     ? {
                         ...event,
                         title: updatedEventData.title,
-                        start: new Date(moment.utc(updatedEventData.start).format("YYYY-MM-DDTHH:mm:ss")),
-                        end: new Date(moment.utc(updatedEventData.end).format("YYYY-MM-DDTHH:mm:ss")),
+                        start: new Date(moment(updatedEventData.start).local().format("YYYY-MM-DDTHH:mm")),
+                        end: new Date(moment(updatedEventData.end).local().format("YYYY-MM-DDTHH:mm")),
                         contact: updatedEventData.contact,
                         style: { backgroundColor: selectedColor, color: 'white' },
                         tag: updatedEventData.tag
                     }
                     : event
             );
-            // console.log("✅ Final updated object to insert into calendar:", {
-            //     start: moment(updatedEventData.start, "YYYY-MM-DDTHH:mm").toDate(),
-            //     end: moment(updatedEventData.end, "YYYY-MM-DDTHH:mm").toDate(),
-            //   });
+
+            if (updatedEventData.start >= updatedEventData.end) {
+                alert("Start date must be before the end date.");
+                return;
+            }
 
             setEvents(updatedEvents);
 
             setSelectedEvent(null);
             setSidebarOpen(false);
         } catch (error) {
-            console.error('Error updating event:', error);
+
         }
     };
 
     const handleUpdateTask = async (e, selectedColor) => {
         e.preventDefault();
+
         if (!selectedTask) return;
 
+        if (!selectedTask.title.trim()) {
+            alert("Title is required.");
+            return;
+        }
+
+        if (!selectedTask.start) {
+            alert("Date is required.");
+            return;
+        }
+
         try {
+            const color = selectedColor || "#014F86";
             const wasCompleted = tasks.find(t => t.id === selectedTask.id)?.completed;
             const nowCompleted = selectedTask.completed;
             const updated = {
                 title: selectedTask.title,
                 date: moment(selectedTask.start).format("YYYY-MM-DD"),
                 contact: selectedTask.contact || "",
-                color: selectedColor,
+                color: color,
                 completed: selectedTask.completed,
                 tag: selectedTask.tag === "" ? "" : selectedTask.tag
             };
@@ -165,13 +220,14 @@ export default function CalendarSidebar({
             );
             setTasks(updatedTasks);
 
-            const updatedEvents = events.map(ev =>
+            const updatedTaskData = tasks.map(ev =>
                 ev.id === selectedTask.id
                     ? {
                         ...ev,
                         title: updated.title,
                         start: moment(updated.date).startOf("day").toDate(),
-                        end: moment(updated.date).startOf("day").toDate(),
+                        end: moment(updated.date).endOf("day").toDate(),
+                        allDay: true,
                         contact: updated.contact,
                         completed: updated.completed,
                         style: { backgroundColor: selectedColor, color: "white" },
@@ -179,7 +235,7 @@ export default function CalendarSidebar({
                     }
                     : ev
             );
-            setEvents(updatedEvents);
+            setTasks(updatedTaskData);
 
             if (!wasCompleted && nowCompleted && selectedTask.contact) {
                 const contact = contacts.find(c => c.id === selectedTask.contact);
@@ -194,7 +250,7 @@ export default function CalendarSidebar({
             setSelectedTask(null);
             setSidebarOpen(false);
         } catch (err) {
-            console.error("Error updating task:", err);
+
         }
     };
 
@@ -206,7 +262,7 @@ export default function CalendarSidebar({
             setEvents(prev => prev.filter(e => e.id !== item.id));
             setTasks(prev => prev.filter(t => t.id !== item.id));
                     } catch (err) {
-            console.error(`Error deleting ${item.type}:`, err);
+
         }
         setSidebarOpen(false);
     };
@@ -216,21 +272,38 @@ export default function CalendarSidebar({
             {COLORS.map((color) => (
                 <div
                     key={color}
-                    className="color-option"
+                    className={`color-option ${
+                        (formType === "event" && selectedEvent?.color === color) ||
+                        (formType === "task" && selectedTask?.color === color)
+                            ? "selected"
+                            : ""
+                    }`}
                     style={{ backgroundColor: color }}
+                    data-selected-color={color}
                     onClick={(e) => {
-                        document.querySelectorAll(".color-option").forEach(el => el.classList.remove("selected"));
-                        e.target.classList.add("selected");
-                        e.target.dataset.selectedColor = color;
+                        document.querySelectorAll(".color-option").forEach(el =>
+                            el.classList.remove("selected")
+                        );
+                        e.currentTarget.classList.add("selected");
                     }}
                 />
             ))}
         </div>
     );
 
-    const selectedColor = () =>
-        document.querySelector(".color-option.selected")?.dataset.selectedColor ||
-        (formType === "task" ? "#014F86" : "#3174ad");
+    const selectedColor = () => {
+        const selected = document.querySelector(".color-option.selected")?.dataset.selectedColor;
+
+        if (selected) return selected;
+
+        if (formType === "task") {
+            return selectedTask?.color || "#014F86";
+        } else if (formType === "event") {
+            return selectedEvent?.color || "#4285F4";
+        }
+
+        return "#4285F4";
+    };
 
     return (
         <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
@@ -299,12 +372,10 @@ export default function CalendarSidebar({
                     <>
                         <h3>Edit Task</h3>
                         <label>Title:</label>
-                        <input type="text" name="title" value={selectedTask.title} onChange={handleInputChange} />
-                        {formErrors.title && <span className="form-error">{formErrors.title}</span>}
+                        <input type="text" name="title" value={selectedTask.title} onChange={(e) => setSelectedTask({ ...selectedTask, title: e.target.value })} />
 
                         <label>Date:</label>
-                        <input type="date" name="date" value={selectedTask.date} onChange={handleInputChange} />
-                        {formErrors.date && <span className="form-error">{formErrors.date}</span>}
+                        <input type="date" name="date" value={moment(selectedTask.start).format("YYYY-MM-DD")} onChange={(e) => setSelectedTask({ ...selectedTask, start: e.target.value })} />
 
                         <label>Contact:</label>
                         <select value={selectedTask.contact} onChange={(e) => setSelectedTask({ ...selectedTask, contact: e.target.value })}>

@@ -4,7 +4,7 @@ from .views import (
     EventViewSet, TaskViewSet, 
     IndividualEventView, IndividualTaskView, 
     DeleteEventView, DeleteTaskView, 
-    SyncGoogleCalendarView, GetGoogleEventsView, DeleteGoogleEventsView
+    SyncGoogleCalendarView, GetGoogleEventsView, DeleteGoogleEventsView, PushEventsToGoogleView
 )
 
 router = DefaultRouter()
@@ -19,6 +19,6 @@ urlpatterns = [
     path('tasks/<int:task_id>/delete/', DeleteTaskView.as_view(), name='delete-task'),
     path("sync_google_calendar/", SyncGoogleCalendarView.as_view(), name="sync_google_calendar"),
     path("get_google_events/", GetGoogleEventsView.as_view(), name="get_google_events"),
-    path('delete_google_events/', DeleteGoogleEventsView.as_view(), name='delete_google_events'),
-
+    path('google-events/', DeleteGoogleEventsView.as_view(), name='delete_google_events'),
+    path("push_to_google/", PushEventsToGoogleView.as_view(), name="push_to_google"),
 ]

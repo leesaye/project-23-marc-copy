@@ -10,17 +10,16 @@ import json
 import os
 from django.conf import settings
 from django.http import HttpResponse
+from django.core.exceptions import ValidationError
 
 from rest_framework.views import APIView
-from . models import Contact
-from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
-from . serializer import ContactSerializer
-from . geminiapi import get_relationship_rating, GeminiAPIError
-
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
+from . models import Contact
+from . serializer import ContactSerializer
+from . geminiapi import get_relationship_rating, GeminiAPIError
 
 
 # GET
@@ -40,6 +39,10 @@ class AddContactView(APIView):
     def post(self, request):
         try:
             data = request.data.copy()
+
+            # Name is required
+            if request.data.get("name", None) == "":
+                return Response({"name": ["Name is required."]}, status=status.HTTP_400_BAD_REQUEST)
 
             # Quiz logic
             quiz_answers_str = request.data.get("quiz_answers", None)
@@ -82,7 +85,7 @@ class AddContactView(APIView):
             return Response({"error": f"Failed to generate relationship rating: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ValidationError as e:
-            return Response({"error": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"image": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": f"Failed to edit contact: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -93,24 +96,33 @@ class IndividualContactView(APIView):
     def get(self, request, contact_id):
         try:
             contact = Contact.objects.get(id=contact_id, user=request.user)
+
+            if contact.user != request.user:
+                return Response(
+                    {"error": "You do not have permission to view this contact."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            # Serialize
+            serializer = ContactSerializer(contact)
+
+            # Decode only if image is available
+            if serializer.data['pfp']:
+                pfp_img = decode_img(serializer.data.get('pfp'))
+                serializer.data['pfp'] = pfp_img
+            return Response(serializer.data)
         except Contact.DoesNotExist:
-            raise NotFound(detail="Contact not found", code=status.HTTP_404_NOT_FOUND)
-
-        if contact.user != request.user:
-            raise PermissionDenied("You do not have permission to view this contact.")
-
-        # Serialize
-        serializer = ContactSerializer(contact)
-
-        # Decode only if image is available
-        if serializer.data['pfp']:
-            pfp_img = decode_img(serializer.data.get('pfp'))
-            serializer.data['pfp'] = pfp_img
-        return Response(serializer.data)
+            return Response({"error": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": f"Failed to get contact: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def post(self, request, contact_id):
         try:
             contact = Contact.objects.get(id=contact_id, user=request.user)
+
+            # Name is required
+            if request.data.get("name", None) == "":
+                return Response({"name": ["Name is required."]}, status=status.HTTP_400_BAD_REQUEST)
 
             # Quiz logic
             quiz_answers_str = request.data.get("quiz_answers", None)
@@ -166,7 +178,7 @@ class IndividualContactView(APIView):
             return Response({"error": f"Failed to generate relationship rating: {str(e)}"},
                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         except ValidationError as e:
-            return Response({"error": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"image": f"Failed to upload image: {e.messages[0]}"}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({"error": f"Failed to edit contact: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
@@ -178,14 +190,19 @@ class DeleteContactView(APIView):
     def delete(self, request, contact_id):
         try:
             contact = Contact.objects.get(id=contact_id)
+
+            if contact.user != request.user:
+                return Response(
+                    {"error": "You do not have permission to view this contact."},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            contact.delete()
+            return Response({"message": "Contact deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
         except Contact.DoesNotExist:
-            raise NotFound(detail="Contact not found", code=status.HTTP_404_NOT_FOUND)
-
-        if contact.user != request.user:
-            raise PermissionDenied("You do not have permission to delete this contact.")
-
-        contact.delete()
-        return Response({"message": "Contact deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+            return Response({"error": "Contact not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": f"Failed to delete contact: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class AddGoogleContactsView(APIView):
@@ -353,6 +370,7 @@ class ExportContactsCSV(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 ##### Helpers for quiz, image and csv #####
 def encode_img(file):

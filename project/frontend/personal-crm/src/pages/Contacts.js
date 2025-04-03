@@ -6,9 +6,9 @@ import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import SwapVertIcon from '@mui/icons-material/SwapVert';
 import AddIcon from '@mui/icons-material/Add';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 
 function Contacts() {
@@ -25,8 +25,7 @@ function Contacts() {
     const isSmallScreen = useMediaQuery({ query: '(max-width: 1224px)' });
     const isTinyScreen = useMediaQuery({ query: '(max-width: 630px)' });
     const [googleConnection, setGoogleConnection] = useState(null);
-    const csvInputRef = useRef();
-    const nav = useNavigate();
+    const BASE_URL = `http://127.0.0.1:8000/`;
 
 
     useEffect(() => {
@@ -78,7 +77,7 @@ function Contacts() {
             setGoogleConnection(response.access_token);
             fetchGoogleContacts(response.access_token);
         },
-        onError: (error) => console.log("Login Failed:", error),
+        onError: (error) => console.error("Login Failed:", error),
     });
 
     const handleSync = () => {

@@ -2,6 +2,7 @@ import Layout from "../components/Layout";
 import { useRef } from "react";
 import axiosInstance from "../endpoints/api";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function CSVUpload() {
     // const BASE_URL = `http://127.0.0.1:8000/`;
@@ -9,6 +10,7 @@ function CSVUpload() {
     const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
     const csvInputRef = useRef();
     const nav = useNavigate();
+    const [validCSVMessage, setValidCSVMessage] = useState(false);
 
     // CSV upload
     const handleCSVUploadClick = () => {
@@ -21,30 +23,26 @@ function CSVUpload() {
         const file = e.target.files[0];
 
         if (!file || file.type !== "text/csv") {
-            alert("Please upload a valid CSV file.");
+            setValidCSVMessage(true);
             return;
         }
+        setValidCSVMessage(false);
 
         const formData = new FormData();
         formData.append("csv", file);
 
         try {
-            const response = await axiosInstance.post(`${BASE_URL}contacts/importcsv/`, formData, {
+            await axiosInstance.post(`${BASE_URL}contacts/importcsv/`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
-                    // CSRF Tokens might be needed?
                 },
             });
-
-            console.log("Upload Success:", response.data);
-            alert("CSV uploaded successfully");
 
             // Navigate back to Contacts
             nav("/contacts/")
         } catch (error) {
             console.error("Error uploading CSV:", error);
             console.error("Data:", error.response.data);
-            alert("Error uploading CSV");
         }
     };
 
@@ -63,7 +61,7 @@ function CSVUpload() {
                     <li><h5>8) After some time, you will recieve an email with the download link</h5></li>
                     <li><h5>9) Click "Download archive"</h5></li>
                 </ul>
-                <div className="d-flex mt-4">
+                <div className="d-flex flex-wrap mt-4">
                     <h5>After downloading your connections on LinkedIn, upload the CSV file here: </h5>
                     <button className="btn btn-success mx-3" onClick={handleCSVUploadClick}>Upload</button>
                     {/* Hidden File Input */}
@@ -75,6 +73,7 @@ function CSVUpload() {
                         accept=".csv"
                         onChange={handleCSVUpload}
                     />
+                    {validCSVMessage && <p className="text-danger text-center mt-1">Please upload a valid CSV file</p>}
                 </div>
             </div>
         </Layout>

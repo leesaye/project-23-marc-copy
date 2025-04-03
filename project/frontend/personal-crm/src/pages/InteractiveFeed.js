@@ -1,5 +1,5 @@
 import Layout from "../components/Layout";
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../contexts/AIContext";
 import { LinearProgress } from "@mui/material";
 import axiosInstance from "../endpoints/api";
@@ -7,7 +7,7 @@ import moment from "moment";
 
 
 function InteractiveFeed() {
-    const { onSent, recentPrompt, showResult, loading, resultData, setInput, input } = useContext(Context);
+    const { onSent, resultData } = useContext(Context);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const promptStart = "Give me a mock event that is happening with some random contact that I may have that I could join. Only give json of format { title: \"Event 1\", description: \"This is the first event\", date: \"2025-03-10\", contact: \"Contact Name\"} in plain text no code block. Ensure that the date given is 1 to 7 days after:" + today + ". Also make sure the JSON starts with { and ends with }";
@@ -22,7 +22,7 @@ function InteractiveFeed() {
     const [selectedColor, setSelectedColor] = useState(COLORS[0]);
     const [showEventForm, setShowEventForm] = useState(false);
     const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
-    const [selectedFeedEventId, setSelectedFeedEventId] = useState(null);
+    const [, setSelectedFeedEventId] = useState(null);
 
 
 
@@ -62,9 +62,6 @@ function InteractiveFeed() {
                     const updatedCount = (prevCount || 0) + 1;
 
                     axiosInstance.post(`${BASE_URL}feed/user-stats/increment_count/`)
-                        .then((response) => {
-                            console.log("Daily Count incremented:", response.data);
-                        })
                         .catch((error) => {
                             console.error("Error incrementing Daily Count:", error);
                         });
@@ -103,7 +100,6 @@ function InteractiveFeed() {
             .then((response) => {
                 if (response.data) {
                     const userStats = response.data[0]
-                    console.log(userStats)
                     setCurrentDailyCount(userStats.current_daily_count)
                     setDailyGoal(userStats.daily_goal)
                     setStreak(userStats.running_streak_count)
