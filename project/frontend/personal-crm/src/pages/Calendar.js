@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import moment from "moment";
 import { useGoogleLogin, googleLogout } from "@react-oauth/google";
 import axios from "axios";
@@ -18,6 +18,7 @@ export default function CalendarPage() {
     const [tasks, setTasks] = useState([]);
     const [contacts, setContacts] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const sidebarRef = useRef(null);
     const [formType, setFormType] = useState(null);
     const [newEvent, setNewEvent] = useState({ title: '', start: '', end: '', contact: '', tag: '', type: 'Event' });
     const [newTask, setNewTask] = useState({ title: '', date: '', type: 'Task', contact: '', tag: '' });
@@ -57,6 +58,21 @@ export default function CalendarPage() {
         });
     }, []);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+                setSidebarOpen(false);
+            }
+        };
+
+        if (sidebarOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [sidebarOpen]);
 
     const fetchEventsAndTasks = async () => {
         try {
@@ -251,28 +267,32 @@ export default function CalendarPage() {
                     </div>
                 </div>
 
-                <CalendarSidebar
-                    {...{
-                        formType,
-                        sidebarOpen,
-                        setSidebarOpen,
-                        newEvent,
-                        setNewEvent,
-                        newTask,
-                        setNewTask,
-                        selectedEvent,
-                        setSelectedEvent,
-                        selectedTask,
-                        setSelectedTask,
-                        handleInputChange,
-                        setEvents,
-                        setTasks,
-                        tasks,
-                        events,
-                        contacts,
-                        COLORS
-                    }}
-                />
+                {sidebarOpen && (
+                    <div ref={sidebarRef}>
+                        <CalendarSidebar
+                            {...{
+                                formType,
+                                sidebarOpen,
+                                setSidebarOpen,
+                                newEvent,
+                                setNewEvent,
+                                newTask,
+                                setNewTask,
+                                selectedEvent,
+                                setSelectedEvent,
+                                selectedTask,
+                                setSelectedTask,
+                                handleInputChange,
+                                setEvents,
+                                setTasks,
+                                tasks,
+                                events,
+                                contacts,
+                                COLORS
+                            }}
+                        />
+                    </div>
+                )}
             </div>
         </Layout>
     );

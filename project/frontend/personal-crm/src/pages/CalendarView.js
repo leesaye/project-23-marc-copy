@@ -17,6 +17,8 @@ function CalendarView({ events, tasks, onSelectEvent }) {
             style={{ height: "500px" }}
             views={[Views.MONTH, Views.WEEK, Views.AGENDA]}
             defaultView={Views.MONTH}
+            onSelectEvent={onSelectEvent}
+            popup
             components={{
                 event: ({ event }) => (
                     <div
