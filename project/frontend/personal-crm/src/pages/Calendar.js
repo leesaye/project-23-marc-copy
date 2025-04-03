@@ -46,7 +46,7 @@ export default function CalendarPage() {
             if (token) {
                 const decoded_token = atob(token);
                 setGoogleConnection(decoded_token);
-                // setUser(response.data.user || {});  
+                setUser(response.data.user || {});  
             } else {
                 setUser(null);
                 setGoogleConnection(null);
@@ -129,7 +129,7 @@ export default function CalendarPage() {
             }));
 
             setEvents(prev => [...prev.filter(e => e.type !== "Google Event"), ...synced]);
-            // window.location.reload();
+            window.location.reload();
         } catch (error) {
             console.error("Sync failed:", error);
         }
@@ -202,14 +202,14 @@ export default function CalendarPage() {
 
     const pushToGoogleCalendar = async () => {
         try {
-            const res = await axiosInstance.post(`${BASE_URL}api/push_to_google/`);
+            const res = await axiosInstance.post(`${BASE_URL}api/push_to_google/`, { events: events });
             alert(`Uploaded: ${res.data.uploaded} event(s)\nFailed: ${res.data.failed} event(s)`);
         } catch (error) {
             console.error("Failed to push events:", error);
             alert("Something went wrong while pushing events to Google Calendar.");
         }
     };
-    
+        
     return (
         <Layout>
             <div className={`calendar-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
