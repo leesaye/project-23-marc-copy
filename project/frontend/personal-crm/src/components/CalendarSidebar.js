@@ -214,7 +214,6 @@ export default function CalendarSidebar({
                 t.id === selectedTask.id ? { ...t, ...updated } : t
             );
             setTasks(updatedTasks);
-            console.log("Updated Tasks:", updatedTasks);
 
             const updatedTaskData = tasks.map(ev =>
                 ev.id === selectedTask.id

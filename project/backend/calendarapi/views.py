@@ -236,7 +236,6 @@ class PushEventsToGoogleView(APIView):
         failure_count = 0
 
         for event in events:
-            # Ensure datetimes are timezone-aware
             start_dt = event.start
             end_dt = event.end
 
@@ -267,10 +266,6 @@ class PushEventsToGoogleView(APIView):
                 event.save()
             else:
                 failure_count += 1
-                print(f"\nFailed to upload event: {event.title}")
-                print(f"Status code: {response.status_code}")
-                print(f"Payload: {event_payload}")
-                print(f"Response: {response.text}")
 
         return Response({
             "message": "Push complete",
