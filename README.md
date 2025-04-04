@@ -180,9 +180,12 @@ Repo has been forked and changed slightly to allow for deployment.
  - Below are some ENV variables required
  	- NODE_VERSION=23.7.0 (anything above 20 should work)
   	- CI=false (prevents netlify from treating warnings as errors)
+   	- REACT_APP_BASE_URL, set to your backend deploy URL (see Backend Deployment Using Render instructions below)
      	- REACT_APP_GEMINI_API_KEY and REACT_APP_GOOGLE_CLIENT_ID, set to generated values
+      		- Link to generating a Gemini key: https://ai.google.dev/gemini-api/docs/api-key
+        	- Link to getting started/getting Google key: https://developers.google.com/workspace/guides/get-started
         	- Note: REACT_APP_GOOGLE_CLIENT_ID must enable the People API and the GCal API
-- Note: Our current frontend deployment (due to permission restrictions on this classrooom repo) is off of a fork of this repo
+- Note: Our current frontend deployment for D5 (due to permission restrictions on this classrooom repo) is off of a fork of this repo
 	- Fork: https://github.com/leesaye/project-23-marc
 
 **Backend Deployment Using Render:**
