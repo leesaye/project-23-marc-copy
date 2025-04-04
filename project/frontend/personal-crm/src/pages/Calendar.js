@@ -5,7 +5,7 @@ import axios from "axios";
 import axiosInstance from "../endpoints/api";
 import Layout from "../components/Layout";
 import CalendarView from "./CalendarView";
-import CalendarSidebar from "../components/CalendarSidebar";
+import CalendarSidebar from "../components/calendar-sidebar/CalendarSidebar";
 import "./Calendar.css";
 
 const BASE_URL = 'http://127.0.0.1:8000/';
