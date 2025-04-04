@@ -12,10 +12,7 @@ function InteractiveFeed() {
     today.setHours(0, 0, 0, 0);
     const promptStart = "Give me a mock event that is happening with some random contact that I may have that I could join. Only give json of format { title: \"Event 1\", description: \"This is the first event\", date: \"2025-03-10\", contact: \"Contact Name\"} in plain text no code block. Ensure that the date given is 1 to 7 days after:" + today + ". Also make sure the JSON starts with { and ends with }";
     const [eventData, setEventData] = useState("");
-    // const BASE_URL = 'http://127.0.0.1:8000/';
-    // const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
-    // const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
-    const BASE_URL = `https://project-23-marc-1.onrender.com/`;
+    const BASE_URL = process.env.REACT_APP_BASE_URL;
     const [currentDailyCount, setCurrentDailyCount] = useState();
     const [dailyGoal, setDailyGoal] = useState();
     const [streak, setStreak] = useState();

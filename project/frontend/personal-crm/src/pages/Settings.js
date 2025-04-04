@@ -3,10 +3,7 @@ import React, { useState, useEffect } from "react";
 import "./Calendar.css";
 import axiosInstance from "../endpoints/api";
 
-// const BASE_URL = "http://127.0.0.1:8000";
-// const BASE_URL = `https://project-23-marc-backend-d4.onrender.com`;
-// const BASE_URL = 'https://project-23-marc-backend-deployment.onrender.com';
-const BASE_URL = `https://project-23-marc-1.onrender.com`;
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 function AccountSettings() {
     const [user, setUser] = useState({ username: "", email: "", new_password: "" });
@@ -19,7 +16,7 @@ function AccountSettings() {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await fetch(`${BASE_URL}/api/update/`, { credentials: "include" });
+                const response = await fetch(`${BASE_URL}api/update/`, { credentials: "include" });
                 const data = await response.json();
                 setUser({ username: data.username, email: data.email, new_password: "" });
                 setLoading(false);
@@ -31,7 +28,7 @@ function AccountSettings() {
 
         const fetchDailyGoal = async () => {
             try {
-                const response = await fetch(`${BASE_URL}/feed/user-stats/`, { credentials: "include" });
+                const response = await fetch(`${BASE_URL}feed/user-stats/`, { credentials: "include" });
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch user stats');
@@ -72,7 +69,7 @@ function AccountSettings() {
         }
 
         try {
-            const response = await fetch(`${BASE_URL}/api/update/`, {
+            const response = await fetch(`${BASE_URL}api/update/`, {
                 method: "PUT",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },
@@ -83,7 +80,7 @@ function AccountSettings() {
                 }),
             });
 
-            await axiosInstance.post(`${BASE_URL}/feed/user-stats/set_daily_goal/`, {
+            await axiosInstance.post(`${BASE_URL}feed/user-stats/set_daily_goal/`, {
                 daily_goal: parsedDailyGoal,
             });
 
@@ -103,7 +100,7 @@ function AccountSettings() {
 
     const handleDeleteAccount = async () => {
     try {
-        const response = await fetch(`${BASE_URL}/api/update/`, {
+        const response = await fetch(`${BASE_URL}api/update/`, {
             method: "DELETE",
             credentials: "include",
         });
