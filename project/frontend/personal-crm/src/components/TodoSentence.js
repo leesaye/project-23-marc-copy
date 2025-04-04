@@ -5,7 +5,8 @@ import { Context } from "../contexts/AIContext";
 //const BASE_URL = "http://127.0.0.1:8000/api/";
 //const BASE_URL = `https://project-23-marc.onrender.com/api/`;
 //const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/api/`;
-const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/api/`;
+//const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/api/`;
+const BASE_URL = `https://project-23-marc-1.onrender.com/api/`;
 const EVENT_URL = `${BASE_URL}events/`;
 const TASK_URL = `${BASE_URL}tasks/`;
 

@@ -14,7 +14,8 @@ function InteractiveFeed() {
     const [eventData, setEventData] = useState("");
     // const BASE_URL = 'http://127.0.0.1:8000/';
     // const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
-    const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
+    // const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
+    const BASE_URL = `https://project-23-marc-1.onrender.com/`;
     const [currentDailyCount, setCurrentDailyCount] = useState();
     const [dailyGoal, setDailyGoal] = useState();
     const [streak, setStreak] = useState();

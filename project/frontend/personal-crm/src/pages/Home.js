@@ -10,7 +10,8 @@ import TaskMessage from "../components/TaskMessages";
 // const BASE_URL = "http://127.0.0.1:8000/"
 // const BASE_URL = `https://project-23-marc.onrender.com/`;
 //const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
-const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
+// const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
+const BASE_URL = `https://project-23-marc-1.onrender.com/`;
 const TASK_URL =  `${BASE_URL}api/tasks/`;
 const CONTACT_URL = `${BASE_URL}contacts/`;
 

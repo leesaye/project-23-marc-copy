@@ -22,7 +22,8 @@ function Log() {
     const isTinyScreen = useMediaQuery({ query: '(max-width: 600px)' });
     // const BASE_URL = "http://127.0.0.1:8000/";
     // const BASE_URL = `https://project-23-marc-backend-d4.onrender.com/`;
-    const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
+    // const BASE_URL = `https://project-23-marc-backend-deployment.onrender.com/`;
+    const BASE_URL = `https://project-23-marc-1.onrender.com/`;
 
     useEffect(() => {
         axiosInstance.get(`${BASE_URL}log/`)
