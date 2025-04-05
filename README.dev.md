@@ -197,6 +197,8 @@ Repo has been forked and changed slightly to allow for deployment.
  	- Base directory: project/backend
   	- Build command: pip install -r requirements.txt
    	- Start command: gunicorn backend.wsgi
+- Once the backend server is up and running, you should be replacing all the backend calls in the fronted with this url as the base url.
+- Since our backend server uses a CORS policy, you should also add the new frontend url to the CORS headers in settings.py.
 
 ## API Endpoint Documentation
 We use Swagger to generate API documentation that can be used to aid development.
