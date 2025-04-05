@@ -139,7 +139,7 @@ Notes for testing
 - Authentication access refresh token expires after a day in which case the user must re-log in.
 
 ## Developer Instructions
-Developers Instructions can be found in [Developer Instructions](README.dev.md)
+Developers Instructions can be found in [README.dev.md](README.dev.md)
 ​
 ## Intellectual Property Confidality Agreement
  - We have agreed on option #2 - You can upload the code to GitHub or other similar publicly available domains. Marc owns the actual project but the code we worked on is on a private github repository in the CSC301 classroom. 
