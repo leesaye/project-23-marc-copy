@@ -12,7 +12,7 @@ The Personal CRM Web Application is designed to automate and simplify the proces
 ​
 ## Key Features
 
-Primary Features and functionalities currently implemented for D4:
+Primary Features and functionalities currently implemented for D5:
 
 1. A user can register and login (Inital Page)
 	1. A user can login or create an account if they do not have one.
@@ -48,6 +48,8 @@ The Final MVP for Personal CRM should accomplish the following 3 main user stori
 ## Screenshots, GIFs, or Short Videos:
 View the following video for a walkthrough and user flow of our website:
 
+(D5) https://drive.google.com/file/d/1yFwM5GGEoiyr4jf9c3LRai80oEQ2d-BD/view?usp=sharing 
+
 (D4) https://drive.google.com/file/d/1p0NXsdapgDIGY1qg4pIRuvwF7i0os-z_/view?usp=drive_link
 
 (D3) https://drive.google.com/file/d/1JW90mKkOl3xHRIIyQfsKz_y9BK-xlQT-/view?usp=sharing
@@ -58,7 +60,9 @@ View the following video for a walkthrough and user flow of our website:
 ## How the TA can test the features:
 Visit our deployed website here:
 
-**Newest D4 snapshot: https://personalcrm-d4.netlify.app/**
+**Newest D5 snapshot: https://personalcrm-d5.netlify.app/**
+
+(D4 snapshot: https://personalcrm-d4.netlify.app/)
 
 (D3 snapshot: https://personalcrm-d3.netlify.app/)
 
