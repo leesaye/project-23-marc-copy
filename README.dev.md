@@ -231,9 +231,3 @@ We will be using standard coding guidelines that adhere to the five pillars of c
 3. Efficiency
 4. Reliability
 5. Reusability
-​
-## Intellectual Property Confidality Agreement
- - We have agreed on option #2 - You can upload the code to GitHub or other similar publicly available domains. Marc owns the actual project but the code we worked on is on a private github repository in the CSC301 classroom. 
-
-## Licenses 
- - Not Applicable. There are no licenses involved in the project as of now.
