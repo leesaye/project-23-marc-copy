@@ -146,19 +146,26 @@ Developers can test the project locally
 
 ### Steps to Install Dependencies and Get local server running:
 1. Clone the repo
-2. For Frontend:
+2. Replace placeholder API keys with your generated values
+	- The locations are outlined below, refer to the "Deployment Instructions" section for steps on how to acquire these keys (Django project, Gemini, and Google keys)
+	```
+ 	<SECRET_KEY> in /project/backend/backend/settings.py
+ 	<GEMINI_API_KEY> in /project/backend/contacts/geminiapi.py and /project/frontend/personal-crm/src/endpoints/gemini.js
+	<GOOGLE_CLIENT_ID> in /project/frontend/personal-crm/src/App.js
+ 	```
+3. For Frontend:
 	1. Cd into project/frontend/personalcrm/
 	2. run npm install to install all the dependencies
 	3. run npm start to start the frontend locally
-3. For Backend, open new terminal:
+4. For Backend, open new terminal:
 	1. cd into project/backend/
 	2. view the INSTALL.md file and follow instructions from there
-4. Visit frontend localhost link to start testing locally
+5. Visit frontend localhost link to start testing locally
 
 ### Unit tests: 
 - To run unit tests for a use case, cd into project/backend and run the command below:
 	- python manage.py test \<app-name\>.tests
-- \<app-name\> being "accounts", "contacts" "calendarapi", or "log" (as of D4)
+- \<app-name\> being "accounts", "contacts" "calendarapi", or "log"
 
 ## Deployment Instructions
 Repo has been forked and changed slightly to allow for deployment.
@@ -179,8 +186,6 @@ Repo has been forked and changed slightly to allow for deployment.
       		- Link to generating a Gemini key: https://ai.google.dev/gemini-api/docs/api-key
         	- Link to getting started/getting Google key: https://developers.google.com/workspace/guides/get-started
         	- Note: REACT_APP_GOOGLE_CLIENT_ID must enable the People API and the GCal API
-- Note: Our current frontend deployment for D5 (due to permission restrictions on this classrooom repo) is off of a fork of this repo
-	- Fork: https://github.com/leesaye/project-23-marc
 
 **Backend Deployment Using Render:**
 - Create an account on Render.com
@@ -197,7 +202,7 @@ Repo has been forked and changed slightly to allow for deployment.
  	- Base directory: project/backend
   	- Build command: pip install -r requirements.txt
    	- Start command: gunicorn backend.wsgi
-- Once the backend server is up and running, you should be replacing all the backend calls in the fronted with this url as the base url.
+- Once the backend server is up and running, you should be replacing all the backend calls in the frontend with this url as the BASE_URL.
 - Since our backend server uses a CORS policy, you should also add the new frontend url to the CORS headers in settings.py.
 
 ## API Endpoint Documentation
