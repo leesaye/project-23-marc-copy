@@ -168,7 +168,7 @@ Developers can test the project locally
 - \<app-name\> being "accounts", "contacts" "calendarapi", or "log"
 
 ## Deployment Instructions
-Repo has been forked and changed slightly to allow for deployment.
+Currently, the main of this repo is setup for local development. The frontend-deployment branch is setup for frontend deployment with Netlify, and the backend-deployment branch is setup for backend deployment with Render.
 
 **Frontend Deployment Using Netlify:**
 - Create an account on netlify.com and connect to GitHub
