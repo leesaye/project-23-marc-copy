@@ -172,7 +172,7 @@ Repo has been forked and changed slightly to allow for deployment.
 
 **Frontend Deployment Using Netlify:**
 - Create an account on netlify.com and connect to GitHub
-- Follow the instructions here (using this repo, or a fork of it):
+- Follow the instructions here, linking the netlify site to the frontend-deployment branch on this repo:
 	- https://docs.netlify.com/welcome/add-new-site/#import-from-an-existing-repository
  - Below are the build settings required
  	- Base directory: project/frontend/personal-crm
