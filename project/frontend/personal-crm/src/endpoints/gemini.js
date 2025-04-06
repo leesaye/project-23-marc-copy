@@ -3,15 +3,14 @@ import {
     HarmCategory,
     HarmBlockThreshold,
   } from "@google/generative-ai"
-  
-  const apiKey = "AIzaSyCvRfJGtuK4ms8qPSV4fzTmEGYwUYrBWU0";
-//   const apiKey = "aslkd";
+
+  const apiKey = "<GEMINI_API_KEY>";
   const genAI = new GoogleGenerativeAI(apiKey);
-  
+
   const model = genAI.getGenerativeModel({
     model: "gemini-2.0-flash",
   });
-  
+
   const generationConfig = {
     temperature: 1,
     topP: 0.95,
@@ -19,21 +18,21 @@ import {
     maxOutputTokens: 8192,
     responseMimeType: "text/plain",
   };
-  
+
   async function run(prompt) {
     try {
       const chatSession = model.startChat({
         generationConfig,
         history: [],
       });
-  
+
       const result = await chatSession.sendMessage(prompt);
       const response = result.response;
-  
+
       if (!response) {
         throw new Error("Empty response from Gemini API, please try to reload the page.");
       }
-  
+
       return response.text();
     } catch (error) {
       console.error("Error with Gemini API:", error);
@@ -43,6 +42,6 @@ import {
       return "Oops! Something went wrong. Please try again.";
     }
   }
-  
-  
+
+
  export default run;

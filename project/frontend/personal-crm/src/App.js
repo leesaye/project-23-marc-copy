@@ -8,7 +8,7 @@ function App() {
   return (
     <Fragment>
       <AuthProvider>
-        <GoogleOAuthProvider clientId="701175770587-uu3vvsfmgfopun5ccsnmotnokc89cnbd.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId="<GOOGLE_CLIENT_ID>">
           <Main />
         </GoogleOAuthProvider>
       </AuthProvider>

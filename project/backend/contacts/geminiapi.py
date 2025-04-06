@@ -4,7 +4,7 @@ import json
 from pydantic import BaseModel
 
 
-API_KEY = "AIzaSyBhs7tC1Uv4BY9xoxCTEX1XJvmyd_6g4Ko"
+API_KEY = "<GEMINI_API_KEY>"
 
 
 class GeminiAPIError(Exception):
